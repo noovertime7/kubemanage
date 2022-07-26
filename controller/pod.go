@@ -1,10 +1,11 @@
 package controller
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/wonderivan/logger"
+	"kubemanage/middleware"
 	"kubemanage/service"
-	"net/http"
 )
 
 var Pod pod
@@ -22,22 +23,13 @@ func (p *pod) GetPods(ctx *gin.Context) {
 	})
 	if err := ctx.Bind(parmas); err != nil {
 		logger.Error("绑定参数失败:", err.Error())
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"msg":  ":绑定参数失败:" + err.Error(),
-			"data": nil,
-		})
+		middleware.ResponseError(ctx, 10001, errors.New("绑定参数失败"))
 		return
 	}
 	data, err := service.Pod.GetPods(parmas.FilterName, parmas.NameSpace, parmas.Limit, parmas.Page)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"msg":  err.Error(),
-			"data": nil,
-		})
+		middleware.ResponseError(ctx, 10002, err)
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"msg":  "获取POD列表成功",
-		"data": data,
-	})
+	middleware.ResponseSuccess(ctx, "获取POD成功", data)
 }
