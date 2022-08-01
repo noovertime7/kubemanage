@@ -4,13 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/controller"
 	"github.com/noovertime7/kubemanage/docs"
+	"github.com/noovertime7/kubemanage/middleware"
 	swaggerFiles "github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
 )
-
-var Router router
-
-type router struct{}
 
 // @title Swagger Example API
 // @version 1.0
@@ -75,6 +72,7 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	})
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	apiNormalGroup := router.Group("/api")
+	apiNormalGroup.Use(middleware.TranslationMiddleware())
 	{
 		controller.PodRegister(apiNormalGroup)
 	}

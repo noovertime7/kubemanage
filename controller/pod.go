@@ -3,6 +3,7 @@ package controller
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/service"
 	"github.com/wonderivan/logger"
@@ -20,13 +21,8 @@ func PodRegister(router *gin.RouterGroup) {
 // GetPods 获取pod，支持分页过滤排序
 func (p *pod) GetPods(ctx *gin.Context) {
 	//处理入参
-	parmas := new(struct {
-		FilterName string `form:"filter_name"`
-		NameSpace  string `form:"namespace"`
-		Limit      int    `form:"limit"`
-		Page       int    `form:"page"`
-	})
-	if err := ctx.Bind(parmas); err != nil {
+	parmas := &dto.PodListInput{}
+	if err := parmas.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err.Error())
 		middleware.ResponseError(ctx, 10001, errors.New("绑定参数失败"))
 		return
