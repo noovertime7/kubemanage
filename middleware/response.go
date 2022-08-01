@@ -12,8 +12,8 @@ type Response struct {
 	Data interface{} `json:"data"`
 }
 
-func ResponseSuccess(c *gin.Context, Msg string, data interface{}) {
-	resp := &Response{Code: http.StatusOK, Msg: Msg, Data: data}
+func ResponseSuccess(c *gin.Context, data interface{}) {
+	resp := &Response{Code: http.StatusOK, Msg: "", Data: data}
 	c.JSON(200, resp)
 	response, _ := json.Marshal(resp)
 	c.Set("response", string(response))

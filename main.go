@@ -1,18 +1,20 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"kubemanage/config"
-	"kubemanage/controller"
-	"kubemanage/service"
+	"github.com/noovertime7/kubemanage/router"
+	"github.com/noovertime7/kubemanage/service"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
 	//初始化K8s client
 	service.K8s.Init()
-	//初始化gin
-	r := gin.Default()
-	controller.Router.InitApiRouter(r)
-	//启动server
-	r.Run(config.ListenAddr)
+	router.HttpServerRun()
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGKILL, syscall.SIGQUIT, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	router.HttpServerStop()
 }

@@ -5,11 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/noovertime7/kubemanage/config"
 	"github.com/wonderivan/logger"
 	"io"
 	coreV1 "k8s.io/api/core/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"kubemanage/config"
 )
 
 var Pod pod
