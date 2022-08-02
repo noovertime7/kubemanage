@@ -60,7 +60,7 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	docs.SwaggerInfo.Title = "swagger API"
 	docs.SwaggerInfo.Description = ""
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "127.0.0.1:9988"
+	docs.SwaggerInfo.Host = "127.0.0.1:9090"
 	docs.SwaggerInfo.BasePath = ""
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 	router := gin.Default()
