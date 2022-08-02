@@ -14,13 +14,13 @@ var Pod pod
 type pod struct{}
 
 func PodRegister(router *gin.RouterGroup) {
-	router.GET("/pods", Pod.GetPods)
-	router.GET("/pod/detail", Pod.GetPodDetail)
-	router.DELETE("/pod/del", Pod.DeletePod)
-	router.PUT("/pod/update", Pod.UpdatePod)
-	router.GET("/pod/container", Pod.GetPodContainer)
-	router.GET("/pod/log", Pod.GetPodLog)
-	router.GET("/pod/numnp", Pod.GetPodNumPreNp)
+	router.GET("/list", Pod.GetPods)
+	router.GET("/detail", Pod.GetPodDetail)
+	router.DELETE("/del", Pod.DeletePod)
+	router.PUT("/update", Pod.UpdatePod)
+	router.GET("/container", Pod.GetPodContainer)
+	router.GET("/log", Pod.GetPodLog)
+	router.GET("/numnp", Pod.GetPodNumPreNp)
 
 }
 
