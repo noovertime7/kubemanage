@@ -57,12 +57,12 @@ func (d *deployment) FromCells(cells []DataCell) []appsV1.Deployment {
 }
 
 func (d *deployment) GetDeployments(filterName, namespace string, limit, page int) (*DeploymentResp, error) {
-	deploymentlist, err := K8s.clientSet.AppsV1().Deployments(namespace).List(context.TODO(), metaV1.ListOptions{})
+	deploymentList, err := K8s.clientSet.AppsV1().Deployments(namespace).List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 	selectableData := &dataSelector{
-		GenericDataList: d.toCells(deploymentlist.Items),
+		GenericDataList: d.toCells(deploymentList.Items),
 		DataSelect: &DataSelectQuery{
 			Filter: &FilterQuery{Name: filterName},
 			Paginatite: &PaginateQuery{
