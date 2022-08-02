@@ -15,7 +15,9 @@ func (params *DeploymentNameNS) BindingValidParams(c *gin.Context) error {
 }
 
 type DeployCreateInput struct {
-	DeploymentNameNS
+	//DeploymentNameNS
+	Name          string            `json:"name" form:"name" comment:"无状态控制器名称" validate:"required"`
+	NameSpace     string            `json:"namespace" form:"namespace" comment:"命名空间" validate:"required"`
 	Replicas      int32             `json:"replicas" validate:"required" comment:"副本数"`
 	Image         string            `json:"image" validate:"required" comment:"镜像名"`
 	Labels        map[string]string `json:"labels" validate:"required" comment:"标签"`
@@ -44,5 +46,9 @@ type DeployListInput struct {
 }
 
 func (params *DeployListInput) BindingValidParams(c *gin.Context) error {
+	return public.DefaultGetValidParams(c, params)
+}
+
+func (params *DeployCreateInput) BindingValidParams(c *gin.Context) error {
 	return public.DefaultGetValidParams(c, params)
 }

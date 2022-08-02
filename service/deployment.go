@@ -182,7 +182,7 @@ func (d *deployment) CreateDeployment(data *dto.DeployCreateInput) error {
 		coreV1.ResourceMemory: resource.MustParse(data.Memory),
 	}
 	//调用sdk去更新deployment
-	if _, err := K8s.clientSet.AppsV1().Deployments(data.NameSpace).Update(context.TODO(), deployment, metaV1.UpdateOptions{}); err != nil {
+	if _, err := K8s.clientSet.AppsV1().Deployments(data.NameSpace).Create(context.TODO(), deployment, metaV1.CreateOptions{}); err != nil {
 		return err
 	}
 	logger.Info("创建deployment成功:", deployment.Name)
