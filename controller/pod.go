@@ -21,7 +21,6 @@ func PodRegister(router *gin.RouterGroup) {
 	router.GET("/container", Pod.GetPodContainer)
 	router.GET("/log", Pod.GetPodLog)
 	router.GET("/numnp", Pod.GetPodNumPreNp)
-
 }
 
 // GetPods 获取pod，支持分页过滤排序

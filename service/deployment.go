@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"github.com/noovertime7/kubemanage/dto"
 	"github.com/wonderivan/logger"
 	appsV1 "k8s.io/api/apps/v1"
 	coreV1 "k8s.io/api/core/v1"
@@ -16,19 +18,6 @@ import (
 var Deployment deployment
 
 type deployment struct{}
-
-type DeployCreate struct {
-	Name          string            `json:"name"`
-	Namespace     string            `json:"namespace"`
-	Replicas      int32             `json:"replicas"`
-	Image         string            `json:"image"`
-	Labels        map[string]string `json:"labels"`
-	Cpu           string            `json:"cpu"`
-	Memory        string            `json:"memory"`
-	ContainerPort int32             `json:"container_port"`
-	HealthCheck   bool              `json:"health_check"`
-	HealthPath    string            `json:"health_path"`
-}
 
 type DeploymentResp struct {
 	Total int                 `json:"total"`
@@ -107,12 +96,12 @@ func (d *deployment) ScaleDeployment(deployName, namespace string, scaleNum int)
 }
 
 //CreateDeployment 新增deployment,接收deployCreate的对象
-func (d *deployment) CreateDeployment(data *DeployCreate) error {
+func (d *deployment) CreateDeployment(data *dto.DeployCreateInput) error {
 	//初始化appsV1.deployment类型的对象
 	deployment := &appsV1.Deployment{
 		ObjectMeta: metaV1.ObjectMeta{
 			Name:      data.Name,
-			Namespace: data.Namespace,
+			Namespace: data.NameSpace,
 			Labels:    data.Labels,
 		},
 		Spec: appsV1.DeploymentSpec{
@@ -183,6 +172,7 @@ func (d *deployment) CreateDeployment(data *DeployCreate) error {
 		}
 	}
 	//定义容器的limit与request资源
+	fmt.Println(data)
 	deployment.Spec.Template.Spec.Containers[0].Resources.Limits = map[coreV1.ResourceName]resource.Quantity{
 		coreV1.ResourceCPU:    resource.MustParse(data.Cpu),
 		coreV1.ResourceMemory: resource.MustParse(data.Memory),
@@ -192,7 +182,7 @@ func (d *deployment) CreateDeployment(data *DeployCreate) error {
 		coreV1.ResourceMemory: resource.MustParse(data.Memory),
 	}
 	//调用sdk去更新deployment
-	if _, err := K8s.clientSet.AppsV1().Deployments(data.Namespace).Update(context.TODO(), deployment, metaV1.UpdateOptions{}); err != nil {
+	if _, err := K8s.clientSet.AppsV1().Deployments(data.NameSpace).Update(context.TODO(), deployment, metaV1.UpdateOptions{}); err != nil {
 		return err
 	}
 	logger.Info("创建deployment成功:", deployment.Name)
@@ -247,8 +237,8 @@ func (d *deployment) RestartDeployment(deployName, namespace string) error {
 	return nil
 }
 
-//GetDeployNumPerNs 获取每个namespace下的deploy数量
-func (d *deployment) GetDeployNumPerNs() ([]*DeployNp, error) {
+//GetDeployNumPerNS 获取每个namespace下的deploy数量
+func (d *deployment) GetDeployNumPerNS() ([]*DeployNp, error) {
 	namespaceList, err := K8s.clientSet.CoreV1().Namespaces().List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
 		return nil, err

@@ -71,10 +71,18 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 		})
 	})
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	podGroup := router.Group("/api/k8s/pod")
 	podGroup.Use(middleware.TranslationMiddleware())
 	{
 		controller.PodRegister(podGroup)
 	}
+
+	deploymentGroup := router.Group("/api/k8s/deployment")
+	deploymentGroup.Use(middleware.TranslationMiddleware())
+	{
+		controller.DeploymentRegister(deploymentGroup)
+	}
 	return router
+
 }
