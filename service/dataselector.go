@@ -1,7 +1,8 @@
 package service
 
 import (
-	corev1 "k8s.io/api/core/v1"
+	appsV1 "k8s.io/api/apps/v1"
+	coreV1 "k8s.io/api/core/v1"
 	"sort"
 	"strings"
 	"time"
@@ -98,7 +99,7 @@ func (d *dataSelector) Paginate() *dataSelector {
 }
 
 //定义podCell，重写GetCreation与getName方法后，可以实现数据转换
-type podCell corev1.Pod
+type podCell coreV1.Pod
 
 // GetCreation 重写dataCell接口的两个方法
 func (p podCell) GetCreation() time.Time {
@@ -107,4 +108,14 @@ func (p podCell) GetCreation() time.Time {
 
 func (p podCell) GetName() string {
 	return p.Name
+}
+
+type deploymentCell appsV1.Deployment
+
+func (d deploymentCell) GetCreation() time.Time {
+	return d.CreationTimestamp.Time
+}
+
+func (d deploymentCell) GetName() string {
+	return d.Name
 }
