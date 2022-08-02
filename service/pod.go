@@ -75,7 +75,7 @@ func (p *pod) DeletePod(podName, namespace string) error {
 }
 
 // UpdatePod 更新Pod
-func (p *pod) UpdatePod(podName, namespace, content string) error {
+func (p *pod) UpdatePod(namespace, content string) error {
 	var pod = &coreV1.Pod{}
 	//将json反序列换为pod类型
 	if err := json.Unmarshal([]byte(content), pod); err != nil {
@@ -87,7 +87,6 @@ func (p *pod) UpdatePod(podName, namespace, content string) error {
 		logger.Error("更新Pod失败", err.Error())
 		return err
 	}
-	logger.Info("更新Pod成功%s", podName)
 	return nil
 }
 
