@@ -16,6 +16,333 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/k8s/deployment/create": {
+            "post": {
+                "description": "创建deployment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "deployment"
+                ],
+                "summary": "创建deployment",
+                "operationId": "/api/k8s/deployment/create",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.DeployCreateInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"新增成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/deployment/del": {
+            "delete": {
+                "description": "删除deployment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "deployment"
+                ],
+                "summary": "删除deployment",
+                "operationId": "/api/k8s/deployment/del",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"删除成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/deployment/detail": {
+            "get": {
+                "description": "获取deployment详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pod"
+                ],
+                "summary": "获取deployment详情",
+                "operationId": "/api/k8s/deployment/detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\":v1.Deployment }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/deployment/list": {
+            "get": {
+                "description": "查看deployment列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "deployment"
+                ],
+                "summary": "查看deployment列表",
+                "operationId": "/api/k8s/deployment/list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deployment名称",
+                        "name": "filter_name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页限制",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/deployment/numnp": {
+            "get": {
+                "description": "根据命名空间获取无状态控制器数量",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "deployment"
+                ],
+                "summary": "根据命名空间获取无状态控制器数量",
+                "operationId": "/api/k8s/deployment/numnp",
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\":service.DeployNp }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/deployment/restart": {
+            "put": {
+                "description": "重启deployment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "deployment"
+                ],
+                "summary": "重启deployment",
+                "operationId": "/api/k8s/deployment/restart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "无状态控制器名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": 重启Deployment成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/deployment/scale": {
+            "get": {
+                "description": "扩容deployment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "deployment"
+                ],
+                "summary": "扩容deployment",
+                "operationId": "/api/k8s/deployment/scale",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "无状态控制器名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "期望副本数",
+                        "name": "scale_num",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": num}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/deployment/update": {
+            "put": {
+                "description": "更新deployment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "deployment"
+                ],
+                "summary": "更新deployment",
+                "operationId": "/api/k8s/deployment/update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "无状态控制器名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "更新内容",
+                        "name": "content",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"更新成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/k8s/pod/container": {
             "get": {
                 "description": "获取Pod内容器名",
@@ -272,7 +599,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "POD名称",
-                        "name": "pod_name",
+                        "name": "filter_name",
                         "in": "query",
                         "required": true
                     },
@@ -280,6 +607,20 @@ const docTemplate = `{
                         "type": "string",
                         "description": "命名空间",
                         "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页限制",
+                        "name": "limit",
                         "in": "query",
                         "required": true
                     }
@@ -296,6 +637,57 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.DeployCreateInput": {
+            "type": "object",
+            "required": [
+                "container_port",
+                "cpu",
+                "health_check",
+                "health_path",
+                "image",
+                "labels",
+                "memory",
+                "name",
+                "namespace",
+                "replicas"
+            ],
+            "properties": {
+                "container_port": {
+                    "type": "integer"
+                },
+                "cpu": {
+                    "type": "string"
+                },
+                "health_check": {
+                    "type": "boolean"
+                },
+                "health_path": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "memory": {
+                    "type": "string"
+                },
+                "name": {
+                    "description": "DeploymentNameNS",
+                    "type": "string"
+                },
+                "namespace": {
+                    "type": "string"
+                },
+                "replicas": {
+                    "type": "integer"
+                }
+            }
+        },
         "middleware.Response": {
             "type": "object",
             "properties": {

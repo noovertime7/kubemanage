@@ -24,7 +24,6 @@ func PodRegister(router *gin.RouterGroup) {
 }
 
 // GetPods 获取pod，支持分页过滤排序
-// GetPods 获取pod，支持分页过滤排序
 // ListPage godoc
 // @Summary      获取pod列表
 // @Description  获取pod列表
@@ -32,9 +31,11 @@ func PodRegister(router *gin.RouterGroup) {
 // @ID           /api/k8s/pods
 // @Accept       json
 // @Produce      json
-// @Param        pod_name   query     string                                      true  "POD名称"
-// @Param        namespace  query     string                                      true  "命名空间"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data": service.PodsResp}"
+// @Param        filter_name  query  string  true  "POD名称"
+// @Param        namespace    query  string  true  "命名空间"
+// @Param        page         query  int     true  "页码"
+// @Param        limit        query  int     true  "分页限制"
+//@Success      200 {object}  middleware.Response"{"code": 200, msg="","data": service.PodsResp}"
 // @Router       /api/k8s/pods [get]
 func (p *pod) GetPods(ctx *gin.Context) {
 	//处理入参
@@ -60,8 +61,8 @@ func (p *pod) GetPods(ctx *gin.Context) {
 // @ID           /api/k8s/pod/detail
 // @Accept       json
 // @Produce      json
-// @Param        pod_name   query     string                        true  "POD名称"
-// @Param        namespace  query     string                        true  "命名空间"
+// @Param        pod_name   query  string  true  "POD名称"
+// @Param        namespace  query  string  true  "命名空间"
 //@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Pod }"
 // @Router       /api/k8s/pod/detail [get]
 func (p *pod) GetPodDetail(ctx *gin.Context) {
@@ -88,8 +89,8 @@ func (p *pod) GetPodDetail(ctx *gin.Context) {
 // @ID           /api/k8s/pod/del
 // @Accept       json
 // @Produce      json
-// @Param        pod_name   query     string                        true  "POD名称"
-// @Param        namespace  query     string                        true  "命名空间"
+// @Param        pod_name   query  string  true  "POD名称"
+// @Param        namespace  query  string  true  "命名空间"
 //@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/pod/del [delete]
 func (p *pod) DeletePod(ctx *gin.Context) {
@@ -114,9 +115,9 @@ func (p *pod) DeletePod(ctx *gin.Context) {
 // @ID           /api/k8s/pod/update
 // @Accept       json
 // @Produce      json
-// @Param        pod_name   query     string                        true  "POD名称"
-// @Param        namespace  query     string                        true  "命名空间"
-// @Param        content    query     string                        true  "更新内容"
+// @Param        pod_name   query  string  true  "POD名称"
+// @Param        namespace  query  string  true  "命名空间"
+// @Param        content    query  string  true  "更新内容"
 //@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/pod/update [put]
 func (p *pod) UpdatePod(ctx *gin.Context) {
@@ -142,8 +143,8 @@ func (p *pod) UpdatePod(ctx *gin.Context) {
 // @ID           /api/k8s/pod/container
 // @Accept       json
 // @Produce      json
-// @Param        pod_name   query     string                              true  "POD名称"
-// @Param        namespace  query     string                              true  "命名空间"
+// @Param        pod_name   query  string  true  "POD名称"
+// @Param        namespace  query  string  true  "命名空间"
 //@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/pod/container [get]
 func (p *pod) GetPodContainer(ctx *gin.Context) {
@@ -169,9 +170,9 @@ func (p *pod) GetPodContainer(ctx *gin.Context) {
 // @ID           /api/k8s/pod/log
 // @Accept       json
 // @Produce      json
-// @Param        pod_name        query     string                            true  "POD名称"
-// @Param        namespace       query     string                            true  "命名空间"
-// @Param        container_name  query     string                            true  "容器名"
+// @Param        pod_name        query  string  true  "POD名称"
+// @Param        namespace       query  string  true  "命名空间"
+// @Param        container_name  query  string  true  "容器名"
 //@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/pod/log [get]
 func (p *pod) GetPodLog(ctx *gin.Context) {
