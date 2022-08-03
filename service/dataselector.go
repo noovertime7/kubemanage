@@ -152,3 +152,13 @@ func (d nodeCell) GetCreation() time.Time {
 func (d nodeCell) GetName() string {
 	return d.Name
 }
+
+type namespaceCell coreV1.Namespace
+
+func (d namespaceCell) GetCreation() time.Time {
+	return d.CreationTimestamp.Time
+}
+
+func (d namespaceCell) GetName() string {
+	return d.Name
+}
