@@ -10,9 +10,9 @@ type NameSpaceNameInput struct {
 }
 
 type NameSpaceListInput struct {
-	FilterName string `json:"filter_name" form:"filter_name" validate:"required" comment:"过滤名"`
-	Limit      int    `json:"limit" form:"limit" validate:"required" comment:"分页限制"`
-	Page       int    `json:"page" form:"page" validate:"required" comment:"页码"`
+	FilterName string `json:"filter_name" form:"filter_name" validate:"" comment:"过滤名"`
+	Limit      int    `json:"limit" form:"limit" validate:"" comment:"分页限制"`
+	Page       int    `json:"page" form:"page" validate:"" comment:"页码"`
 }
 
 func (params *NameSpaceListInput) BindingValidParams(c *gin.Context) error {
