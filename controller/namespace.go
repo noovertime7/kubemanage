@@ -13,9 +13,36 @@ var NameSpace namespace
 type namespace struct{}
 
 func NameSpaceRegister(router *gin.RouterGroup) {
+	router.PUT("/create", NameSpace.CreateNameSpace)
 	router.DELETE("/del", NameSpace.DeleteNameSpace)
 	router.GET("/list", NameSpace.GetNameSpaceList)
 	router.GET("/detail", NameSpace.GetNameSpaceDetail)
+}
+
+// CreateNameSpace 创建namespace
+// ListPage godoc
+// @Summary      创建namespace
+// @Description  创建namespace
+// @Tags         NameSpace
+// @ID           /api/k8s/namespace/create
+// @Accept       json
+// @Produce      json
+// @Param        name  query  string  true  "namespace名称"
+//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "创建成功}"
+// @Router       /api/k8s/namespace/create [put]
+func (n *namespace) CreateNameSpace(ctx *gin.Context) {
+	params := &dto.NameSpaceNameInput{}
+	if err := params.BindingValidParams(ctx); err != nil {
+		logger.Error("绑定参数失败:", err)
+		middleware.ResponseError(ctx, 30001, err)
+		return
+	}
+	if err := service.NameSpace.CreateNameSpace(params.Name); err != nil {
+		logger.Error("创建命名空间失败:", err)
+		middleware.ResponseError(ctx, 30002, err)
+		return
+	}
+	middleware.ResponseSuccess(ctx, "创建成功")
 }
 
 // DeleteNameSpace 删除namespace
@@ -26,7 +53,7 @@ func NameSpaceRegister(router *gin.RouterGroup) {
 // @ID           /api/k8s/namespace/del
 // @Accept       json
 // @Produce      json
-// @Param        name       query  string  true  "namespace名称"
+// @Param        name  query  string  true  "namespace名称"
 //@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/namespace/del [delete]
 func (n *namespace) DeleteNameSpace(ctx *gin.Context) {
@@ -52,9 +79,9 @@ func (n *namespace) DeleteNameSpace(ctx *gin.Context) {
 // @ID           /api/k8s/namespace/list
 // @Accept       json
 // @Produce      json
-// @Param        filter_name  query  string  true  "过滤"
-// @Param        page         query  int     true  "页码"
-// @Param        limit        query  int     true  "分页限制"
+// @Param        filter_name  query  string  false  "过滤"
+// @Param        page         query  int     false  "页码"
+// @Param        limit        query  int     false  "分页限制"
 //@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.NameSpaceResp}"
 // @Router       /api/k8s/namespace/list [get]
 func (n *namespace) GetNameSpaceList(ctx *gin.Context) {
@@ -81,7 +108,7 @@ func (n *namespace) GetNameSpaceList(ctx *gin.Context) {
 // @ID           /api/k8s/namespace/detail
 // @Accept       json
 // @Produce      json
-// @Param        name       query  string  true  "namespace名称"
+// @Param        name  query  string  true  "namespace名称"
 //@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":data }"
 // @Router       /api/k8s/namespace/detail [get]
 func (n *namespace) GetNameSpaceDetail(ctx *gin.Context) {

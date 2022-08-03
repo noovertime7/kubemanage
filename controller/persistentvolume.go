@@ -26,9 +26,9 @@ func PersistentVolumeRegister(router *gin.RouterGroup) {
 // @ID           /api/k8s/spersistentvolume/del
 // @Accept       json
 // @Produce      json
-// @Param        name       query  string  true  "persistentvolume名称"
+// @Param        name  query  string  true  "persistentvolume名称"
 //@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
-// @Router        /api/k8s/spersistentvolume/del [delete]
+// @Router       /api/k8s/spersistentvolume/del [delete]
 func (n *persistentVolume) DeletePersistentVolume(ctx *gin.Context) {
 	params := &dto.PersistentVolumeNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
@@ -81,7 +81,7 @@ func (n *persistentVolume) GetPersistentVolumeList(ctx *gin.Context) {
 // @ID           /api/k8s/persistentvolume/detail
 // @Accept       json
 // @Produce      json
-// @Param        name       query  string  true  "persistentVolume名称"
+// @Param        name  query  string  true  "persistentVolume名称"
 //@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": *coreV1.PersistentVolume}"
 // @Router       /api/k8s/persistentvolume/detail [get]
 func (n *persistentVolume) GetPersistentVolumeDetail(ctx *gin.Context) {
