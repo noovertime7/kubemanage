@@ -10,10 +10,6 @@ type DeploymentNameNS struct {
 	NameSpace string `json:"namespace" form:"namespace" comment:"命名空间" validate:"required"`
 }
 
-func (params *DeploymentNameNS) BindingValidParams(c *gin.Context) error {
-	return public.DefaultGetValidParams(c, params)
-}
-
 type DeployCreateInput struct {
 	//DeploymentNameNS
 	Name          string            `json:"name" form:"name" comment:"无状态控制器名称" validate:"required"`
@@ -29,13 +25,15 @@ type DeployCreateInput struct {
 }
 
 type UpdateDeployInput struct {
-	DeploymentNameNS
-	Content string `json:"content" validate:"required" comment:"更新内容"`
+	Name      string `json:"name" form:"name" comment:"无状态控制器名称" validate:"required"`
+	NameSpace string `json:"namespace" form:"namespace" comment:"命名空间" validate:"required"`
+	Content   string `json:"content" validate:"required" comment:"更新内容"`
 }
 
 type DeployScaleInput struct {
-	DeploymentNameNS
-	ScaleNum int `json:"scale_num" form:"scale_num" comment:"期望副本数" validate:"required"`
+	Name      string `json:"name" form:"name" comment:"无状态控制器名称" validate:"required"`
+	NameSpace string `json:"namespace" form:"namespace" comment:"命名空间" validate:"required"`
+	ScaleNum  int    `json:"scale_num" form:"scale_num" comment:"期望副本数" validate:"required"`
 }
 
 type DeployListInput struct {
@@ -49,6 +47,18 @@ func (params *DeployListInput) BindingValidParams(c *gin.Context) error {
 	return public.DefaultGetValidParams(c, params)
 }
 
+func (params *UpdateDeployInput) BindingValidParams(c *gin.Context) error {
+	return public.DefaultGetValidParams(c, params)
+}
+
 func (params *DeployCreateInput) BindingValidParams(c *gin.Context) error {
+	return public.DefaultGetValidParams(c, params)
+}
+
+func (params *DeployScaleInput) BindingValidParams(c *gin.Context) error {
+	return public.DefaultGetValidParams(c, params)
+}
+
+func (params *DeploymentNameNS) BindingValidParams(c *gin.Context) error {
 	return public.DefaultGetValidParams(c, params)
 }
