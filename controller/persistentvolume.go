@@ -52,9 +52,9 @@ func (n *persistentVolume) DeletePersistentVolume(ctx *gin.Context) {
 // @ID           /api/k8s/persistentvolume/list
 // @Accept       json
 // @Produce      json
-// @Param        filter_name  query  string  true  "persistentVolume名称"
-// @Param        page         query  int     true  "页码"
-// @Param        limit        query  int     true  "分页限制"
+// @Param        filter_name  query  string  false  "过滤"
+// @Param        page         query  int     false  "页码"
+// @Param        limit        query  int     false  "分页限制"
 //@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.PersistentVolumeResp}"
 // @Router       /api/k8s/persistentvolume/list [get]
 func (n *persistentVolume) GetPersistentVolumeList(ctx *gin.Context) {

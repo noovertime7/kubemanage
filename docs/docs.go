@@ -524,6 +524,309 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/k8s/namespace/create": {
+            "put": {
+                "description": "创建namespace",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NameSpace"
+                ],
+                "summary": "创建namespace",
+                "operationId": "/api/k8s/namespace/create",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "namespace名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"创建成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/namespace/del": {
+            "delete": {
+                "description": "删除namespace",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NameSpace"
+                ],
+                "summary": "删除namespace",
+                "operationId": "/api/k8s/namespace/del",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "namespace名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"删除成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/namespace/detail": {
+            "get": {
+                "description": "获取NameSpace详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NameSpace"
+                ],
+                "summary": "获取NameSpace详情",
+                "operationId": "/api/k8s/namespace/detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "namespace名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\":data }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/namespace/list": {
+            "get": {
+                "description": "获取NameSpace列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NameSpace"
+                ],
+                "summary": "获取NameSpace列表",
+                "operationId": "/api/k8s/namespace/list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "过滤",
+                        "name": "filter_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页限制",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": service.NameSpaceResp}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/node/detail": {
+            "get": {
+                "description": "获取Node详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Node"
+                ],
+                "summary": "获取Node详情",
+                "operationId": "/api/k8s/node/detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "node名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\":data }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/node/list": {
+            "get": {
+                "description": "获取Node列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Node"
+                ],
+                "summary": "获取Node列表",
+                "operationId": "/api/k8s/node/list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "过滤",
+                        "name": "filter_name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页限制",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": service.NameSpaceResp}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/persistentvolume/detail": {
+            "get": {
+                "description": "获取PV的详细信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PersistentVolume"
+                ],
+                "summary": "获取PV的详细信息",
+                "operationId": "/api/k8s/persistentvolume/detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "persistentVolume名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": *coreV1.PersistentVolume}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/persistentvolume/list": {
+            "get": {
+                "description": "获取PV列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PersistentVolume"
+                ],
+                "summary": "获取PV列表",
+                "operationId": "/api/k8s/persistentvolume/list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "persistentVolume名称",
+                        "name": "filter_name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页限制",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": service.PersistentVolumeResp}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/k8s/pod/container": {
             "get": {
                 "description": "获取Pod内容器名",
@@ -816,9 +1119,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/k8s/statefulSet/detail": {
-            "get": {
-                "description": "获取statefulSet详情",
+        "/api/k8s/spersistentvolume/del": {
+            "delete": {
+                "description": "删除persistentVolume",
                 "consumes": [
                     "application/json"
                 ],
@@ -826,29 +1129,22 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "statefulSet"
+                    "PersistentVolume"
                 ],
-                "summary": "获取statefulSet详情",
-                "operationId": "/api/k8s/statefulSet/detail",
+                "summary": "删除persistentVolume",
+                "operationId": "/api/k8s/spersistentvolume/del",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "statefulSet名称",
+                        "description": "persistentvolume名称",
                         "name": "name",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "命名空间",
-                        "name": "namespace",
                         "in": "query",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"code\": 200, msg=\"\",\"data\":v1.Deployment }",
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"删除成功}",
                         "schema": {
                             "$ref": "#/definitions/middleware.Response"
                         }
@@ -889,6 +1185,46 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "{\"code\": 200, msg=\"\",\"data\": \"删除成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/statefulset/detail": {
+            "get": {
+                "description": "获取statefulSet详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statefulSet"
+                ],
+                "summary": "获取statefulSet详情",
+                "operationId": "/api/k8s/statefulSet/detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "statefulSet名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\":v1.Deployment }",
                         "schema": {
                             "$ref": "#/definitions/middleware.Response"
                         }

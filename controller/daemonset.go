@@ -82,10 +82,10 @@ func (s *daemonSet) UpdateDaemonSet(ctx *gin.Context) {
 // @ID           /api/k8s/DaemonSet/list
 // @Accept       json
 // @Produce      json
-// @Param        filter_name  query  string  true  "DaemonSet名称"
-// @Param        namespace  query  string  true  "命名空间"
-// @Param        page         query  int     true  "页码"
-// @Param        limit        query  int     true  "分页限制"
+// @Param        filter_name  query  string  false  "过滤"
+// @Param        namespace  query  string  false  "命名空间"
+// @Param        page         query  int     false  "页码"
+// @Param        limit        query  int     false  "分页限制"
 //@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/daemonset/list [get]
 func (s *daemonSet) GetDaemonSetList(ctx *gin.Context) {

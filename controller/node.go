@@ -25,9 +25,9 @@ func NodeRegister(router *gin.RouterGroup) {
 // @ID           /api/k8s/node/list
 // @Accept       json
 // @Produce      json
-// @Param        filter_name  query  string  true  "过滤"
-// @Param        page         query  int     true  "页码"
-// @Param        limit        query  int     true  "分页限制"
+// @Param        filter_name  query  string  false  "过滤"
+// @Param        page         query  int     false  "页码"
+// @Param        limit        query  int     false  "分页限制"
 //@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.NameSpaceResp}"
 // @Router       /api/k8s/node/list [get]
 func (n *node) GetNodeList(ctx *gin.Context) {
@@ -54,7 +54,7 @@ func (n *node) GetNodeList(ctx *gin.Context) {
 // @ID           /api/k8s/node/detail
 // @Accept       json
 // @Produce      json
-// @Param        name       query  string  true  "node名称"
+// @Param        name  query  string  true  "node名称"
 //@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":data }"
 // @Router       /api/k8s/node/detail [get]
 func (n *node) GetNodeDetail(ctx *gin.Context) {

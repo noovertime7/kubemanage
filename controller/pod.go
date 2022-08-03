@@ -31,10 +31,10 @@ func PodRegister(router *gin.RouterGroup) {
 // @ID           /api/k8s/pods
 // @Accept       json
 // @Produce      json
-// @Param        filter_name  query  string  true  "POD名称"
-// @Param        namespace    query  string  true  "命名空间"
-// @Param        page         query  int     true  "页码"
-// @Param        limit        query  int     true  "分页限制"
+// @Param        filter_name  query  string  false  "过滤"
+// @Param        namespace    query  string  false  "命名空间"
+// @Param        page         query  int     false  "页码"
+// @Param        limit        query  int     false  "分页限制"
 //@Success      200 {object}  middleware.Response"{"code": 200, msg="","data": service.PodsResp}"
 // @Router       /api/k8s/pods [get]
 func (p *pod) GetPods(ctx *gin.Context) {
