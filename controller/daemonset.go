@@ -19,6 +19,18 @@ func DaemonSetRegister(router *gin.RouterGroup) {
 	router.GET("/detail", DaemonSet.GetDaemonSetDetail)
 }
 
+// DeleteDaemonSet 删除DaemonSet
+// ListPage godoc
+// @Summary      删除DaemonSet
+// @Description  删除DaemonSet
+// @Tags         DaemonSet
+// @ID           /api/k8s/DaemonSet/del
+// @Accept       json
+// @Produce      json
+// @Param        name       query  string  true  "DaemonSet名称"
+// @Param        namespace    query  string  true  "命名空间"
+//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
+// @Router       /api/k8s/daemonset/del [delete]
 func (s *daemonSet) DeleteDaemonSet(ctx *gin.Context) {
 	params := &dto.DaemonSetNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
@@ -34,6 +46,19 @@ func (s *daemonSet) DeleteDaemonSet(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, "删除成功")
 }
 
+// UpdateDaemonSet 更新DaemonSet
+// ListPage godoc
+// @Summary      更新DaemonSet
+// @Description  更新DaemonSet
+// @Tags         DaemonSet
+// @ID           /api/k8s/DaemonSet/update
+// @Accept       json
+// @Produce      json
+// @Param        name       query  string  true  "无状态控制器名称"
+// @Param        namespace  query  string  true  "命名空间"
+// @Param        content    query  string  true  "更新内容"
+//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
+// @Router       /api/k8s/daemonset/update [put]
 func (s *daemonSet) UpdateDaemonSet(ctx *gin.Context) {
 	params := &dto.DaemonSetUpdateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
@@ -49,6 +74,20 @@ func (s *daemonSet) UpdateDaemonSet(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, "更新成功")
 }
 
+// GetDaemonSetList 查看DaemonSet列表
+// ListPage godoc
+// @Summary      查看DaemonSet列表
+// @Description  查看DaemonSet列表
+// @Tags         DaemonSet
+// @ID           /api/k8s/DaemonSet/list
+// @Accept       json
+// @Produce      json
+// @Param        filter_name  query  string  true  "DaemonSet名称"
+// @Param        namespace  query  string  true  "命名空间"
+// @Param        page         query  int     true  "页码"
+// @Param        limit        query  int     true  "分页限制"
+//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
+// @Router       /api/k8s/daemonset/list [get]
 func (s *daemonSet) GetDaemonSetList(ctx *gin.Context) {
 	params := &dto.DaemonSetListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
@@ -65,6 +104,18 @@ func (s *daemonSet) GetDaemonSetList(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, data)
 }
 
+// GetDaemonSetDetail 获取DaemonSet详情
+// ListPage godoc
+// @Summary      获取DaemonSet详情
+// @Description  获取DaemonSet详情
+// @Tags         DaemonSet
+// @ID           /api/k8s/DaemonSet/detail
+// @Accept       json
+// @Produce      json
+// @Param        name       query  string  true  "DaemonSet名称"
+// @Param        namespace  query  string  true  "命名空间"
+//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
+// @Router       /api/k8s/daemonset/detail [get]
 func (s *daemonSet) GetDaemonSetDetail(ctx *gin.Context) {
 	params := &dto.DaemonSetNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {

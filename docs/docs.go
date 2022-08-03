@@ -16,6 +16,187 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/k8s/daemonset/del": {
+            "delete": {
+                "description": "删除DaemonSet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DaemonSet"
+                ],
+                "summary": "删除DaemonSet",
+                "operationId": "/api/k8s/DaemonSet/del",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "DaemonSet名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"删除成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/daemonset/detail": {
+            "get": {
+                "description": "获取DaemonSet详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DaemonSet"
+                ],
+                "summary": "获取DaemonSet详情",
+                "operationId": "/api/k8s/DaemonSet/detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "DaemonSet名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\":v1.Deployment }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/daemonset/list": {
+            "get": {
+                "description": "查看DaemonSet列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DaemonSet"
+                ],
+                "summary": "查看DaemonSet列表",
+                "operationId": "/api/k8s/DaemonSet/list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "DaemonSet名称",
+                        "name": "filter_name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页限制",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/daemonset/update": {
+            "put": {
+                "description": "更新DaemonSet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DaemonSet"
+                ],
+                "summary": "更新DaemonSet",
+                "operationId": "/api/k8s/DaemonSet/update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "无状态控制器名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "更新内容",
+                        "name": "content",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"更新成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/k8s/deployment/create": {
             "post": {
                 "description": "创建deployment",
@@ -628,6 +809,187 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "{\"code\": 200, msg=\"\",\"data\": service.PodsResp}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/statefulSet/detail": {
+            "get": {
+                "description": "获取statefulSet详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statefulSet"
+                ],
+                "summary": "获取statefulSet详情",
+                "operationId": "/api/k8s/statefulSet/detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "statefulSet名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\":v1.Deployment }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/statefulset/del": {
+            "delete": {
+                "description": "删除statefulSet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statefulSet"
+                ],
+                "summary": "删除statefulSet",
+                "operationId": "/api/k8s/statefulset/del",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "statefulSet名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"删除成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/statefulset/list": {
+            "get": {
+                "description": "查看statefulSet列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statefulSet"
+                ],
+                "summary": "查看statefulSet列表",
+                "operationId": "/api/k8s/statefulset/list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "statefulSet名称",
+                        "name": "filter_name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页限制",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/statefulset/update": {
+            "put": {
+                "description": "更新statefulSet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statefulSet"
+                ],
+                "summary": "更新statefulSet",
+                "operationId": "/api/k8s/statefulset/update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "无状态控制器名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "更新内容",
+                        "name": "content",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"更新成功}",
                         "schema": {
                             "$ref": "#/definitions/middleware.Response"
                         }
