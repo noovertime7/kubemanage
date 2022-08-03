@@ -162,3 +162,13 @@ func (d namespaceCell) GetCreation() time.Time {
 func (d namespaceCell) GetName() string {
 	return d.Name
 }
+
+type persistentvolumesCell coreV1.PersistentVolume
+
+func (d persistentvolumesCell) GetCreation() time.Time {
+	return d.CreationTimestamp.Time
+}
+
+func (d persistentvolumesCell) GetName() string {
+	return d.Name
+}
