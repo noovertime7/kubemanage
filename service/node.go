@@ -61,7 +61,7 @@ func (n *node) GetNodes(filterName string, limit, page int) (nodesResp *NodeResp
 }
 
 // GetNodeDetail 获取Node详情
-func (p *node) GetNodeDetail(Name string) (*coreV1.Node, error) {
+func (n *node) GetNodeDetail(Name string) (*coreV1.Node, error) {
 	nodeRes, err := K8s.clientSet.CoreV1().Nodes().Get(context.TODO(), Name, metaV1.GetOptions{})
 	if err != nil {
 		logger.Error("获取Pod详情失败", err.Error())
