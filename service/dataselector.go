@@ -142,3 +142,13 @@ func (d statefulSetCell) GetCreation() time.Time {
 func (d statefulSetCell) GetName() string {
 	return d.Name
 }
+
+type nodeCell coreV1.Node
+
+func (d nodeCell) GetCreation() time.Time {
+	return d.CreationTimestamp.Time
+}
+
+func (d nodeCell) GetName() string {
+	return d.Name
+}
