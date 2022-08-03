@@ -18,6 +18,17 @@ func NameSpaceRegister(router *gin.RouterGroup) {
 	router.GET("/detail", NameSpace.GetNameSpaceDetail)
 }
 
+// DeleteNameSpace 删除namespace
+// ListPage godoc
+// @Summary      删除namespace
+// @Description  删除namespace
+// @Tags         NameSpace
+// @ID           /api/k8s/namespace/del
+// @Accept       json
+// @Produce      json
+// @Param        name       query  string  true  "namespace名称"
+//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
+// @Router       /api/k8s/namespace/del [delete]
 func (n *namespace) DeleteNameSpace(ctx *gin.Context) {
 	params := &dto.NameSpaceNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
@@ -33,6 +44,19 @@ func (n *namespace) DeleteNameSpace(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, "删除成功")
 }
 
+// GetNameSpaceList 获取NameSpace列表
+// ListPage godoc
+// @Summary      获取NameSpace列表
+// @Description  获取NameSpace列表
+// @Tags         NameSpace
+// @ID           /api/k8s/namespace/list
+// @Accept       json
+// @Produce      json
+// @Param        filter_name  query  string  true  "过滤"
+// @Param        page         query  int     true  "页码"
+// @Param        limit        query  int     true  "分页限制"
+//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.NameSpaceResp}"
+// @Router       /api/k8s/namespace/list [get]
 func (n *namespace) GetNameSpaceList(ctx *gin.Context) {
 	params := &dto.NameSpaceListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
@@ -49,6 +73,17 @@ func (n *namespace) GetNameSpaceList(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, data)
 }
 
+// GetNameSpaceDetail 获取NameSpace详情
+// ListPage godoc
+// @Summary      获取NameSpace详情
+// @Description  获取NameSpace详情
+// @Tags         NameSpace
+// @ID           /api/k8s/namespace/detail
+// @Accept       json
+// @Produce      json
+// @Param        name       query  string  true  "namespace名称"
+//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":data }"
+// @Router       /api/k8s/namespace/detail [get]
 func (n *namespace) GetNameSpaceDetail(ctx *gin.Context) {
 	params := &dto.NameSpaceNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {

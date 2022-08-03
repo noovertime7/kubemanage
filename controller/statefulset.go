@@ -29,7 +29,7 @@ func StatefulSetRegister(router *gin.RouterGroup) {
 // @Produce      json
 // @Param        name       query  string  true  "statefulSet名称"
 // @Param        namespace    query  string  true  "命名空间"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
+//@Success       200  {object}  middleware.Response "{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/statefulset/del [delete]
 func (s *statefulSet) DeleteStatefulSet(ctx *gin.Context) {
 	params := &dto.StatefulSetNameNS{}

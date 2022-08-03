@@ -8,9 +8,9 @@ import (
 	"github.com/wonderivan/logger"
 )
 
-var PersistentVolume persistentvolume
+var PersistentVolume persistentVolume
 
-type persistentvolume struct{}
+type persistentVolume struct{}
 
 func PersistentVolumeRegister(router *gin.RouterGroup) {
 	router.DELETE("/del", PersistentVolume.DeletePersistentVolume)
@@ -18,7 +18,18 @@ func PersistentVolumeRegister(router *gin.RouterGroup) {
 	router.GET("/detail", PersistentVolume.GetPersistentVolumeDetail)
 }
 
-func (n *persistentvolume) DeletePersistentVolume(ctx *gin.Context) {
+// DeletePersistentVolume 删除persistentVolume
+// ListPage godoc
+// @Summary      删除persistentVolume
+// @Description  删除persistentVolume
+// @Tags         PersistentVolume
+// @ID           /api/k8s/spersistentvolume/del
+// @Accept       json
+// @Produce      json
+// @Param        name       query  string  true  "persistentvolume名称"
+//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
+// @Router        /api/k8s/spersistentvolume/del [delete]
+func (n *persistentVolume) DeletePersistentVolume(ctx *gin.Context) {
 	params := &dto.PersistentVolumeNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
@@ -33,7 +44,20 @@ func (n *persistentvolume) DeletePersistentVolume(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, "删除成功")
 }
 
-func (n *persistentvolume) GetPersistentVolumeList(ctx *gin.Context) {
+// GetPersistentVolumeList 获取PV列表
+// ListPage godoc
+// @Summary      获取PV列表
+// @Description  获取PV列表
+// @Tags         PersistentVolume
+// @ID           /api/k8s/persistentvolume/list
+// @Accept       json
+// @Produce      json
+// @Param        filter_name  query  string  true  "persistentVolume名称"
+// @Param        page         query  int     true  "页码"
+// @Param        limit        query  int     true  "分页限制"
+//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.PersistentVolumeResp}"
+// @Router       /api/k8s/persistentvolume/list [get]
+func (n *persistentVolume) GetPersistentVolumeList(ctx *gin.Context) {
 	params := &dto.PersistentVolumeListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
@@ -42,14 +66,25 @@ func (n *persistentvolume) GetPersistentVolumeList(ctx *gin.Context) {
 	}
 	data, err := service.PersistentVolume.GetPersistentVolumes(params.FilterName, params.Limit, params.Page)
 	if err != nil {
-		logger.Error("获取persistentvolume列表失败", err)
+		logger.Error("获取persistentVolume列表失败", err)
 		middleware.ResponseError(ctx, 20002, err)
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)
 }
 
-func (n *persistentvolume) GetPersistentVolumeDetail(ctx *gin.Context) {
+// GetPersistentVolumeDetail 获取PV的详细信息
+// ListPage godoc
+// @Summary      获取PV的详细信息
+// @Description  获取PV的详细信息
+// @Tags         PersistentVolume
+// @ID           /api/k8s/persistentvolume/detail
+// @Accept       json
+// @Produce      json
+// @Param        name       query  string  true  "persistentVolume名称"
+//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": *coreV1.PersistentVolume}"
+// @Router       /api/k8s/persistentvolume/detail [get]
+func (n *persistentVolume) GetPersistentVolumeDetail(ctx *gin.Context) {
 	params := &dto.PersistentVolumeNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
@@ -58,7 +93,7 @@ func (n *persistentvolume) GetPersistentVolumeDetail(ctx *gin.Context) {
 	}
 	data, err := service.PersistentVolume.GetPersistentVolumesDetail(params.Name)
 	if err != nil {
-		logger.Error("获取persistentvolume详情失败", err)
+		logger.Error("获取persistentVolume详情失败", err)
 		middleware.ResponseError(ctx, 20002, err)
 		return
 	}

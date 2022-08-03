@@ -17,6 +17,19 @@ func NodeRegister(router *gin.RouterGroup) {
 	router.GET("/detail", Node.GetNodeDetail)
 }
 
+// GetNodeList 获取Node列表
+// ListPage godoc
+// @Summary      获取Node列表
+// @Description  获取Node列表
+// @Tags         Node
+// @ID           /api/k8s/node/list
+// @Accept       json
+// @Produce      json
+// @Param        filter_name  query  string  true  "过滤"
+// @Param        page         query  int     true  "页码"
+// @Param        limit        query  int     true  "分页限制"
+//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.NameSpaceResp}"
+// @Router       /api/k8s/node/list [get]
 func (n *node) GetNodeList(ctx *gin.Context) {
 	params := &dto.NodeListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
@@ -33,6 +46,17 @@ func (n *node) GetNodeList(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, data)
 }
 
+// GetNodeDetail 获取Node详情
+// ListPage godoc
+// @Summary      获取Node详情
+// @Description  获取Node详情
+// @Tags         Node
+// @ID           /api/k8s/node/detail
+// @Accept       json
+// @Produce      json
+// @Param        name       query  string  true  "node名称"
+//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":data }"
+// @Router       /api/k8s/node/detail [get]
 func (n *node) GetNodeDetail(ctx *gin.Context) {
 	params := &dto.NodeNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
