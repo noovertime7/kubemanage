@@ -95,5 +95,23 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	{
 		controller.StatefulSetRegister(statefulSetGroup)
 	}
+
+	nodeGroup := router.Group("/api/k8s/node")
+	nodeGroup.Use(middleware.TranslationMiddleware())
+	{
+		controller.NodeRegister(nodeGroup)
+	}
+
+	namespaceGroup := router.Group("/api/k8s/namespace")
+	namespaceGroup.Use(middleware.TranslationMiddleware())
+	{
+		controller.NameSpaceRegister(namespaceGroup)
+	}
+
+	persistentVolumeGroup := router.Group("/api/k8s/persistentvolume")
+	persistentVolumeGroup.Use(middleware.TranslationMiddleware())
+	{
+		controller.PersistentVolumeRegister(persistentVolumeGroup)
+	}
 	return router
 }
