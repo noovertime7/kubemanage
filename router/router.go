@@ -85,7 +85,7 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	}
 
 	daemonSetGroup := router.Group("/api/k8s/daemonset")
-	deploymentGroup.Use(middleware.TranslationMiddleware())
+	daemonSetGroup.Use(middleware.TranslationMiddleware())
 	{
 		controller.DaemonSetRegister(daemonSetGroup)
 	}
