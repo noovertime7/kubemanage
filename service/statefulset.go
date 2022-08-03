@@ -62,7 +62,7 @@ func (d *statefulSet) GetStatefulSets(filterName, namespace string, limit, page 
 	}, nil
 }
 
-func (d *daemonSet) GetStatefulSetDetail(name, namespace string) (*appsV1.StatefulSet, error) {
+func (d *statefulSet) GetStatefulSetDetail(name, namespace string) (*appsV1.StatefulSet, error) {
 	data, err := K8s.clientSet.AppsV1().StatefulSets(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
 	if err != nil {
 		return nil, err
@@ -70,11 +70,11 @@ func (d *daemonSet) GetStatefulSetDetail(name, namespace string) (*appsV1.Statef
 	return data, nil
 }
 
-func (d *daemonSet) DeleteStatefulSet(name, namespace string) error {
+func (d *statefulSet) DeleteStatefulSet(name, namespace string) error {
 	return K8s.clientSet.AppsV1().StatefulSets(namespace).Delete(context.TODO(), name, metaV1.DeleteOptions{})
 }
 
-func (d *daemonSet) UpdateStatefulSet(content, namespace string) error {
+func (d *statefulSet) UpdateStatefulSet(content, namespace string) error {
 	var statefulSet = &appsV1.StatefulSet{}
 	if err := json.Unmarshal([]byte(content), statefulSet); err != nil {
 		return err
