@@ -22,15 +22,25 @@ type PodNameNsInput struct {
 }
 
 type PodUpdateInput struct {
-	PodNameNsInput
-	Content string `json:"content" form:"content" comment:"内容" validate:"required"`
+	PodName   string `json:"pod_name" form:"pod_name" comment:"POD名称" validate:"required"`
+	NameSpace string `json:"name_space" form:"namespace" comment:"命名空间" validate:"required"`
+	Content   string `json:"content" form:"content" comment:"内容" validate:"required"`
 }
 
 type PodGetLogInput struct {
-	PodNameNsInput
+	PodName       string `json:"pod_name" form:"pod_name" comment:"POD名称" validate:"required"`
+	NameSpace     string `json:"name_space" form:"namespace" comment:"命名空间" validate:"required"`
 	ContainerName string `json:"container_name" form:"container_name" comment:"容器名称" validate:"required"`
 }
 
 func (params *PodNameNsInput) BindingValidParams(c *gin.Context) error {
+	return public.DefaultGetValidParams(c, params)
+}
+
+func (params *PodGetLogInput) BindingValidParams(c *gin.Context) error {
+	return public.DefaultGetValidParams(c, params)
+}
+
+func (params *PodUpdateInput) BindingValidParams(c *gin.Context) error {
 	return public.DefaultGetValidParams(c, params)
 }
