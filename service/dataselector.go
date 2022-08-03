@@ -90,6 +90,9 @@ func (d *dataSelector) Paginate() *dataSelector {
 	//定义取数范围需要的start index和end-index
 	startIndex := limit * (page - 1)
 	endIndex := limit*page - 1
+	if startIndex > len(d.GenericDataList) {
+		startIndex = 0
+	}
 	//处理end index
 	if endIndex > len(d.GenericDataList) {
 		endIndex = len(d.GenericDataList)
