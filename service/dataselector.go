@@ -172,3 +172,13 @@ func (d persistentvolumesCell) GetCreation() time.Time {
 func (d persistentvolumesCell) GetName() string {
 	return d.Name
 }
+
+type serviceCell coreV1.Service
+
+func (d serviceCell) GetCreation() time.Time {
+	return d.CreationTimestamp.Time
+}
+
+func (d serviceCell) GetName() string {
+	return d.Name
+}
