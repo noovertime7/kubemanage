@@ -126,5 +126,16 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 		controller.IngressRegister(ingressGroup)
 	}
 
+	configmapGroup := router.Group("/api/k8s/configmap")
+	configmapGroup.Use(middleware.TranslationMiddleware())
+	{
+		controller.ConfigmapRegister(configmapGroup)
+	}
+
+	persistentVolumeClaimGroup := router.Group("/api/k8s/persistentvolumeclaim")
+	persistentVolumeClaimGroup.Use(middleware.TranslationMiddleware())
+	{
+		controller.PersistentVolumeClaimRegister(persistentVolumeClaimGroup)
+	}
 	return router
 }

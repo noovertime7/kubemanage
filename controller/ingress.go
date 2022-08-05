@@ -114,7 +114,7 @@ func (i *ingressController) UpdateIngress(ctx *gin.Context) {
 // @Param        namespace  query  string  false  "命名空间"
 // @Param        page         query  int     false  "页码"
 // @Param        limit        query  int     false  "分页限制"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
+//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data":""  }"
 // @Router       /api/k8s/ingress/list [get]
 func (i *ingressController) GetIngressList(ctx *gin.Context) {
 	params := &dto.IngressListInput{}
@@ -136,13 +136,13 @@ func (i *ingressController) GetIngressList(ctx *gin.Context) {
 // ListPage godoc
 // @Summary      获取ingress详情
 // @Description  获取ingress详情
-// @Tags         pod
+// @Tags         ingress
 // @ID           /api/k8s/ingress/detail
 // @Accept       json
 // @Produce      json
 // @Param        name       query  string  true  "ingress名称"
 // @Param        namespace  query  string  true  "命名空间"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data": }"
+//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":""  }"
 // @Router       /api/k8s/ingress/detail [get]
 func (i *ingressController) GetIngressDetail(ctx *gin.Context) {
 	params := &dto.IngressNameNS{}
@@ -168,7 +168,7 @@ func (i *ingressController) GetIngressDetail(ctx *gin.Context) {
 // @ID           /api/k8s/ingress/numnp
 // @Accept       json
 // @Produce      json
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data":service.ingressResp }"
+//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/ingress/numnp [get]
 func (i *ingressController) GetIngressNumPreNp(ctx *gin.Context) {
 	data, err := service.Ingress.GetIngressNp()

@@ -193,3 +193,23 @@ func (d ingressCell) GetCreation() time.Time {
 func (d ingressCell) GetName() string {
 	return d.Name
 }
+
+type configmapCell coreV1.ConfigMap
+
+func (d configmapCell) GetCreation() time.Time {
+	return d.CreationTimestamp.Time
+}
+
+func (d configmapCell) GetName() string {
+	return d.Name
+}
+
+type persistentVolumeClaimCell coreV1.PersistentVolumeClaim
+
+func (d persistentVolumeClaimCell) GetCreation() time.Time {
+	return d.CreationTimestamp.Time
+}
+
+func (d persistentVolumeClaimCell) GetName() string {
+	return d.Name
+}

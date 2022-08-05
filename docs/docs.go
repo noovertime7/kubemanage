@@ -16,6 +16,183 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/k8s/configmap/del": {
+            "delete": {
+                "description": "删除Configmap",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Configmap"
+                ],
+                "summary": "删除Configmap",
+                "operationId": "/api/k8s/configmap/del",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Configmap名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"删除成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/configmap/detail": {
+            "get": {
+                "description": "获取Configmap详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Configmap"
+                ],
+                "summary": "获取Configmap详情",
+                "operationId": "/api/k8s/configmap/detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Configmap名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\":v1.Deployment }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/configmap/list": {
+            "get": {
+                "description": "查看Configmap列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Configmap"
+                ],
+                "summary": "查看Configmap列表",
+                "operationId": "/api/k8s/configmap/list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "过滤",
+                        "name": "filter_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页限制",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/configmap/update": {
+            "put": {
+                "description": "更新Configmap",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Configmap"
+                ],
+                "summary": "更新Configmap",
+                "operationId": "/api/k8s/configmap/update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "无状态控制器名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "更新内容",
+                        "name": "content",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"更新成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/k8s/daemonset/del": {
             "delete": {
                 "description": "删除DaemonSet",
@@ -516,6 +693,242 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/k8s/ingress/create": {
+            "post": {
+                "description": "创建ingress",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ingress"
+                ],
+                "summary": "创建ingress",
+                "operationId": "/api/k8s/ingress/create",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.IngressCreteInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"新增成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/ingress/del": {
+            "delete": {
+                "description": "删除ingress",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ingress"
+                ],
+                "summary": "删除ingress",
+                "operationId": "/api/k8s/ingress/del",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ingress名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"删除成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/ingress/detail": {
+            "get": {
+                "description": "获取ingress详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ingress"
+                ],
+                "summary": "获取ingress详情",
+                "operationId": "/api/k8s/ingress/detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ingress名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\":\"\"  }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/ingress/list": {
+            "get": {
+                "description": "查看ingress列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ingress"
+                ],
+                "summary": "查看ingress列表",
+                "operationId": "/api/k8s/ingress/list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "过滤",
+                        "name": "filter_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页限制",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\":\"\"  }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/ingress/numnp": {
+            "get": {
+                "description": "根据命名空间获取ingress数量",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ingress"
+                ],
+                "summary": "根据命名空间获取ingress数量",
+                "operationId": "/api/k8s/ingress/numnp",
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\":\"\" }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/ingress/update": {
+            "put": {
+                "description": "更新ingress",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ingress"
+                ],
+                "summary": "更新ingress",
+                "operationId": "/api/k8s/ingress/update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ingress名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "更新内容",
+                        "name": "content",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"更新成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/k8s/namespace/create": {
             "put": {
                 "description": "创建namespace",
@@ -806,6 +1219,183 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "{\"code\": 200, msg=\"\",\"data\": service.PersistentVolumeResp}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/persistentvolumeclaim/del": {
+            "delete": {
+                "description": "删除PersistentVolumeClaim",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PersistentVolumeClaim"
+                ],
+                "summary": "删除PersistentVolumeClaim",
+                "operationId": "/api/k8s/persistentvolumeclaim/del",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "PersistentVolumeClaim名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"删除成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/persistentvolumeclaim/detail": {
+            "get": {
+                "description": "获取PersistentVolumeClaim详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PersistentVolumeClaim"
+                ],
+                "summary": "获取PersistentVolumeClaim详情",
+                "operationId": "/api/k8s/persistentvolumeclaim/detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "PersistentVolumeClaim名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\":v1.Deployment }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/persistentvolumeclaim/list": {
+            "get": {
+                "description": "查看PersistentVolumeClaim列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PersistentVolumeClaim"
+                ],
+                "summary": "查看PersistentVolumeClaim列表",
+                "operationId": "/api/k8s/persistentvolumeclaim/list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "过滤",
+                        "name": "filter_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页限制",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/persistentvolumeclaim/update": {
+            "put": {
+                "description": "更新PersistentVolumeClaim",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PersistentVolumeClaim"
+                ],
+                "summary": "更新PersistentVolumeClaim",
+                "operationId": "/api/k8s/persistentvolumeclaim/update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "无状态控制器名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "更新内容",
+                        "name": "content",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"更新成功}",
                         "schema": {
                             "$ref": "#/definitions/middleware.Response"
                         }
@@ -1597,6 +2187,49 @@ const docTemplate = `{
                 },
                 "replicas": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.HttpPath": {
+            "type": "object",
+            "properties": {
+                "path": {
+                    "type": "string"
+                },
+                "path_type": {
+                    "type": "string"
+                },
+                "service_name": {
+                    "type": "string"
+                },
+                "service_port": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.IngressCreteInput": {
+            "type": "object",
+            "properties": {
+                "hosts": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/dto.HttpPath"
+                        }
+                    }
+                },
+                "label": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "namespace": {
+                    "type": "string"
                 }
             }
         },
