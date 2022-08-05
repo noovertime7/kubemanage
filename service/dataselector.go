@@ -3,6 +3,7 @@ package service
 import (
 	appsV1 "k8s.io/api/apps/v1"
 	coreV1 "k8s.io/api/core/v1"
+	nwV1 "k8s.io/api/networking/v1"
 	"sort"
 	"strings"
 	"time"
@@ -180,5 +181,15 @@ func (d serviceCell) GetCreation() time.Time {
 }
 
 func (d serviceCell) GetName() string {
+	return d.Name
+}
+
+type ingressCell nwV1.Ingress
+
+func (d ingressCell) GetCreation() time.Time {
+	return d.CreationTimestamp.Time
+}
+
+func (d ingressCell) GetName() string {
 	return d.Name
 }
