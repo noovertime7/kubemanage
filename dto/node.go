@@ -6,7 +6,7 @@ import (
 )
 
 type NodeNameInput struct {
-	Name string `json:"name" form:"name" comment:"命名空间名称" validate:"required"`
+	Name string `json:"name" form:"name" comment:"Node名称" validate:"required"`
 }
 
 type NodeListInput struct {
