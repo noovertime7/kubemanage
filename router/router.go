@@ -113,5 +113,12 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	{
 		controller.PersistentVolumeRegister(persistentVolumeGroup)
 	}
+
+	serviceGroup := router.Group("/api/k8s/service")
+	serviceGroup.Use(middleware.TranslationMiddleware())
+	{
+		controller.ServiceRegister(serviceGroup)
+	}
+
 	return router
 }
