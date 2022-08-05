@@ -120,5 +120,11 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 		controller.ServiceRegister(serviceGroup)
 	}
 
+	ingressGroup := router.Group("/api/k8s/ingress")
+	ingressGroup.Use(middleware.TranslationMiddleware())
+	{
+		controller.IngressRegister(serviceGroup)
+	}
+
 	return router
 }
