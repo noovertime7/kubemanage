@@ -11,6 +11,8 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
+var Service service
+
 type service struct{}
 
 type serviceResp struct {
