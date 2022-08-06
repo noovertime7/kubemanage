@@ -47,17 +47,15 @@ func InitDB() {
 	}
 	//
 	////打印sql语句
-	////连接池最大允许的空闲连接数
-	//sqlDB, err := db.DB()
-	//if err != nil {
-	//	panic(err)
-	//}
-	//sqlDB.SetMaxOpenConns(config.MaxOpenConns)
-	////设置最大连接数
-	//sqlDB.SetMaxIdleConns(config.MaxOpenConns)
-	////设置连接可复用的最大时间
-	//sqlDB.SetConnMaxLifetime(config.MaxLifetime)
-	//db = Gorm
-	fmt.Println(Gorm)
+	//连接池最大允许的空闲连接数
+	sqlDB, err := Gorm.DB()
+	if err != nil {
+		panic(err)
+	}
+	sqlDB.SetMaxOpenConns(config.MaxOpenConns)
+	//设置最大连接数
+	sqlDB.SetMaxIdleConns(config.MaxOpenConns)
+	//设置连接可复用的最大时间
+	sqlDB.SetConnMaxLifetime(config.MaxLifetime)
 	isInit = true
 }

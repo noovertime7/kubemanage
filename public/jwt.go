@@ -18,21 +18,18 @@ var jwtSecret = []byte(config.JWTSecret)
 
 // CustomClaims 自定义token中携带的信息
 type CustomClaims struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Uid int
 	jwt.StandardClaims
 }
 
 // GenerateToken 生成token函数方法
-func GenerateToken(username, password string) (string, error) {
+func GenerateToken(uid *int) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(config.ExpireTime * time.Hour)
 	claims := CustomClaims{
-		username,
-		password,
+		*uid,
 		jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
-			Issuer:    config.Issuer,
 		},
 	}
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

@@ -156,5 +156,10 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 		controller.WorkFlowRegister(workGroup)
 	}
 
+	loginGroup := router.Group("/api/user")
+	loginGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	{
+		controller.AdminLoginRegister(loginGroup)
+	}
 	return router
 }
