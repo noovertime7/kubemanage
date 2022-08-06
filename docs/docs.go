@@ -16,6 +16,136 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/k8s/Secret/del": {
+            "delete": {
+                "description": "删除Secret",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Secret"
+                ],
+                "summary": "删除Secret",
+                "operationId": "/api/k8s/Secret/del",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Secret名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"删除成功}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/Secret/detail": {
+            "get": {
+                "description": "获取Secret详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Secret"
+                ],
+                "summary": "获取Secret详情",
+                "operationId": "/api/k8s/Secret/detail",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Secret名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\":v1.Deployment }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/Secret/list": {
+            "get": {
+                "description": "查看Secret列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Secret"
+                ],
+                "summary": "查看Secret列表",
+                "operationId": "/api/k8s/Secret/list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "过滤",
+                        "name": "filter_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页限制",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": }",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/k8s/configmap/del": {
             "delete": {
                 "description": "删除Configmap",
@@ -1684,6 +1814,53 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "{\"code\": 200, msg=\"\",\"data\": service.PodsResp}",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/k8s/secret/update": {
+            "put": {
+                "description": "更新Secret",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Secret"
+                ],
+                "summary": "更新Secret",
+                "operationId": "/api/k8s/secret/update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "无状态控制器名称",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "命名空间",
+                        "name": "namespace",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "更新内容",
+                        "name": "content",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, msg=\"\",\"data\": \"更新成功}",
                         "schema": {
                             "$ref": "#/definitions/middleware.Response"
                         }

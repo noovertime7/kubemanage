@@ -137,5 +137,12 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	{
 		controller.PersistentVolumeClaimRegister(persistentVolumeClaimGroup)
 	}
+
+	secretGroup := router.Group("/api/k8s/secret")
+	secretGroup.Use(middleware.TranslationMiddleware())
+	{
+		controller.SecretRegister(secretGroup)
+	}
+
 	return router
 }

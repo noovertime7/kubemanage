@@ -213,3 +213,13 @@ func (d persistentVolumeClaimCell) GetCreation() time.Time {
 func (d persistentVolumeClaimCell) GetName() string {
 	return d.Name
 }
+
+type secretCell coreV1.Secret
+
+func (d secretCell) GetCreation() time.Time {
+	return d.CreationTimestamp.Time
+}
+
+func (d secretCell) GetName() string {
+	return d.Name
+}
