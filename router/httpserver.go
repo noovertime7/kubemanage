@@ -3,6 +3,7 @@ package router
 import (
 	"context"
 	"github.com/noovertime7/kubemanage/config"
+	"github.com/noovertime7/kubemanage/dao"
 	"github.com/wonderivan/logger"
 	"net/http"
 	"time"
@@ -13,6 +14,7 @@ var (
 )
 
 func HttpServerRun() {
+	dao.InitDB()
 	r := InitRouter()
 	HttpSrvHandler = &http.Server{
 		Addr:           config.ListenAddr,

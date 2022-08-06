@@ -1,12 +1,12 @@
 package dao
 
 import (
-	"github.com/noovertime7/kubemanage/model"
+	"github.com/noovertime7/kubemanage/dto"
 	"gorm.io/gorm"
 	"time"
 )
 
-type workflowResp struct {
+type WorkflowResp struct {
 	Items []*Workflow
 	Total int
 }
@@ -29,17 +29,17 @@ func (w *Workflow) TableName() string {
 	return "t_workflow"
 }
 
-func (w *Workflow) PageList(params *model.WorkFlowListInput) ([]Workflow, int, error) {
+func (w *Workflow) PageList(params *dto.WorkFlowListInput) ([]*Workflow, int, error) {
 	var total int64 = 0
-	var list []Workflow
-	offset := (params.PageNo - 1) * params.PageSize
+	var list []*Workflow
+	offset := (params.Page - 1) * params.Limit
 	query := Gorm
 	query.Find(&list).Count(&total)
-	query = query.Table(w.TableName()).Where("is_delete=0")
-	if params.Info != "" {
-		query = query.Where("( name like ?)", "%"+params.Info+"%")
+	query = query.Table(w.TableName()).Where("is_deleted=0")
+	if params.FilterName != "" {
+		query = query.Where("( name like ?)", "%"+params.FilterName+"%")
 	}
-	if err := query.Limit(params.PageSize).Offset(offset).Order("id desc").Find(&list).Error; err != nil && err != gorm.ErrRecordNotFound {
+	if err := query.Limit(params.Limit).Offset(offset).Order("id desc").Find(&list).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return nil, 0, err
 	}
 	return list, int(total), nil
@@ -56,4 +56,12 @@ func (w *Workflow) Find(search *Workflow) (*Workflow, error) {
 		return nil, err
 	}
 	return out, nil
+}
+
+func (w *Workflow) DeleteById() error {
+	w.IsDeleted = 1
+	return Gorm.Table(w.TableName()).Where("id = ?", w.ID).Updates(map[string]interface{}{
+		"status":     w.IsDeleted,
+		"deleted_at": time.Now(),
+	}).Error
 }

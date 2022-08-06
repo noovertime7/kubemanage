@@ -144,5 +144,11 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 		controller.SecretRegister(secretGroup)
 	}
 
+	workGroup := router.Group("/api/k8s/workflow")
+	workGroup.Use(middleware.TranslationMiddleware())
+	{
+		controller.WorkFlowRegister(workGroup)
+	}
+
 	return router
 }
