@@ -73,79 +73,85 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	podGroup := router.Group("/api/k8s/pod")
-	podGroup.Use(middleware.TranslationMiddleware())
+	podGroup.Use(
+		middleware.TranslationMiddleware(),
+		middleware.JWTAuth(),
+	)
 	{
 		controller.PodRegister(podGroup)
 	}
 
 	deploymentGroup := router.Group("/api/k8s/deployment")
-	deploymentGroup.Use(middleware.TranslationMiddleware())
+	deploymentGroup.Use(
+		middleware.TranslationMiddleware(),
+		middleware.JWTAuth(),
+	)
 	{
 		controller.DeploymentRegister(deploymentGroup)
 	}
 
 	daemonSetGroup := router.Group("/api/k8s/daemonset")
-	daemonSetGroup.Use(middleware.TranslationMiddleware())
+	daemonSetGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
 		controller.DaemonSetRegister(daemonSetGroup)
 	}
 
 	statefulSetGroup := router.Group("/api/k8s/statefulset")
-	statefulSetGroup.Use(middleware.TranslationMiddleware())
+	statefulSetGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
 		controller.StatefulSetRegister(statefulSetGroup)
 	}
 
 	nodeGroup := router.Group("/api/k8s/node")
-	nodeGroup.Use(middleware.TranslationMiddleware())
+	nodeGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
 		controller.NodeRegister(nodeGroup)
 	}
 
 	namespaceGroup := router.Group("/api/k8s/namespace")
-	namespaceGroup.Use(middleware.TranslationMiddleware())
+	namespaceGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
 		controller.NameSpaceRegister(namespaceGroup)
 	}
 
 	persistentVolumeGroup := router.Group("/api/k8s/persistentvolume")
-	persistentVolumeGroup.Use(middleware.TranslationMiddleware())
+	persistentVolumeGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
 		controller.PersistentVolumeRegister(persistentVolumeGroup)
 	}
 
 	serviceGroup := router.Group("/api/k8s/service")
-	serviceGroup.Use(middleware.TranslationMiddleware())
+	serviceGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
 		controller.ServiceRegister(serviceGroup)
 	}
 
 	ingressGroup := router.Group("/api/k8s/ingress")
-	ingressGroup.Use(middleware.TranslationMiddleware())
+	ingressGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
 		controller.IngressRegister(ingressGroup)
 	}
 
 	configmapGroup := router.Group("/api/k8s/configmap")
-	configmapGroup.Use(middleware.TranslationMiddleware())
+	configmapGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
 		controller.ConfigmapRegister(configmapGroup)
 	}
 
 	persistentVolumeClaimGroup := router.Group("/api/k8s/persistentvolumeclaim")
-	persistentVolumeClaimGroup.Use(middleware.TranslationMiddleware())
+	persistentVolumeClaimGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
 		controller.PersistentVolumeClaimRegister(persistentVolumeClaimGroup)
 	}
 
 	secretGroup := router.Group("/api/k8s/secret")
-	secretGroup.Use(middleware.TranslationMiddleware())
+	secretGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
 		controller.SecretRegister(secretGroup)
 	}
 
 	workGroup := router.Group("/api/k8s/workflow")
-	workGroup.Use(middleware.TranslationMiddleware())
+	workGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
 		controller.WorkFlowRegister(workGroup)
 	}

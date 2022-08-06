@@ -10,7 +10,9 @@ const (
 	DBHost         = "yunxue521.top"
 	DBPort         = "32306"
 	DBName         = "kubemanage"
-	MaxIdleTime    = 20
 	MaxOpenConns   = 100
 	MaxLifetime    = 20 * time.Second
+	JWTSecret      = "JWTSecret"
+	ExpireTime     = 1
+	Issuer         = "chenteng"
 )
