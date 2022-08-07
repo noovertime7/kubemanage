@@ -5,6 +5,7 @@ import (
 	"github.com/noovertime7/kubemanage/config"
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/public"
+	"github.com/noovertime7/kubemanage/service"
 	"github.com/wonderivan/logger"
 	"net/http"
 	"time"
@@ -17,6 +18,11 @@ var (
 func HttpServerRun() {
 	public.PrintColor()
 	dao.InitDB()
+	go func() {
+		logger.Info("启动容器websocket服务")
+		http.HandleFunc("/ws/terminal", service.Terminal.WsHandler)
+		http.ListenAndServe(config.WebSocketListenAddr, nil)
+	}()
 	r := InitRouter()
 	HttpSrvHandler = &http.Server{
 		Addr:           config.ListenAddr,
