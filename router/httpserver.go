@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/noovertime7/kubemanage/config"
 	"github.com/noovertime7/kubemanage/dao"
+	"github.com/noovertime7/kubemanage/public"
 	"github.com/wonderivan/logger"
 	"net/http"
 	"time"
@@ -14,6 +15,7 @@ var (
 )
 
 func HttpServerRun() {
+	public.PrintColor()
 	dao.InitDB()
 	r := InitRouter()
 	HttpSrvHandler = &http.Server{
