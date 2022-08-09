@@ -14,6 +14,10 @@ type Response struct {
 
 func ResponseSuccess(c *gin.Context, data interface{}) {
 	resp := &Response{Code: http.StatusOK, Msg: "", Data: data}
+	tempMsg, ok := data.(string)
+	if ok {
+		resp.Msg = tempMsg
+	}
 	c.JSON(200, resp)
 	response, _ := json.Marshal(resp)
 	c.Set("response", string(response))

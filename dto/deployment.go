@@ -6,7 +6,7 @@ import (
 )
 
 type DeploymentNameNS struct {
-	Name      string `json:"name" form:"name" comment:"无状态控制器名称" validate:"required"`
+	Name      string `json:"deployment_name" form:"deployment_name" comment:"无状态控制器名称" validate:"required"`
 	NameSpace string `json:"namespace" form:"namespace" comment:"命名空间" validate:"required"`
 }
 
@@ -26,11 +26,11 @@ type DeployCreateInput struct {
 
 type UpdateDeployInput struct {
 	NameSpace string `json:"namespace" form:"namespace" comment:"命名空间" validate:"required"`
-	Content   string `json:"content" validate:"required" comment:"更新内容"`
+	Content   string `json:"content" form:"content" validate:"required" comment:"更新内容"`
 }
 
 type DeployScaleInput struct {
-	Name      string `json:"name" form:"name" comment:"无状态控制器名称" validate:"required"`
+	Name      string `json:"deployment_name" form:"deployment_name" comment:"无状态控制器名称" validate:"required"`
 	NameSpace string `json:"namespace" form:"namespace" comment:"命名空间" validate:"required"`
 	ScaleNum  int    `json:"scale_num" form:"scale_num" comment:"期望副本数" validate:"required"`
 }
