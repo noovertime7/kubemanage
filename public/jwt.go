@@ -25,7 +25,7 @@ type CustomClaims struct {
 // GenerateToken 生成token函数方法
 func GenerateToken(uid *int) (string, error) {
 	nowTime := time.Now()
-	expireTime := nowTime.Add(config.ExpireTime * time.Hour)
+	expireTime := nowTime.Add(24 * time.Hour)
 	claims := CustomClaims{
 		*uid,
 		jwt.StandardClaims{
