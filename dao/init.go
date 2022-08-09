@@ -19,7 +19,6 @@ var (
 )
 
 func InitDB() {
-	fmt.Println("开始初始化DB")
 	if isInit {
 		return
 	}
@@ -56,6 +55,6 @@ func InitDB() {
 	//设置最大连接数
 	sqlDB.SetMaxIdleConns(config.MaxOpenConns)
 	//设置连接可复用的最大时间
-	sqlDB.SetConnMaxLifetime(config.MaxLifetime * time.Second)
+	sqlDB.SetConnMaxLifetime(20 * time.Second)
 	isInit = true
 }

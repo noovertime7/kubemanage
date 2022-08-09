@@ -6,7 +6,7 @@ KubeManage:
   ExpireTime: 1
   Database:
     host: "yunxue521.top"
-    port: "33026"
+    port: "32306"
     user: "root"
     password: "1qaz@WSX"
     DBName: "kubemanage"

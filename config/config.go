@@ -5,23 +5,21 @@ import (
 	"github.com/wonderivan/logger"
 	_ "gopkg.in/yaml.v2"
 	"os"
-	"time"
 )
 
 var (
-	ListenAddr          = SystemConf.ListenAddr
-	PodLogTailLine      = SystemConf.PodLogTailLine
-	DBUser              = SystemConf.Database.User
-	DBPassword          = SystemConf.Database.Password
-	DBHost              = SystemConf.Database.Host
-	DBPort              = SystemConf.Database.Port
-	DBName              = SystemConf.Database.DBName
-	MaxOpenConns        = SystemConf.Database.MaxOpenConns
-	MaxLifetime         = SystemConf.MaxLifetime * time.Second
-	JWTSecret           = SystemConf.JWTSecret
-	ExpireTime          = 1
-	KubeConfigFile      = "C:\\Users\\18495\\.kube\\config"
-	WebSocketListenAddr = ":9091"
+	ListenAddr          string
+	PodLogTailLine      int
+	DBUser              string
+	DBPassword          string
+	DBHost              string
+	DBPort              string
+	DBName              string
+	MaxOpenConns        int
+	JWTSecret           string
+	ExpireTime          int64
+	KubeConfigFile      string
+	WebSocketListenAddr string
 )
 
 func init() {
@@ -42,6 +40,17 @@ func init() {
 		logger.Fatal("配置文件解析失败", err)
 		return
 	}
+	ListenAddr = SystemConf.ListenAddr
+	PodLogTailLine = SystemConf.PodLogTailLine
+	DBUser = SystemConf.Database.User
+	DBPassword = SystemConf.Database.Password
+	DBHost = SystemConf.Database.Host
+	DBPort = SystemConf.Database.Port
+	DBName = SystemConf.Database.DBName
+	MaxOpenConns = SystemConf.Database.MaxOpenConns
+	JWTSecret = SystemConf.JWTSecret
+	KubeConfigFile = "C:\\Users\\18495\\.kube\\config"
+	WebSocketListenAddr = ":9091"
 }
 
 var SystemConf = new(System)
