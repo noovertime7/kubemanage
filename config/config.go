@@ -8,17 +8,17 @@ import (
 	"time"
 )
 
-const (
-	ListenAddr          = "0.0.0.0:9090"
-	PodLogTailLine      = 2000
-	DBUser              = "root"
-	DBPassword          = "1qaz@WSX"
-	DBHost              = "127.0.0.1"
-	DBPort              = "3306"
-	DBName              = "kubemanage"
-	MaxOpenConns        = 100
-	MaxLifetime         = 20 * time.Second
-	JWTSecret           = "JWTSecret"
+var (
+	ListenAddr          = SystemConf.ListenAddr
+	PodLogTailLine      = SystemConf.PodLogTailLine
+	DBUser              = SystemConf.Database.User
+	DBPassword          = SystemConf.Database.Password
+	DBHost              = SystemConf.Database.Host
+	DBPort              = SystemConf.Database.Port
+	DBName              = SystemConf.Database.DBName
+	MaxOpenConns        = SystemConf.Database.MaxOpenConns
+	MaxLifetime         = SystemConf.MaxLifetime * time.Second
+	JWTSecret           = SystemConf.JWTSecret
 	ExpireTime          = 1
 	KubeConfigFile      = "C:\\Users\\18495\\.kube\\config"
 	WebSocketListenAddr = ":9091"
@@ -35,11 +35,11 @@ func init() {
 	config.AddConfigPath(path + "/config") //设置读取的文件路径
 	config.SetConfigName("config")         //设置读取的文件名
 	if err := config.ReadInConfig(); err != nil {
-		logger.Error("读取配置文件失败", err)
+		logger.Fatal("读取配置文件失败", err)
 		return
 	}
 	if err = config.Unmarshal(SystemConf); err != nil {
-		logger.Error("配置文件解析失败", err)
+		logger.Fatal("配置文件解析失败", err)
 		return
 	}
 }
@@ -47,36 +47,25 @@ func init() {
 var SystemConf = new(System)
 
 type Database struct {
-	Host        string `yaml:"host"`
-	Password    string `yaml:"password"`
-	User        string `yaml:"user"`
-	Port        string `yaml:"port"`
-	DBName      string
-	BackupCycle string
-	KeepNumber  int
-	isAllDBBak  bool `yaml:"isAllDBBak"`
-	DingConf    DingConf
-	OssConf     OssConf
+	Host         string `yaml:"host"`
+	Password     string `yaml:"password"`
+	User         string `yaml:"user"`
+	Port         string `yaml:"port"`
+	MaxOpenConns int    `yaml:"max_open_conns"`
+	MaxLifetime  int    `yaml:"max_lifetime"`
+	DBName       string `yaml:"db_name"`
+}
+
+type KubeManage struct {
+	Database            Database `yaml:"Database"`
+	PodLogTailLine      int      `yaml:"pod_log_tail_line"`
+	ListenAddr          string   `yaml:"listen_addr"`
+	WebSocketListenAddr string   `yaml:"web_socket_listen_addr"`
+	KubeConfigFile      string   `yaml:"kube_config_file"`
+	JWTSecret           string   `yaml:"jwt_secret"`
+	ExpireTime          int      `yaml:"expire_time"`
 }
 
 type System struct {
-	BakConfig
-}
-
-type BakConfig struct {
-	Database []Database `yaml:"Database"`
-}
-type DingConf struct {
-	IsDingSend bool   `yaml:"isDingSend"`
-	Webhook    string `yaml:"webhook"`
-}
-
-type OssConf struct {
-	Type       string `yaml:"type"`
-	IsOssSave  bool   `yaml:"isOssSave"`
-	Endpoint   string `yaml:"endpoint"`
-	Accesskey  string `yaml:"accesskey"`
-	Secretkey  string `yaml:"secretkey"`
-	BucketName string `yaml:"bucketname"`
-	Directory  string `yaml:"directory"`
+	KubeManage
 }
