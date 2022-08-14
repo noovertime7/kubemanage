@@ -21,6 +21,7 @@ func HttpServerRun() {
 	go func() {
 		logger.Info("启动容器websocket服务")
 		http.HandleFunc("/ws/terminal", service.Terminal.WsHandler)
+		logger.Info("websocket开始监听,地址:", config.WebSocketListenAddr)
 		http.ListenAndServe(config.WebSocketListenAddr, nil)
 	}()
 	r := InitRouter()

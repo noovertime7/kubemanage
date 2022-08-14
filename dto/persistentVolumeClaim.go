@@ -12,7 +12,7 @@ type PersistentVolumeClaimNameNS struct {
 
 type PersistentVolumeClaimUpdateInput struct {
 	NameSpace string `json:"namespace" form:"namespace" comment:"命名空间" validate:"required"`
-	Content   string `json:"content" validate:"required" comment:"更新内容"`
+	Content   string `json:"content" form:"content"  validate:"required" comment:"更新内容"`
 }
 
 type PersistentVolumeClaimListInput struct {

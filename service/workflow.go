@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dto"
 )
@@ -60,7 +61,9 @@ func (w *workflow) CreateWorkFlow(params *dto.WorkFlowCreateInput) error {
 func (w *workflow) DelById(id int) (err error) {
 	//获取workflow数据
 	in := &dao.Workflow{ID: uint(id)}
+	fmt.Println("in = ", in)
 	workflow, err := in.Find(in)
+	fmt.Println(workflow, in)
 	if err != nil {
 		return err
 	}

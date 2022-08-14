@@ -7,22 +7,22 @@ import (
 )
 
 type WorkflowResp struct {
-	Items []*Workflow
-	Total int
+	Items []*Workflow `json:"items"`
+	Total int         `json:"total"`
 }
 type Workflow struct {
 	ID          uint       `json:"id" gorm:"pk"`
-	Name        string     `json:"name"`
-	NameSpace   string     `json:"namespace"`
-	Replicas    int32      `json:"replicas"`
-	Deployment  string     `json:"deployment"`
-	Service     string     `json:"service"`
-	Ingress     string     `json:"ingress"`
+	Name        string     `json:"name" gorm:"column:name"`
+	NameSpace   string     `json:"namespace" gorm:"column:namespace"`
+	Replicas    int32      `json:"replicas" gorm:"column:replicas"`
+	Deployment  string     `json:"deployment" gorm:"column:deployment"`
+	Service     string     `json:"service" gorm:"column:service"`
+	Ingress     string     `json:"ingress" gorm:"column:ingress"`
 	ServiceType string     `json:"service_type" gorm:"column:service_type"`
-	IsDeleted   uint       `json:"is_deleted"`
-	CreatedAt   *time.Time `json:"created_at"`
-	UpdatedAt   *time.Time `json:"updated_at"`
-	DeletedAt   *time.Time `json:"deleted_at"`
+	IsDeleted   uint       `json:"is_deleted" gorm:"column:is_deleted"`
+	CreatedAt   *time.Time `json:"created_at" gorm:"column:created_at"`
+	UpdatedAt   *time.Time `json:"updated_at" gorm:"column:updated_at"`
+	DeletedAt   *time.Time `json:"deleted_at" gorm:"column:deleted_at"`
 }
 
 func (w *Workflow) TableName() string {
@@ -61,7 +61,7 @@ func (w *Workflow) Find(search *Workflow) (*Workflow, error) {
 func (w *Workflow) DeleteById() error {
 	w.IsDeleted = 1
 	return Gorm.Table(w.TableName()).Where("id = ?", w.ID).Updates(map[string]interface{}{
-		"status":     w.IsDeleted,
+		"is_deleted": w.IsDeleted,
 		"deleted_at": time.Now(),
 	}).Error
 }

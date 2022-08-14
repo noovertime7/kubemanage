@@ -26,7 +26,7 @@ type IngressNameNS struct {
 }
 
 type IngressUpdateInput struct {
-	Content   string `json:"content" validate:"required" comment:"更新内容"`
+	Content   string `json:"content" form:"content" validate:"required" comment:"更新内容"`
 	NameSpace string `json:"namespace" form:"namespace" comment:"命名空间" validate:"required"`
 }
 

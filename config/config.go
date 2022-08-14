@@ -50,7 +50,7 @@ func init() {
 	MaxOpenConns = SystemConf.Database.MaxOpenConns
 	JWTSecret = SystemConf.JWTSecret
 	KubeConfigFile = "C:\\Users\\18495\\.kube\\config"
-	WebSocketListenAddr = ":9091"
+	WebSocketListenAddr = SystemConf.WebSocketListenAddr
 }
 
 var SystemConf = new(System)

@@ -30,7 +30,7 @@ type WorkFlowCreateInput struct {
 }
 
 type WorkFlowIDInput struct {
-	ID int `json:"id"`
+	ID int `json:"id" form:"id"`
 }
 
 func (params *WorkFlowCreateInput) BindingValidParams(c *gin.Context) error {

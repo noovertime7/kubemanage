@@ -22,8 +22,8 @@ type PodsResp struct {
 }
 
 type PodsNp struct {
-	Namespace string
-	PodNum    int
+	Namespace string `json:"namespace"`
+	PodNum    int    `json:"pod_num"`
 }
 
 // GetPods 获取pod列表支持、过滤、排序以及分页

@@ -104,7 +104,7 @@ func (p *pod) DeletePod(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 10004, err)
 		return
 	}
-	middleware.ResponseSuccess(ctx, "")
+	middleware.ResponseSuccess(ctx, "删除成功")
 }
 
 // UpdatePod 更新POD
@@ -132,7 +132,7 @@ func (p *pod) UpdatePod(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 10005, err)
 		return
 	}
-	middleware.ResponseSuccess(ctx, "")
+	middleware.ResponseSuccess(ctx, "更新成功")
 }
 
 // GetPodContainer 获取Pod内容器名

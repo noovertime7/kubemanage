@@ -7,7 +7,7 @@ import (
 
 type ServiceCreateInput struct {
 	Name          string            `json:"name"`
-	NameSpace     string            `json:"name_space"`
+	NameSpace     string            `json:"namespace"`
 	Type          string            `json:"type"`
 	ContainerPort int32             `json:"container_port"`
 	Port          int32             `json:"port"`

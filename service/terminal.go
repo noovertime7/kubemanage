@@ -63,8 +63,8 @@ func (t *terminal) WsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// 如果解析成功
 	namespace := r.Form.Get("namespace")
-	podName := r.Form.Get("podName")
-	containerName := r.Form.Get("containerName")
+	podName := r.Form.Get("pod_name")
+	containerName := r.Form.Get("container_name")
 	logger.Info("exec pod: %s, container: %s, namespace: %s\n", podName, containerName, namespace)
 
 	// new一个TerminalSession类型的pty实例

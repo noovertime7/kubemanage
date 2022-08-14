@@ -16,12 +16,12 @@ type DeployCreateInput struct {
 	NameSpace     string            `json:"namespace" form:"namespace" comment:"命名空间" validate:"required"`
 	Replicas      int32             `json:"replicas" validate:"required" comment:"副本数"`
 	Image         string            `json:"image" validate:"required" comment:"镜像名"`
-	Labels        map[string]string `json:"labels" validate:"required" comment:"标签"`
-	Cpu           string            `json:"cpu" validate:"required" comment:"Cpu限制"`
-	Memory        string            `json:"memory" validate:"required" comment:"内存限制"`
-	ContainerPort int32             `json:"container_port" validate:"required" comment:"容器端口"`
-	HealthCheck   bool              `json:"health_check" validate:"required" comment:"健康检查开关"`
-	HealthPath    string            `json:"health_path" validate:"required" comment:"Http健康检查路径"`
+	Labels        map[string]string `json:"label" validate:"" comment:"标签"`
+	Cpu           string            `json:"cpu" validate:"" comment:"Cpu限制"`
+	Memory        string            `json:"memory" validate:"" comment:"内存限制"`
+	ContainerPort int32             `json:"container_port" validate:"" comment:"容器端口"`
+	HealthCheck   bool              `json:"health_check" validate:"" comment:"健康检查开关"`
+	HealthPath    string            `json:"health_path" validate:"" comment:"Http健康检查路径"`
 }
 
 type UpdateDeployInput struct {
