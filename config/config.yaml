@@ -5,8 +5,8 @@ KubeManage:
   JWTSecret: "kubemanage"
   ExpireTime: 1
   Database:
-    host: "yunxue521.top"
-    port: "32306"
+    host: "127.0.0.1"
+    port: "3306"
     user: "root"
     password: "1qaz@WSX"
     DBName: "kubemanage"
