@@ -161,5 +161,11 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	{
 		controller.AdminLoginRegister(loginGroup)
 	}
+
+	monitorGroup := router.Group("/api/monitor")
+	monitorGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	{
+		controller.MonitroRegister(monitorGroup)
+	}
 	return router
 }
