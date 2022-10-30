@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	"github.com/noovertime7/kubemanage/service"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/wonderivan/logger"
 )
 
@@ -30,7 +30,7 @@ func IngressRegister(router *gin.RouterGroup) {
 // @Accept       json
 // @Produce      json
 // @Param        body  body  dto.IngressCreteInput  true  "body"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "新增成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "新增成功}"
 // @Router       /api/k8s/ingress/create [post]
 func (i *ingressController) CreateIngress(ctx *gin.Context) {
 	params := &dto.IngressCreteInput{}
@@ -39,7 +39,7 @@ func (i *ingressController) CreateIngress(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 50001, err)
 		return
 	}
-	if err := service.Ingress.CreateIngress(params); err != nil {
+	if err := kube.Ingress.CreateIngress(params); err != nil {
 		logger.Error("新增ingress失败:", err)
 		middleware.ResponseError(ctx, 50002, err)
 		return
@@ -57,7 +57,7 @@ func (i *ingressController) CreateIngress(ctx *gin.Context) {
 // @Produce      json
 // @Param        name       query  string  true  "ingress名称"
 // @Param        namespace    query  string  true  "命名空间"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/ingress/del [delete]
 func (i *ingressController) DeleteIngress(ctx *gin.Context) {
 	params := &dto.IngressNameNS{}
@@ -66,7 +66,7 @@ func (i *ingressController) DeleteIngress(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 50001, err)
 		return
 	}
-	if err := service.Ingress.DeleteIngress(params.NameSpace, params.Name); err != nil {
+	if err := kube.Ingress.DeleteIngress(params.NameSpace, params.Name); err != nil {
 		logger.Error("删除ingress失败", err)
 		middleware.ResponseError(ctx, 50002, err)
 		return
@@ -85,7 +85,7 @@ func (i *ingressController) DeleteIngress(ctx *gin.Context) {
 // @Param        name       query  string  true  "ingress名称"
 // @Param        namespace  query  string  true  "命名空间"
 // @Param        content    query  string  true  "更新内容"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
 // @Router       /api/k8s/ingress/update [put]
 func (i *ingressController) UpdateIngress(ctx *gin.Context) {
 	params := &dto.IngressUpdateInput{}
@@ -94,7 +94,7 @@ func (i *ingressController) UpdateIngress(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	if err := service.Ingress.UpdateIngress(params.NameSpace, params.Content); err != nil {
+	if err := kube.Ingress.UpdateIngress(params.NameSpace, params.Content); err != nil {
 		logger.Error("更新ingress失败", err)
 		middleware.ResponseError(ctx, 20002, err)
 		return
@@ -114,7 +114,7 @@ func (i *ingressController) UpdateIngress(ctx *gin.Context) {
 // @Param        namespace  query  string  false  "命名空间"
 // @Param        page         query  int     false  "页码"
 // @Param        limit        query  int     false  "分页限制"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data":""  }"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data":""  }"
 // @Router       /api/k8s/ingress/list [get]
 func (i *ingressController) GetIngressList(ctx *gin.Context) {
 	params := &dto.IngressListInput{}
@@ -123,7 +123,7 @@ func (i *ingressController) GetIngressList(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	data, err := service.Ingress.GetIngressList(params.FilterName, params.NameSpace, params.Limit, params.Page)
+	data, err := kube.Ingress.GetIngressList(params.FilterName, params.NameSpace, params.Limit, params.Page)
 	if err != nil {
 		logger.Error("获取ingress列表失败", err)
 		middleware.ResponseError(ctx, 20002, err)
@@ -142,7 +142,7 @@ func (i *ingressController) GetIngressList(ctx *gin.Context) {
 // @Produce      json
 // @Param        name       query  string  true  "ingress名称"
 // @Param        namespace  query  string  true  "命名空间"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":""  }"
+// @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":""  }"
 // @Router       /api/k8s/ingress/detail [get]
 func (i *ingressController) GetIngressDetail(ctx *gin.Context) {
 	params := &dto.IngressNameNS{}
@@ -151,7 +151,7 @@ func (i *ingressController) GetIngressDetail(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 50001, err)
 		return
 	}
-	data, err := service.Ingress.GetIngressDetail(params.NameSpace, params.Name)
+	data, err := kube.Ingress.GetIngressDetail(params.NameSpace, params.Name)
 	if err != nil {
 		logger.Error("获取ingress详细信息失败", err)
 		middleware.ResponseError(ctx, 50002, err)
@@ -168,10 +168,10 @@ func (i *ingressController) GetIngressDetail(ctx *gin.Context) {
 // @ID           /api/k8s/ingress/numnp
 // @Accept       json
 // @Produce      json
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data":"" }"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/ingress/numnp [get]
 func (i *ingressController) GetIngressNumPreNp(ctx *gin.Context) {
-	data, err := service.Ingress.GetIngressNp()
+	data, err := kube.Ingress.GetIngressNp()
 	if err != nil {
 		logger.Error("获取ingress数量失败", err)
 		middleware.ResponseError(ctx, 50002, err)

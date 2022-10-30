@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/noovertime7/kubemanage/public"
+	"github.com/noovertime7/kubemanage/pkg"
 )
 
 type NameSpaceNameInput struct {
@@ -16,9 +16,9 @@ type NameSpaceListInput struct {
 }
 
 func (params *NameSpaceListInput) BindingValidParams(c *gin.Context) error {
-	return public.DefaultGetValidParams(c, params)
+	return pkg.DefaultGetValidParams(c, params)
 }
 
 func (params *NameSpaceNameInput) BindingValidParams(c *gin.Context) error {
-	return public.DefaultGetValidParams(c, params)
+	return pkg.DefaultGetValidParams(c, params)
 }

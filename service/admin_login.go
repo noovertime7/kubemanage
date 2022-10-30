@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/noovertime7/kubemanage/dao"
 	dtouc "github.com/noovertime7/kubemanage/dto"
-	"github.com/noovertime7/kubemanage/public"
+	"github.com/noovertime7/kubemanage/pkg"
 )
 
 var Admin admin
@@ -22,7 +22,7 @@ func (a *admin) Login(loginInfo *dtouc.AdminLoginInput) (string, error) {
 		return "", err
 	}
 	//生成token
-	token, err := public.GenerateToken(&userinfo.Id)
+	token, err := pkg.GenerateToken(&userinfo.Id)
 	if err != nil {
 		return "", err
 	}

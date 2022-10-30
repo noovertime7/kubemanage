@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/noovertime7/kubemanage/public"
+	"github.com/noovertime7/kubemanage/pkg"
 )
 
 type DaemonSetNameNS struct {
@@ -23,13 +23,13 @@ type DaemonSetListInput struct {
 }
 
 func (params *DaemonSetNameNS) BindingValidParams(c *gin.Context) error {
-	return public.DefaultGetValidParams(c, params)
+	return pkg.DefaultGetValidParams(c, params)
 }
 
 func (params *DaemonSetUpdateInput) BindingValidParams(c *gin.Context) error {
-	return public.DefaultGetValidParams(c, params)
+	return pkg.DefaultGetValidParams(c, params)
 }
 
 func (params *DaemonSetListInput) BindingValidParams(c *gin.Context) error {
-	return public.DefaultGetValidParams(c, params)
+	return pkg.DefaultGetValidParams(c, params)
 }

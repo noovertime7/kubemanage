@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/noovertime7/kubemanage/public"
+	"github.com/noovertime7/kubemanage/pkg"
 )
 
 type DeploymentNameNS struct {
@@ -43,21 +43,21 @@ type DeployListInput struct {
 }
 
 func (params *DeployListInput) BindingValidParams(c *gin.Context) error {
-	return public.DefaultGetValidParams(c, params)
+	return pkg.DefaultGetValidParams(c, params)
 }
 
 func (params *UpdateDeployInput) BindingValidParams(c *gin.Context) error {
-	return public.DefaultGetValidParams(c, params)
+	return pkg.DefaultGetValidParams(c, params)
 }
 
 func (params *DeployCreateInput) BindingValidParams(c *gin.Context) error {
-	return public.DefaultGetValidParams(c, params)
+	return pkg.DefaultGetValidParams(c, params)
 }
 
 func (params *DeployScaleInput) BindingValidParams(c *gin.Context) error {
-	return public.DefaultGetValidParams(c, params)
+	return pkg.DefaultGetValidParams(c, params)
 }
 
 func (params *DeploymentNameNS) BindingValidParams(c *gin.Context) error {
-	return public.DefaultGetValidParams(c, params)
+	return pkg.DefaultGetValidParams(c, params)
 }

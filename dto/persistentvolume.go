@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/noovertime7/kubemanage/public"
+	"github.com/noovertime7/kubemanage/pkg"
 )
 
 type PersistentVolumeNameInput struct {
@@ -16,9 +16,9 @@ type PersistentVolumeListInput struct {
 }
 
 func (params *PersistentVolumeListInput) BindingValidParams(c *gin.Context) error {
-	return public.DefaultGetValidParams(c, params)
+	return pkg.DefaultGetValidParams(c, params)
 }
 
 func (params *PersistentVolumeNameInput) BindingValidParams(c *gin.Context) error {
-	return public.DefaultGetValidParams(c, params)
+	return pkg.DefaultGetValidParams(c, params)
 }

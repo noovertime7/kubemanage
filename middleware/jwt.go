@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/noovertime7/kubemanage/public"
+	"github.com/noovertime7/kubemanage/pkg"
 	"github.com/pkg/errors"
 )
 
@@ -21,7 +21,7 @@ func JWTAuth() gin.HandlerFunc {
 			return
 		}
 		// 解析token内容
-		claims, err := public.JWTToken.ParseToken(token)
+		claims, err := pkg.JWTToken.ParseToken(token)
 		if err != nil {
 			// token过期错误
 			if err.Error() == "TokenExpired" {

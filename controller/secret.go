@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	"github.com/noovertime7/kubemanage/service"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/wonderivan/logger"
 )
 
@@ -29,7 +29,7 @@ func SecretRegister(router *gin.RouterGroup) {
 // @Produce      json
 // @Param        name       query  string  true  "Secret名称"
 // @Param        namespace    query  string  true  "命名空间"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/Secret/del [delete]
 func (s *secret) DeleteSecret(ctx *gin.Context) {
 	params := &dto.SecretNameNS{}
@@ -38,7 +38,7 @@ func (s *secret) DeleteSecret(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	if err := service.Secret.DeleteSecrets(params.Name, params.NameSpace); err != nil {
+	if err := kube.Secret.DeleteSecrets(params.Name, params.NameSpace); err != nil {
 		logger.Error("删除Secret失败", err)
 		middleware.ResponseError(ctx, 20002, err)
 		return
@@ -57,7 +57,7 @@ func (s *secret) DeleteSecret(ctx *gin.Context) {
 // @Param        name       query  string  true  "无状态控制器名称"
 // @Param        namespace  query  string  true  "命名空间"
 // @Param        content    query  string  true  "更新内容"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
 // @Router       /api/k8s/secret/update [put]
 func (s *secret) UpdateSecret(ctx *gin.Context) {
 	params := &dto.SecretUpdateInput{}
@@ -66,7 +66,7 @@ func (s *secret) UpdateSecret(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	if err := service.Secret.UpdateSecrets(params.Content, params.NameSpace); err != nil {
+	if err := kube.Secret.UpdateSecrets(params.Content, params.NameSpace); err != nil {
 		logger.Error("更新Secret失败", err)
 		middleware.ResponseError(ctx, 20002, err)
 		return
@@ -86,7 +86,7 @@ func (s *secret) UpdateSecret(ctx *gin.Context) {
 // @Param        namespace  query  string  false  "命名空间"
 // @Param        page         query  int     false  "页码"
 // @Param        limit        query  int     false  "分页限制"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/Secret/list [get]
 func (s *secret) GetSecretList(ctx *gin.Context) {
 	params := &dto.SecretListInput{}
@@ -95,7 +95,7 @@ func (s *secret) GetSecretList(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	data, err := service.Secret.GetSecrets(params.FilterName, params.NameSpace, params.Limit, params.Page)
+	data, err := kube.Secret.GetSecrets(params.FilterName, params.NameSpace, params.Limit, params.Page)
 	if err != nil {
 		logger.Error("获取Secret列表失败", err)
 		middleware.ResponseError(ctx, 20002, err)
@@ -114,7 +114,7 @@ func (s *secret) GetSecretList(ctx *gin.Context) {
 // @Produce      json
 // @Param        name       query  string  true  "Secret名称"
 // @Param        namespace  query  string  true  "命名空间"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
+// @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
 // @Router       /api/k8s/Secret/detail [get]
 func (s *secret) GetSecretDetail(ctx *gin.Context) {
 	params := &dto.SecretNameNS{}
@@ -123,7 +123,7 @@ func (s *secret) GetSecretDetail(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	data, err := service.Secret.GetSecretsDetail(params.Name, params.NameSpace)
+	data, err := kube.Secret.GetSecretsDetail(params.Name, params.NameSpace)
 	if err != nil {
 		logger.Error("获取Secret详情失败", err)
 		middleware.ResponseError(ctx, 20002, err)

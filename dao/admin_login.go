@@ -2,7 +2,7 @@ package dao
 
 import (
 	"github.com/noovertime7/kubemanage/dto"
-	"github.com/noovertime7/kubemanage/public"
+	"github.com/noovertime7/kubemanage/pkg"
 	"github.com/pkg/errors"
 	"time"
 )
@@ -27,7 +27,7 @@ func (a *Admin) LoginCheck(param *dto.AdminLoginInput) (*Admin, error) {
 	if err != nil {
 		return nil, errors.New("用户信息不存在")
 	}
-	saltPassword := public.GenSaltPassword(admininfo.Salt, param.Password)
+	saltPassword := pkg.GenSaltPassword(admininfo.Salt, param.Password)
 	if admininfo.Password != saltPassword {
 		return nil, errors.New("密码错误请重新输入")
 	}

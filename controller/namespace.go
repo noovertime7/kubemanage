@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	"github.com/noovertime7/kubemanage/service"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/wonderivan/logger"
 )
 
@@ -28,7 +28,7 @@ func NameSpaceRegister(router *gin.RouterGroup) {
 // @Accept       json
 // @Produce      json
 // @Param        name  query  string  true  "namespace名称"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "创建成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "创建成功}"
 // @Router       /api/k8s/namespace/create [put]
 func (n *namespace) CreateNameSpace(ctx *gin.Context) {
 	params := &dto.NameSpaceNameInput{}
@@ -37,7 +37,7 @@ func (n *namespace) CreateNameSpace(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 30001, err)
 		return
 	}
-	if err := service.NameSpace.CreateNameSpace(params.Name); err != nil {
+	if err := kube.NameSpace.CreateNameSpace(params.Name); err != nil {
 		logger.Error("创建命名空间失败:", err)
 		middleware.ResponseError(ctx, 30002, err)
 		return
@@ -54,7 +54,7 @@ func (n *namespace) CreateNameSpace(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        name  query  string  true  "namespace名称"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/namespace/del [delete]
 func (n *namespace) DeleteNameSpace(ctx *gin.Context) {
 	params := &dto.NameSpaceNameInput{}
@@ -63,7 +63,7 @@ func (n *namespace) DeleteNameSpace(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	if err := service.NameSpace.DeleteNameSpace(params.Name); err != nil {
+	if err := kube.NameSpace.DeleteNameSpace(params.Name); err != nil {
 		logger.Error("删除NameSpace失败", err)
 		middleware.ResponseError(ctx, 20002, err)
 		return
@@ -82,7 +82,7 @@ func (n *namespace) DeleteNameSpace(ctx *gin.Context) {
 // @Param        filter_name  query  string  false  "过滤"
 // @Param        page         query  int     false  "页码"
 // @Param        limit        query  int     false  "分页限制"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.NameSpaceResp}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.NameSpaceResp}"
 // @Router       /api/k8s/namespace/list [get]
 func (n *namespace) GetNameSpaceList(ctx *gin.Context) {
 	params := &dto.NameSpaceListInput{}
@@ -91,7 +91,7 @@ func (n *namespace) GetNameSpaceList(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	data, err := service.NameSpace.GetNameSpaces(params.FilterName, params.Limit, params.Page)
+	data, err := kube.NameSpace.GetNameSpaces(params.FilterName, params.Limit, params.Page)
 	if err != nil {
 		logger.Error("获取Namespace列表失败", err)
 		middleware.ResponseError(ctx, 20002, err)
@@ -109,7 +109,7 @@ func (n *namespace) GetNameSpaceList(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        name  query  string  true  "namespace名称"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":data }"
+// @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":data }"
 // @Router       /api/k8s/namespace/detail [get]
 func (n *namespace) GetNameSpaceDetail(ctx *gin.Context) {
 	params := &dto.NameSpaceNameInput{}
@@ -118,7 +118,7 @@ func (n *namespace) GetNameSpaceDetail(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	data, err := service.NameSpace.GetNameSpacesDetail(params.Name)
+	data, err := kube.NameSpace.GetNameSpacesDetail(params.Name)
 	if err != nil {
 		logger.Error("获取Namespace详情失败", err)
 		middleware.ResponseError(ctx, 20002, err)

@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	"github.com/noovertime7/kubemanage/service"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/wonderivan/logger"
 	_ "k8s.io/api/apps/v1"
 )
@@ -33,7 +33,7 @@ func DeploymentRegister(router *gin.RouterGroup) {
 // @Accept       json
 // @Produce      json
 // @Param        body  body  dto.DeployCreateInput  true  "body"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "新增成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "新增成功}"
 // @Router       /api/k8s/deployment/create [post]
 func (d *deployment) CreateDeployment(ctx *gin.Context) {
 	params := &dto.DeployCreateInput{}
@@ -42,7 +42,7 @@ func (d *deployment) CreateDeployment(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	if err := service.Deployment.CreateDeployment(params); err != nil {
+	if err := kube.Deployment.CreateDeployment(params); err != nil {
 		logger.Error("新增deploy失败:", err)
 		middleware.ResponseError(ctx, 20002, err)
 		return
@@ -60,7 +60,7 @@ func (d *deployment) CreateDeployment(ctx *gin.Context) {
 // @Produce      json
 // @Param        name       query  string  true  "Deployment名称"
 // @Param        namespace    query  string  true  "命名空间"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/deployment/del [delete]
 func (d *deployment) DeleteDeployment(ctx *gin.Context) {
 	params := &dto.DeploymentNameNS{}
@@ -69,7 +69,7 @@ func (d *deployment) DeleteDeployment(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	if err := service.Deployment.DeleteDeployment(params.Name, params.NameSpace); err != nil {
+	if err := kube.Deployment.DeleteDeployment(params.Name, params.NameSpace); err != nil {
 		logger.Error("删除deploy失败", err)
 		middleware.ResponseError(ctx, 20002, err)
 		return
@@ -88,7 +88,7 @@ func (d *deployment) DeleteDeployment(ctx *gin.Context) {
 // @Param        name       query  string  true  "无状态控制器名称"
 // @Param        namespace  query  string  true  "命名空间"
 // @Param        content    query  string  true  "更新内容"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
 // @Router       /api/k8s/deployment/update [put]
 func (d *deployment) UpdateDeployment(ctx *gin.Context) {
 	params := &dto.UpdateDeployInput{}
@@ -97,7 +97,7 @@ func (d *deployment) UpdateDeployment(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	if err := service.Deployment.UpdateDeployment(params.NameSpace, params.Content); err != nil {
+	if err := kube.Deployment.UpdateDeployment(params.NameSpace, params.Content); err != nil {
 		logger.Error("更新deploy失败", err)
 		middleware.ResponseError(ctx, 20002, err)
 		return
@@ -117,7 +117,7 @@ func (d *deployment) UpdateDeployment(ctx *gin.Context) {
 // @Param        namespace  query  string  false  "命名空间"
 // @Param        page         query  int     false  "页码"
 // @Param        limit        query  int     false  "分页限制"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/deployment/list [get]
 func (d *deployment) GetDeploymentList(ctx *gin.Context) {
 	params := &dto.DeployListInput{}
@@ -126,7 +126,7 @@ func (d *deployment) GetDeploymentList(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	data, err := service.Deployment.GetDeployments(params.FilterName, params.NameSpace, params.Limit, params.Page)
+	data, err := kube.Deployment.GetDeployments(params.FilterName, params.NameSpace, params.Limit, params.Page)
 	if err != nil {
 		logger.Error("获取deploy列表失败", err)
 		middleware.ResponseError(ctx, 20002, err)
@@ -145,7 +145,7 @@ func (d *deployment) GetDeploymentList(ctx *gin.Context) {
 // @Produce      json
 // @Param        name       query  string  true  "Deployment名称"
 // @Param        namespace  query  string  true  "命名空间"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
+// @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
 // @Router       /api/k8s/deployment/detail [get]
 func (d *deployment) GetDeploymentDetail(ctx *gin.Context) {
 	params := &dto.DeploymentNameNS{}
@@ -154,7 +154,7 @@ func (d *deployment) GetDeploymentDetail(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	data, err := service.Deployment.GetDeploymentDetail(params.Name, params.NameSpace)
+	data, err := kube.Deployment.GetDeploymentDetail(params.Name, params.NameSpace)
 	if err != nil {
 		logger.Error("获取deploy详细信息失败", err)
 		middleware.ResponseError(ctx, 20002, err)
@@ -171,10 +171,10 @@ func (d *deployment) GetDeploymentDetail(ctx *gin.Context) {
 // @ID           /api/k8s/deployment/numnp
 // @Accept       json
 // @Produce      json
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data":service.DeployNp }"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data":service.DeployNp }"
 // @Router       /api/k8s/deployment/numnp [get]
 func (d *deployment) GetDeploymentNumPreNS(ctx *gin.Context) {
-	data, err := service.Deployment.GetDeployNumPerNS()
+	data, err := kube.Deployment.GetDeployNumPerNS()
 	if err != nil {
 		logger.Error("获取deploy数量失败", err)
 		middleware.ResponseError(ctx, 20002, err)
@@ -193,7 +193,7 @@ func (d *deployment) GetDeploymentNumPreNS(ctx *gin.Context) {
 // @Produce      json
 // @Param        name       query  string  true  "无状态控制器名称"
 // @Param        namespace  query  string  true  "命名空间"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": 重启Deployment成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": 重启Deployment成功}"
 // @Router       /api/k8s/deployment/restart [put]
 func (d *deployment) RestartDeployment(ctx *gin.Context) {
 	params := &dto.DeploymentNameNS{}
@@ -202,7 +202,7 @@ func (d *deployment) RestartDeployment(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	if err := service.Deployment.RestartDeployment(params.Name, params.NameSpace); err != nil {
+	if err := kube.Deployment.RestartDeployment(params.Name, params.NameSpace); err != nil {
 		logger.Error("获取deploy详细信息失败", err)
 		middleware.ResponseError(ctx, 20002, err)
 		return
@@ -221,7 +221,7 @@ func (d *deployment) RestartDeployment(ctx *gin.Context) {
 // @Param        name       query  string  true  "无状态控制器名称"
 // @Param        namespace  query  string  true  "命名空间"
 // @Param        scale_num  query  int     true  "期望副本数"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": num}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": num}"
 // @Router       /api/k8s/deployment/scale [get]
 func (d *deployment) ScaleDeployment(ctx *gin.Context) {
 	params := &dto.DeployScaleInput{}
@@ -230,7 +230,7 @@ func (d *deployment) ScaleDeployment(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	num, err := service.Deployment.ScaleDeployment(params.Name, params.NameSpace, params.ScaleNum)
+	num, err := kube.Deployment.ScaleDeployment(params.Name, params.NameSpace, params.ScaleNum)
 	if err != nil {
 		logger.Error("获取deploy详细信息失败", err)
 		middleware.ResponseError(ctx, 20002, err)

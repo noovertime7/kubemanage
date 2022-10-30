@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	"github.com/noovertime7/kubemanage/public"
+	"github.com/noovertime7/kubemanage/pkg"
 	"github.com/noovertime7/kubemanage/service"
 	"github.com/wonderivan/logger"
 )
@@ -49,7 +49,7 @@ func (a *AdminLoginController) AdminLoginOut(ctx *gin.Context) {
 	if !exists {
 		logger.Error("claims不存在,请检查jwt中间件")
 	}
-	cla, _ := claims.(*public.CustomClaims)
+	cla, _ := claims.(*pkg.CustomClaims)
 	if err := service.Admin.Logout(cla.Uid); err != nil {
 		logger.Error("退出失败", err)
 		middleware.ResponseError(ctx, 20002, err)

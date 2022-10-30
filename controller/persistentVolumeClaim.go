@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	"github.com/noovertime7/kubemanage/service"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/wonderivan/logger"
 )
 
@@ -29,7 +29,7 @@ func PersistentVolumeClaimRegister(router *gin.RouterGroup) {
 // @Produce      json
 // @Param        name       query  string  true  "PersistentVolumeClaim名称"
 // @Param        namespace    query  string  true  "命名空间"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/persistentvolumeclaim/del [delete]
 func (s *persistentVolumeClaim) DeletePersistentVolumeClaim(ctx *gin.Context) {
 	params := &dto.PersistentVolumeClaimNameNS{}
@@ -38,7 +38,7 @@ func (s *persistentVolumeClaim) DeletePersistentVolumeClaim(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	if err := service.PersistentVolumeClaim.DeletePersistentVolumeClaim(params.Name, params.NameSpace); err != nil {
+	if err := kube.PersistentVolumeClaim.DeletePersistentVolumeClaim(params.Name, params.NameSpace); err != nil {
 		logger.Error("删除PersistentVolumeClaim失败", err)
 		middleware.ResponseError(ctx, 20002, err)
 		return
@@ -57,7 +57,7 @@ func (s *persistentVolumeClaim) DeletePersistentVolumeClaim(ctx *gin.Context) {
 // @Param        name       query  string  true  "无状态控制器名称"
 // @Param        namespace  query  string  true  "命名空间"
 // @Param        content    query  string  true  "更新内容"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
 // @Router       /api/k8s/persistentvolumeclaim/update [put]
 func (s *persistentVolumeClaim) UpdatePersistentVolumeClaim(ctx *gin.Context) {
 	params := &dto.PersistentVolumeClaimUpdateInput{}
@@ -66,7 +66,7 @@ func (s *persistentVolumeClaim) UpdatePersistentVolumeClaim(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	if err := service.PersistentVolumeClaim.UpdatePersistentVolumeClaim(params.Content, params.NameSpace); err != nil {
+	if err := kube.PersistentVolumeClaim.UpdatePersistentVolumeClaim(params.Content, params.NameSpace); err != nil {
 		logger.Error("更新PersistentVolumeClaim失败", err)
 		middleware.ResponseError(ctx, 20002, err)
 		return
@@ -86,7 +86,7 @@ func (s *persistentVolumeClaim) UpdatePersistentVolumeClaim(ctx *gin.Context) {
 // @Param        namespace  query  string  false  "命名空间"
 // @Param        page         query  int     false  "页码"
 // @Param        limit        query  int     false  "分页限制"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/persistentvolumeclaim/list [get]
 func (s *persistentVolumeClaim) GetPersistentVolumeClaimList(ctx *gin.Context) {
 	params := &dto.PersistentVolumeClaimListInput{}
@@ -95,7 +95,7 @@ func (s *persistentVolumeClaim) GetPersistentVolumeClaimList(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	data, err := service.PersistentVolumeClaim.GetPersistentVolumeClaims(params.FilterName, params.NameSpace, params.Limit, params.Page)
+	data, err := kube.PersistentVolumeClaim.GetPersistentVolumeClaims(params.FilterName, params.NameSpace, params.Limit, params.Page)
 	if err != nil {
 		logger.Error("获取PersistentVolumeClaim列表失败", err)
 		middleware.ResponseError(ctx, 20002, err)
@@ -114,7 +114,7 @@ func (s *persistentVolumeClaim) GetPersistentVolumeClaimList(ctx *gin.Context) {
 // @Produce      json
 // @Param        name       query  string  true  "PersistentVolumeClaim名称"
 // @Param        namespace  query  string  true  "命名空间"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
+// @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
 // @Router       /api/k8s/persistentvolumeclaim/detail [get]
 func (s *persistentVolumeClaim) GetPersistentVolumeClaimDetail(ctx *gin.Context) {
 	params := &dto.PersistentVolumeClaimNameNS{}
@@ -123,7 +123,7 @@ func (s *persistentVolumeClaim) GetPersistentVolumeClaimDetail(ctx *gin.Context)
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	data, err := service.PersistentVolumeClaim.GetPersistentVolumeClaimDetail(params.Name, params.NameSpace)
+	data, err := kube.PersistentVolumeClaim.GetPersistentVolumeClaimDetail(params.Name, params.NameSpace)
 	if err != nil {
 		logger.Error("获取PersistentVolumeClaim详情失败", err)
 		middleware.ResponseError(ctx, 20002, err)

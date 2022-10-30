@@ -12,5 +12,3 @@ KubeManage:
     DBName: "kubemanage"
     MaxOpenConns: 100
     MaxLifetime: 20
-
-

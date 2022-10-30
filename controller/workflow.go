@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	"github.com/noovertime7/kubemanage/service"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage"
 	"github.com/wonderivan/logger"
 )
 
@@ -28,7 +28,7 @@ func WorkFlowRegister(router *gin.RouterGroup) {
 // @Accept       json
 // @Produce      json
 // @Param        body  body  dto.WorkFlowCreateInput  true  "body"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "创建成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "创建成功}"
 // @Router       /api/k8s/workflow/create [post]
 func (w *workflow) CreateWorkFlow(ctx *gin.Context) {
 	params := &dto.WorkFlowCreateInput{}
@@ -37,7 +37,7 @@ func (w *workflow) CreateWorkFlow(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 60001, err)
 		return
 	}
-	if err := service.WorkFlow.CreateWorkFlow(params); err != nil {
+	if err := kubemanage.CoreV1.WorkFlow().Save(ctx, params); err != nil {
 		logger.Error("创建失败", err)
 		middleware.ResponseError(ctx, 60002, err)
 		return
@@ -54,7 +54,7 @@ func (w *workflow) CreateWorkFlow(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        ID       query  int  true  "Workflow ID"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/workflow/del [delete]
 func (w *workflow) DeleteWorkflow(ctx *gin.Context) {
 	params := &dto.WorkFlowIDInput{}
@@ -63,7 +63,7 @@ func (w *workflow) DeleteWorkflow(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 60001, err)
 		return
 	}
-	if err := service.WorkFlow.DelById(params.ID); err != nil {
+	if err := kubemanage.CoreV1.WorkFlow().Delete(ctx, params.ID); err != nil {
 		logger.Error("删除失败", err)
 		middleware.ResponseError(ctx, 60002, err)
 		return
@@ -82,7 +82,7 @@ func (w *workflow) DeleteWorkflow(ctx *gin.Context) {
 // @Param        filter_name  query  string  false  "过滤"
 // @Param        page         query  int     false  "页码"
 // @Param        limit        query  int     false  "分页限制"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/workflow/list [get]
 func (w *workflow) GetWorkflowList(ctx *gin.Context) {
 	params := &dto.WorkFlowListInput{}
@@ -91,7 +91,7 @@ func (w *workflow) GetWorkflowList(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 60001, err)
 		return
 	}
-	data, err := service.WorkFlow.GetWorkFlowList(params.FilterName, params.Page, params.Limit)
+	data, err := kubemanage.CoreV1.WorkFlow().FindList(ctx, params)
 	if err != nil {
 		logger.Error("查询失败", err)
 		middleware.ResponseError(ctx, 60002, err)
@@ -109,7 +109,7 @@ func (w *workflow) GetWorkflowList(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        ID       query  int  true  "Workflow ID"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/workflow/id [get]
 func (w *workflow) GetWorkflowByID(ctx *gin.Context) {
 	params := &dto.WorkFlowIDInput{}
@@ -118,7 +118,7 @@ func (w *workflow) GetWorkflowByID(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 60001, err)
 		return
 	}
-	data, err := service.WorkFlow.GetWorkFlowByID(params.ID)
+	data, err := kubemanage.CoreV1.WorkFlow().Find(ctx, params)
 	if err != nil {
 		logger.Error("查询失败", err)
 		middleware.ResponseError(ctx, 60002, err)

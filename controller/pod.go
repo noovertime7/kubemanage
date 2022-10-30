@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	"github.com/noovertime7/kubemanage/service"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/wonderivan/logger"
 	_ "k8s.io/api/core/v1"
 )
@@ -35,7 +35,7 @@ func PodRegister(router *gin.RouterGroup) {
 // @Param        namespace    query  string  false  "命名空间"
 // @Param        page         query  int     false  "页码"
 // @Param        limit        query  int     false  "分页限制"
-//@Success      200 {object}  middleware.Response"{"code": 200, msg="","data": service.PodsResp}"
+// @Success      200 {object}  middleware.Response"{"code": 200, msg="","data": service.PodsResp}"
 // @Router       /api/k8s/pods [get]
 func (p *pod) GetPods(ctx *gin.Context) {
 	//处理入参
@@ -45,7 +45,7 @@ func (p *pod) GetPods(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 10001, err)
 		return
 	}
-	data, err := service.Pod.GetPods(parmas.FilterName, parmas.NameSpace, parmas.Limit, parmas.Page)
+	data, err := kube.Pod.GetPods(parmas.FilterName, parmas.NameSpace, parmas.Limit, parmas.Page)
 	if err != nil {
 		middleware.ResponseError(ctx, 10002, err)
 		return
@@ -63,7 +63,7 @@ func (p *pod) GetPods(ctx *gin.Context) {
 // @Produce      json
 // @Param        pod_name   query  string  true  "POD名称"
 // @Param        namespace  query  string  true  "命名空间"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Pod }"
+// @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Pod }"
 // @Router       /api/k8s/pod/detail [get]
 func (p *pod) GetPodDetail(ctx *gin.Context) {
 	//处理入参
@@ -73,7 +73,7 @@ func (p *pod) GetPodDetail(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 10003, err)
 		return
 	}
-	data, err := service.Pod.GetPodDetail(parmas.PodName, parmas.NameSpace)
+	data, err := kube.Pod.GetPodDetail(parmas.PodName, parmas.NameSpace)
 	if err != nil {
 		middleware.ResponseError(ctx, 10004, err)
 		return
@@ -91,7 +91,7 @@ func (p *pod) GetPodDetail(ctx *gin.Context) {
 // @Produce      json
 // @Param        pod_name   query  string  true  "POD名称"
 // @Param        namespace  query  string  true  "命名空间"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
+// @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/pod/del [delete]
 func (p *pod) DeletePod(ctx *gin.Context) {
 	params := &dto.PodNameNsInput{}
@@ -100,7 +100,7 @@ func (p *pod) DeletePod(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 10003, err)
 		return
 	}
-	if err := service.Pod.DeletePod(params.PodName, params.NameSpace); err != nil {
+	if err := kube.Pod.DeletePod(params.PodName, params.NameSpace); err != nil {
 		middleware.ResponseError(ctx, 10004, err)
 		return
 	}
@@ -118,7 +118,7 @@ func (p *pod) DeletePod(ctx *gin.Context) {
 // @Param        pod_name   query  string  true  "POD名称"
 // @Param        namespace  query  string  true  "命名空间"
 // @Param        content    query  string  true  "更新内容"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
+// @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/pod/update [put]
 func (p *pod) UpdatePod(ctx *gin.Context) {
 	params := &dto.PodUpdateInput{}
@@ -127,7 +127,7 @@ func (p *pod) UpdatePod(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 10003, err)
 		return
 	}
-	if err := service.Pod.UpdatePod(params.NameSpace, params.Content); err != nil {
+	if err := kube.Pod.UpdatePod(params.NameSpace, params.Content); err != nil {
 		logger.Error("POD更新失败", err.Error())
 		middleware.ResponseError(ctx, 10005, err)
 		return
@@ -145,7 +145,7 @@ func (p *pod) UpdatePod(ctx *gin.Context) {
 // @Produce      json
 // @Param        pod_name   query  string  true  "POD名称"
 // @Param        namespace  query  string  true  "命名空间"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
+// @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/pod/container [get]
 func (p *pod) GetPodContainer(ctx *gin.Context) {
 	params := &dto.PodNameNsInput{}
@@ -154,7 +154,7 @@ func (p *pod) GetPodContainer(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 10003, err)
 		return
 	}
-	data, err := service.Pod.GetPodContainer(params.PodName, params.NameSpace)
+	data, err := kube.Pod.GetPodContainer(params.PodName, params.NameSpace)
 	if err != nil {
 		middleware.ResponseError(ctx, 10004, err)
 		return
@@ -173,7 +173,7 @@ func (p *pod) GetPodContainer(ctx *gin.Context) {
 // @Param        pod_name        query  string  true  "POD名称"
 // @Param        namespace       query  string  true  "命名空间"
 // @Param        container_name  query  string  true  "容器名"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
+// @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/pod/log [get]
 func (p *pod) GetPodLog(ctx *gin.Context) {
 	params := &dto.PodGetLogInput{}
@@ -182,7 +182,7 @@ func (p *pod) GetPodLog(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 10003, err)
 		return
 	}
-	data, err := service.Pod.GetPodLog(params.ContainerName, params.PodName, params.NameSpace)
+	data, err := kube.Pod.GetPodLog(params.ContainerName, params.PodName, params.NameSpace)
 	if err != nil {
 		logger.Error("POD更新失败", err.Error())
 		middleware.ResponseError(ctx, 10005, err)
@@ -191,7 +191,7 @@ func (p *pod) GetPodLog(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, data)
 }
 
-//GetPodNumPreNp 根据命名空间获取数量
+// GetPodNumPreNp 根据命名空间获取数量
 // ListPage godoc
 // @Summary      根据命名空间获取数量
 // @Description  根据命名空间获取数量
@@ -199,10 +199,10 @@ func (p *pod) GetPodLog(ctx *gin.Context) {
 // @ID           /api/k8s/pod/numnp
 // @Accept       json
 // @Produce      json
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":[]service.PodsNp }"
+// @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":[]service.PodsNp }"
 // @Router       /api/k8s/pod/numnp [get]
 func (p *pod) GetPodNumPreNp(ctx *gin.Context) {
-	data, err := service.Pod.GetPodNumPerNp()
+	data, err := kube.Pod.GetPodNumPerNp()
 	if err != nil {
 		middleware.ResponseError(ctx, 10006, err)
 		return

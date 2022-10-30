@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	"github.com/noovertime7/kubemanage/service"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/wonderivan/logger"
 )
 
@@ -27,7 +27,7 @@ func PersistentVolumeRegister(router *gin.RouterGroup) {
 // @Accept       json
 // @Produce      json
 // @Param        name  query  string  true  "persistentvolume名称"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/spersistentvolume/del [delete]
 func (n *persistentVolume) DeletePersistentVolume(ctx *gin.Context) {
 	params := &dto.PersistentVolumeNameInput{}
@@ -36,7 +36,7 @@ func (n *persistentVolume) DeletePersistentVolume(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	if err := service.PersistentVolume.DeletePersistentVolume(params.Name); err != nil {
+	if err := kube.PersistentVolume.DeletePersistentVolume(params.Name); err != nil {
 		logger.Error("删除persistentvolume失败", err)
 		middleware.ResponseError(ctx, 20002, err)
 		return
@@ -55,7 +55,7 @@ func (n *persistentVolume) DeletePersistentVolume(ctx *gin.Context) {
 // @Param        filter_name  query  string  false  "过滤"
 // @Param        page         query  int     false  "页码"
 // @Param        limit        query  int     false  "分页限制"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.PersistentVolumeResp}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.PersistentVolumeResp}"
 // @Router       /api/k8s/persistentvolume/list [get]
 func (n *persistentVolume) GetPersistentVolumeList(ctx *gin.Context) {
 	params := &dto.PersistentVolumeListInput{}
@@ -64,7 +64,7 @@ func (n *persistentVolume) GetPersistentVolumeList(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	data, err := service.PersistentVolume.GetPersistentVolumes(params.FilterName, params.Limit, params.Page)
+	data, err := kube.PersistentVolume.GetPersistentVolumes(params.FilterName, params.Limit, params.Page)
 	if err != nil {
 		logger.Error("获取persistentVolume列表失败", err)
 		middleware.ResponseError(ctx, 20002, err)
@@ -82,7 +82,7 @@ func (n *persistentVolume) GetPersistentVolumeList(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        name  query  string  true  "persistentVolume名称"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": *coreV1.PersistentVolume}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": *coreV1.PersistentVolume}"
 // @Router       /api/k8s/persistentvolume/detail [get]
 func (n *persistentVolume) GetPersistentVolumeDetail(ctx *gin.Context) {
 	params := &dto.PersistentVolumeNameInput{}
@@ -91,7 +91,7 @@ func (n *persistentVolume) GetPersistentVolumeDetail(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	data, err := service.PersistentVolume.GetPersistentVolumesDetail(params.Name)
+	data, err := kube.PersistentVolume.GetPersistentVolumesDetail(params.Name)
 	if err != nil {
 		logger.Error("获取persistentVolume详情失败", err)
 		middleware.ResponseError(ctx, 20002, err)

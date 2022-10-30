@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dto"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -21,7 +22,7 @@ func (m *MonitorService) GetClusterImageList(in *dto.ImageListInput) (*dto.Image
 	if err != nil {
 		return nil, err
 	}
-	client, err := GetClient(k8s.Config)
+	client, err := kube.GetClient(k8s.Config)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +34,7 @@ func (m *MonitorService) GetClusterImageList(in *dto.ImageListInput) (*dto.Image
 	}
 	for _, namespace := range NamespaceList.Items {
 		// 查询所有deployment 镜像
-		podlist, err := K8s.clientSet.CoreV1().Pods(namespace.Name).List(context.TODO(), metaV1.ListOptions{})
+		podlist, err := kube.K8s.clientSet.CoreV1().Pods(namespace.Name).List(context.TODO(), metaV1.ListOptions{})
 		if err != nil {
 			return nil, err
 		}

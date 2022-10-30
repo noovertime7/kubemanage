@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/noovertime7/kubemanage/public"
+	"github.com/noovertime7/kubemanage/pkg"
 )
 
 type AdminLoginInput struct {
@@ -16,5 +16,5 @@ type AdminLoginOut struct {
 
 // BindingValidParams 绑定并校验参数
 func (a *AdminLoginInput) BindingValidParams(ctx *gin.Context) error {
-	return public.DefaultGetValidParams(ctx, a)
+	return pkg.DefaultGetValidParams(ctx, a)
 }

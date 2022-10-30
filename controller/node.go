@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	"github.com/noovertime7/kubemanage/service"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/wonderivan/logger"
 )
 
@@ -28,7 +28,7 @@ func NodeRegister(router *gin.RouterGroup) {
 // @Param        filter_name  query  string  false  "过滤"
 // @Param        page         query  int     false  "页码"
 // @Param        limit        query  int     false  "分页限制"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.NameSpaceResp}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.NameSpaceResp}"
 // @Router       /api/k8s/node/list [get]
 func (n *node) GetNodeList(ctx *gin.Context) {
 	params := &dto.NodeListInput{}
@@ -37,7 +37,7 @@ func (n *node) GetNodeList(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	data, err := service.Node.GetNodes(params.FilterName, params.Limit, params.Page)
+	data, err := kube.Node.GetNodes(params.FilterName, params.Limit, params.Page)
 	if err != nil {
 		logger.Error("获取node列表失败", err)
 		middleware.ResponseError(ctx, 20002, err)
@@ -55,7 +55,7 @@ func (n *node) GetNodeList(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        name  query  string  true  "node名称"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":data }"
+// @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":data }"
 // @Router       /api/k8s/node/detail [get]
 func (n *node) GetNodeDetail(ctx *gin.Context) {
 	params := &dto.NodeNameInput{}
@@ -64,7 +64,7 @@ func (n *node) GetNodeDetail(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	data, err := service.Node.GetNodeDetail(params.Name)
+	data, err := kube.Node.GetNodeDetail(params.Name)
 	if err != nil {
 		logger.Error("获取node详情失败", err)
 		middleware.ResponseError(ctx, 20002, err)

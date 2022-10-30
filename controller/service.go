@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	"github.com/noovertime7/kubemanage/service"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/wonderivan/logger"
 )
 
@@ -30,7 +30,7 @@ func ServiceRegister(router *gin.RouterGroup) {
 // @Accept       json
 // @Produce      json
 // @Param        body  body  dto.ServiceCreateInput  true  "body"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "创建成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "创建成功}"
 // @Router       /api/k8s/service/create [post]
 func (s *serviceController) CreateService(ctx *gin.Context) {
 	params := &dto.ServiceCreateInput{}
@@ -39,7 +39,7 @@ func (s *serviceController) CreateService(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 40001, err)
 		return
 	}
-	if err := service.Service.CreateService(params); err != nil {
+	if err := kube.Service.CreateService(params); err != nil {
 		logger.Error("创建ervice失败", err)
 		middleware.ResponseError(ctx, 40002, err)
 		return
@@ -57,7 +57,7 @@ func (s *serviceController) CreateService(ctx *gin.Context) {
 // @Produce      json
 // @Param        name       query  string  true  "service名称"
 // @Param        namespace    query  string  true  "命名空间"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/service/del [delete]
 func (s *serviceController) DeleteService(ctx *gin.Context) {
 	params := &dto.ServiceNameNS{}
@@ -66,7 +66,7 @@ func (s *serviceController) DeleteService(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 40001, err)
 		return
 	}
-	if err := service.Service.DeleteService(params.Name, params.NameSpace); err != nil {
+	if err := kube.Service.DeleteService(params.Name, params.NameSpace); err != nil {
 		logger.Error("删除service失败", err)
 		middleware.ResponseError(ctx, 40002, err)
 		return
@@ -85,7 +85,7 @@ func (s *serviceController) DeleteService(ctx *gin.Context) {
 // @Param        name       query  string  true  "service名称"
 // @Param        namespace  query  string  true  "命名空间"
 // @Param        content    query  string  true  "更新内容"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
 // @Router       /api/k8s/service/update [put]
 func (s *serviceController) UpdateService(ctx *gin.Context) {
 	params := &dto.ServiceUpdateInput{}
@@ -94,7 +94,7 @@ func (s *serviceController) UpdateService(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 40001, err)
 		return
 	}
-	if err := service.Service.UpdateService(params.NameSpace, params.Content); err != nil {
+	if err := kube.Service.UpdateService(params.NameSpace, params.Content); err != nil {
 		logger.Error("修改service失败", err)
 		middleware.ResponseError(ctx, 40002, err)
 		return
@@ -114,7 +114,7 @@ func (s *serviceController) UpdateService(ctx *gin.Context) {
 // @Param        namespace  query  string  false  "命名空间"
 // @Param        page         query  int     false  "页码"
 // @Param        limit        query  int     false  "分页限制"
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/service/list [get]
 func (s *serviceController) GetServiceList(ctx *gin.Context) {
 	params := &dto.ServiceListInput{}
@@ -123,7 +123,7 @@ func (s *serviceController) GetServiceList(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 40001, err)
 		return
 	}
-	data, err := service.Service.GetServiceList(params.FilterName, params.NameSpace, params.Limit, params.Page)
+	data, err := kube.Service.GetServiceList(params.FilterName, params.NameSpace, params.Limit, params.Page)
 	if err != nil {
 		logger.Error("获取service列表失败", err)
 		middleware.ResponseError(ctx, 40002, err)
@@ -142,7 +142,7 @@ func (s *serviceController) GetServiceList(ctx *gin.Context) {
 // @Produce      json
 // @Param        name       query  string  true  "service名称"
 // @Param        namespace  query  string  true  "命名空间"
-//@Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
+// @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
 // @Router       /api/k8s/service/detail [get]
 func (s *serviceController) GetServiceDetail(ctx *gin.Context) {
 	params := &dto.ServiceNameNS{}
@@ -151,7 +151,7 @@ func (s *serviceController) GetServiceDetail(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 40001, err)
 		return
 	}
-	data, err := service.Service.GetServiceDetail(params.Name, params.NameSpace)
+	data, err := kube.Service.GetServiceDetail(params.Name, params.NameSpace)
 	if err != nil {
 		logger.Error("获取service详情失败", err)
 		middleware.ResponseError(ctx, 40002, err)
@@ -168,10 +168,10 @@ func (s *serviceController) GetServiceDetail(ctx *gin.Context) {
 // @ID           /api/k8s/service/numnp
 // @Accept       json
 // @Produce      json
-//@Success       200  {object}  middleware.Response"{"code": 200, msg="","data":service.serviceNp }"
+// @Success       200  {object}  middleware.Response"{"code": 200, msg="","data":service.serviceNp }"
 // @Router       /api/k8s/service/numnp [get]
 func (s *serviceController) GetServicePerNS(ctx *gin.Context) {
-	data, err := service.Service.GetServiceNp()
+	data, err := kube.Service.GetServiceNp()
 	if err != nil {
 		logger.Error("获取service失败", err)
 		middleware.ResponseError(ctx, 40002, err)

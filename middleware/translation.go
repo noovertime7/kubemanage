@@ -5,14 +5,14 @@ import (
 	"github.com/go-playground/locales/en"
 	"github.com/go-playground/locales/zh"
 	"github.com/go-playground/universal-translator"
-	"github.com/noovertime7/kubemanage/public"
+	"github.com/noovertime7/kubemanage/pkg"
 	"gopkg.in/go-playground/validator.v9"
 	en_translations "gopkg.in/go-playground/validator.v9/translations/en"
 	zh_translations "gopkg.in/go-playground/validator.v9/translations/zh"
 	"reflect"
 )
 
-//设置Translation
+// 设置Translation
 func TranslationMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//参照：https://github.com/go-playground/validator/blob/v9/_examples/translations/main.go
@@ -65,8 +65,8 @@ func TranslationMiddleware() gin.HandlerFunc {
 			//})
 			break
 		}
-		c.Set(public.TranslatorKey, trans)
-		c.Set(public.ValidatorKey, val)
+		c.Set(pkg.TranslatorKey, trans)
+		c.Set(pkg.ValidatorKey, val)
 		c.Next()
 	}
 }
