@@ -39,7 +39,7 @@ func (d *secret) FromCells(cells []DataCell) []coreV1.Secret {
 }
 
 func (d *secret) GetSecrets(filterName, namespace string, limit, page int) (*SecretResp, error) {
-	SecretsList, err := K8s.clientSet.CoreV1().Secrets(namespace).List(context.TODO(), metaV1.ListOptions{})
+	SecretsList, err := K8s.ClientSet.CoreV1().Secrets(namespace).List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (d *secret) GetSecrets(filterName, namespace string, limit, page int) (*Sec
 }
 
 func (d *secret) GetSecretsDetail(name, namespace string) (*coreV1.Secret, error) {
-	data, err := K8s.clientSet.CoreV1().Secrets(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
+	data, err := K8s.ClientSet.CoreV1().Secrets(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (d *secret) GetSecretsDetail(name, namespace string) (*coreV1.Secret, error
 }
 
 func (d *secret) DeleteSecrets(name, namespace string) error {
-	return K8s.clientSet.CoreV1().Secrets(namespace).Delete(context.TODO(), name, metaV1.DeleteOptions{})
+	return K8s.ClientSet.CoreV1().Secrets(namespace).Delete(context.TODO(), name, metaV1.DeleteOptions{})
 }
 
 func (d *secret) UpdateSecrets(content, namespace string) error {
@@ -80,7 +80,7 @@ func (d *secret) UpdateSecrets(content, namespace string) error {
 	if err := json.Unmarshal([]byte(content), secret); err != nil {
 		return err
 	}
-	if _, err := K8s.clientSet.CoreV1().Secrets(namespace).Update(context.TODO(), secret, metaV1.UpdateOptions{}); err != nil {
+	if _, err := K8s.ClientSet.CoreV1().Secrets(namespace).Update(context.TODO(), secret, metaV1.UpdateOptions{}); err != nil {
 		return err
 	}
 	return nil

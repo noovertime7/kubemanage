@@ -1,8 +1,8 @@
 default:
   listenAddr: ":6180"
   webSocketListenAddr: ""
-  JWTSecret: ""
-  expireTime: ""
+  JWTSecret: "kubemanage"
+  expireTime: 10
 
 mysql:
   host: "127.0.0.1"

@@ -86,7 +86,7 @@ func (t *terminal) WsHandler(w http.ResponseWriter, r *http.Request) {
 	https://192.168.1.11:6443/api/v1/namespaces/default/pods/nginx-wf2-778d88d7c-7rmsk/exec?command=%2Fbin%2Fbash&container=nginx-wf2&stderr=true&stdin=true&stdout=true&tty=true
 	*/
 	// 组装POST请求
-	req := kube.K8s.clientSet.CoreV1().RESTClient().Post().
+	req := kube.K8s.ClientSet.CoreV1().RESTClient().Post().
 		Resource("pods").
 		Name(podName).
 		Namespace(namespace).

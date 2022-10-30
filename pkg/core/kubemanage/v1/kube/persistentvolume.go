@@ -34,7 +34,7 @@ func (n *persistentVolume) FromCells(cells []DataCell) []coreV1.PersistentVolume
 }
 
 func (n *persistentVolume) GetPersistentVolumes(filterName string, limit, page int) (*PersistentVolumeResp, error) {
-	PersistentVolumeList, err := K8s.clientSet.CoreV1().PersistentVolumes().List(context.TODO(), metaV1.ListOptions{})
+	PersistentVolumeList, err := K8s.ClientSet.CoreV1().PersistentVolumes().List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
 		logger.Error("获取Pod列表失败:", err.Error())
 		return nil, errors.New("获取Pod列表失败")
@@ -62,7 +62,7 @@ func (n *persistentVolume) GetPersistentVolumes(filterName string, limit, page i
 
 // GetPersistentVolumesDetail 获取PersistentVolume详情
 func (n *persistentVolume) GetPersistentVolumesDetail(Name string) (*coreV1.PersistentVolume, error) {
-	PersistentVolumesRes, err := K8s.clientSet.CoreV1().PersistentVolumes().Get(context.TODO(), Name, metaV1.GetOptions{})
+	PersistentVolumesRes, err := K8s.ClientSet.CoreV1().PersistentVolumes().Get(context.TODO(), Name, metaV1.GetOptions{})
 	if err != nil {
 		logger.Error("获取Pod详情失败", err.Error())
 		return nil, err
@@ -71,5 +71,5 @@ func (n *persistentVolume) GetPersistentVolumesDetail(Name string) (*coreV1.Pers
 }
 
 func (n *persistentVolume) DeletePersistentVolume(name string) error {
-	return K8s.clientSet.CoreV1().PersistentVolumes().Delete(context.TODO(), name, metaV1.DeleteOptions{})
+	return K8s.ClientSet.CoreV1().PersistentVolumes().Delete(context.TODO(), name, metaV1.DeleteOptions{})
 }

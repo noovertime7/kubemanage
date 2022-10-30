@@ -3,12 +3,11 @@ package v1
 import (
 	"github.com/noovertime7/kubemanage/cmd/app/config"
 	"github.com/noovertime7/kubemanage/dao"
-	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/workflow"
 	"k8s.io/client-go/kubernetes"
 )
 
 type CoreService interface {
-	workflow.WorkFlowServiceGetter
+	WorkFlowServiceGetter
 }
 
 type KubeManage struct {
@@ -17,8 +16,8 @@ type KubeManage struct {
 	clientSets map[string]*kubernetes.Clientset
 }
 
-func (c *KubeManage) WorkFlow() workflow.WorkFlowService {
-	return workflow.NewWorkFlow(c)
+func (c *KubeManage) WorkFlow() WorkFlowService {
+	return NewWorkFlow(c)
 }
 
 func New(cfg config.Config, factory dao.ShareDaoFactory) CoreService {

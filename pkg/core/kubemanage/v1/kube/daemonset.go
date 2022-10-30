@@ -39,7 +39,7 @@ func (d *daemonSet) FromCells(cells []DataCell) []appsV1.DaemonSet {
 }
 
 func (d *daemonSet) GetDaemonSets(filterName, namespace string, limit, page int) (*DaemonSetResp, error) {
-	daemonSetList, err := K8s.clientSet.AppsV1().DaemonSets(namespace).List(context.TODO(), metaV1.ListOptions{})
+	daemonSetList, err := K8s.ClientSet.AppsV1().DaemonSets(namespace).List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (d *daemonSet) GetDaemonSets(filterName, namespace string, limit, page int)
 }
 
 func (d *daemonSet) GetDaemonSetDetail(name, namespace string) (*appsV1.DaemonSet, error) {
-	data, err := K8s.clientSet.AppsV1().DaemonSets(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
+	data, err := K8s.ClientSet.AppsV1().DaemonSets(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (d *daemonSet) GetDaemonSetDetail(name, namespace string) (*appsV1.DaemonSe
 }
 
 func (d *daemonSet) DeleteDaemonSet(name, namespace string) error {
-	return K8s.clientSet.AppsV1().DaemonSets(namespace).Delete(context.TODO(), name, metaV1.DeleteOptions{})
+	return K8s.ClientSet.AppsV1().DaemonSets(namespace).Delete(context.TODO(), name, metaV1.DeleteOptions{})
 }
 
 func (d *daemonSet) UpdateDaemonSet(content, namespace string) error {
@@ -80,7 +80,7 @@ func (d *daemonSet) UpdateDaemonSet(content, namespace string) error {
 	if err := json.Unmarshal([]byte(content), daemonset); err != nil {
 		return err
 	}
-	if _, err := K8s.clientSet.AppsV1().DaemonSets(namespace).Update(context.TODO(), daemonset, metaV1.UpdateOptions{}); err != nil {
+	if _, err := K8s.ClientSet.AppsV1().DaemonSets(namespace).Update(context.TODO(), daemonset, metaV1.UpdateOptions{}); err != nil {
 		return err
 	}
 	return nil

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/noovertime7/kubemanage/cmd/app/config"
 	"github.com/noovertime7/kubemanage/dao"
+	"github.com/noovertime7/kubemanage/pkg/source"
 	"github.com/spf13/cobra"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -12,7 +13,7 @@ import (
 )
 
 const (
-	defaultConfigFile = "/etc/gopixiu/config.yaml"
+	defaultConfigFile = "F:\\kubemanage\\config.yaml"
 )
 
 // Options has all the params needed to run a pixiu
@@ -32,7 +33,7 @@ func NewOptions() (*Options, error) {
 }
 
 func (o *Options) BindFlags(cmd *cobra.Command) {
-	cmd.Flags().StringVar(&o.ConfigFile, "configfile", "", "The location of the gopixiu configuration file")
+	cmd.Flags().StringVar(&o.ConfigFile, "configfile", "", "The location of the kubemanage configuration file")
 }
 
 // Complete completes all the required options
@@ -61,6 +62,11 @@ func (o *Options) Complete() error {
 	return nil
 }
 
+func (o *Options) InitDB() error {
+	initDbService := source.NewInitDBService(o.DB)
+	return initDbService.InitDB()
+}
+
 func (o *Options) register() error {
 	if err := o.registerDatabase(); err != nil {
 		return err
@@ -70,7 +76,7 @@ func (o *Options) register() error {
 
 func (o *Options) registerDatabase() error {
 	sqlConfig := o.ComponentConfig.Mysql
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		sqlConfig.User,
 		sqlConfig.Password,
 		sqlConfig.Host,

@@ -34,7 +34,7 @@ func (n *node) FromCells(cells []DataCell) []coreV1.Node {
 }
 
 func (n *node) GetNodes(filterName string, limit, page int) (nodesResp *NodeResp, err error) {
-	nodeList, err := K8s.clientSet.CoreV1().Nodes().List(context.TODO(), metaV1.ListOptions{})
+	nodeList, err := K8s.ClientSet.CoreV1().Nodes().List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
 		logger.Error("获取Pod列表失败:", err.Error())
 		return nil, errors.New("获取Pod列表失败")
@@ -62,7 +62,7 @@ func (n *node) GetNodes(filterName string, limit, page int) (nodesResp *NodeResp
 
 // GetNodeDetail 获取Node详情
 func (n *node) GetNodeDetail(Name string) (*coreV1.Node, error) {
-	nodeRes, err := K8s.clientSet.CoreV1().Nodes().Get(context.TODO(), Name, metaV1.GetOptions{})
+	nodeRes, err := K8s.ClientSet.CoreV1().Nodes().Get(context.TODO(), Name, metaV1.GetOptions{})
 	if err != nil {
 		logger.Error("获取Pod详情失败", err.Error())
 		return nil, err

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/noovertime7/kubemanage/cmd/app/options"
 	"github.com/noovertime7/kubemanage/pkg"
-	"github.com/noovertime7/kubemanage/pkg/core/kubemanage"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/noovertime7/kubemanage/router"
 	"github.com/spf13/cobra"
@@ -21,10 +21,14 @@ func NewServerCommand() *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:  "gopixiu-server",
-		Long: "The gopixiu server controller is a daemon that embeds the core control loops.",
+		Use:  "kubemanage-server",
+		Long: "The kubemanage server controller is a daemon that embeds the core control loops.",
 		Run: func(cmd *cobra.Command, args []string) {
 			if err = opts.Complete(); err != nil {
+				fmt.Fprintf(os.Stderr, "%v\n", err)
+				os.Exit(1)
+			}
+			if err = opts.InitDB(); err != nil {
 				fmt.Fprintf(os.Stderr, "%v\n", err)
 				os.Exit(1)
 			}
@@ -50,7 +54,7 @@ func NewServerCommand() *cobra.Command {
 
 func Run(opt *options.Options) error {
 	// 设置核心应用接口
-	kubemanage.Setup(opt)
+	v1.Setup(opt)
 	//初始化K8s client
 	InitLocalK8s()
 	// 初始化 api 路由

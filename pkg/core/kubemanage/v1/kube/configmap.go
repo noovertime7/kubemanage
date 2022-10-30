@@ -38,7 +38,7 @@ func (d *configmap) FromCells(cells []DataCell) []coreV1.ConfigMap {
 }
 
 func (d *configmap) GetConfigmaps(filterName, namespace string, limit, page int) (*ConfigmapResp, error) {
-	ConfigmapList, err := K8s.clientSet.CoreV1().ConfigMaps(namespace).List(context.TODO(), metaV1.ListOptions{})
+	ConfigmapList, err := K8s.ClientSet.CoreV1().ConfigMaps(namespace).List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (d *configmap) GetConfigmaps(filterName, namespace string, limit, page int)
 }
 
 func (d *configmap) GetConfigmapDetail(name, namespace string) (*coreV1.ConfigMap, error) {
-	data, err := K8s.clientSet.CoreV1().ConfigMaps(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
+	data, err := K8s.ClientSet.CoreV1().ConfigMaps(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (d *configmap) GetConfigmapDetail(name, namespace string) (*coreV1.ConfigMa
 }
 
 func (d *configmap) DeleteConfigmap(name, namespace string) error {
-	return K8s.clientSet.CoreV1().ConfigMaps(namespace).Delete(context.TODO(), name, metaV1.DeleteOptions{})
+	return K8s.ClientSet.CoreV1().ConfigMaps(namespace).Delete(context.TODO(), name, metaV1.DeleteOptions{})
 }
 
 func (d *configmap) UpdateConfigmap(content, namespace string) error {
@@ -79,7 +79,7 @@ func (d *configmap) UpdateConfigmap(content, namespace string) error {
 	if err := json.Unmarshal([]byte(content), Configmap); err != nil {
 		return err
 	}
-	if _, err := K8s.clientSet.CoreV1().ConfigMaps(namespace).Update(context.TODO(), Configmap, metaV1.UpdateOptions{}); err != nil {
+	if _, err := K8s.ClientSet.CoreV1().ConfigMaps(namespace).Update(context.TODO(), Configmap, metaV1.UpdateOptions{}); err != nil {
 		return err
 	}
 	return nil

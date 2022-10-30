@@ -45,7 +45,7 @@ func (d *deployment) FromCells(cells []DataCell) []appsV1.Deployment {
 }
 
 func (d *deployment) GetDeployments(filterName, namespace string, limit, page int) (*DeploymentResp, error) {
-	deploymentList, err := K8s.clientSet.AppsV1().Deployments(namespace).List(context.TODO(), metaV1.ListOptions{})
+	deploymentList, err := K8s.ClientSet.AppsV1().Deployments(namespace).List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (d *deployment) GetDeployments(filterName, namespace string, limit, page in
 
 // GetDeploymentDetail 获取deployment详情
 func (d *deployment) GetDeploymentDetail(deployName, namespace string) (*appsV1.Deployment, error) {
-	deploy, err := K8s.clientSet.AppsV1().Deployments(namespace).Get(context.TODO(), deployName, metaV1.GetOptions{})
+	deploy, err := K8s.ClientSet.AppsV1().Deployments(namespace).Get(context.TODO(), deployName, metaV1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -80,14 +80,14 @@ func (d *deployment) GetDeploymentDetail(deployName, namespace string) (*appsV1.
 
 // ScaleDeployment 设置deployment副本数
 func (d *deployment) ScaleDeployment(deployName, namespace string, scaleNum int) (int32, error) {
-	scale, err := K8s.clientSet.AppsV1().Deployments(namespace).GetScale(context.TODO(), deployName, metaV1.GetOptions{})
+	scale, err := K8s.ClientSet.AppsV1().Deployments(namespace).GetScale(context.TODO(), deployName, metaV1.GetOptions{})
 	if err != nil {
 		return 0, err
 	}
 	//修改副本数
 	scale.Spec.Replicas = int32(scaleNum)
 	//更新副本数，传入scale对象
-	newScale, err := K8s.clientSet.AppsV1().Deployments(namespace).UpdateScale(context.TODO(), deployName, scale, metaV1.UpdateOptions{})
+	newScale, err := K8s.ClientSet.AppsV1().Deployments(namespace).UpdateScale(context.TODO(), deployName, scale, metaV1.UpdateOptions{})
 	if err != nil {
 		return 0, err
 	}
@@ -180,7 +180,7 @@ func (d *deployment) CreateDeployment(data *dto.DeployCreateInput) error {
 		coreV1.ResourceMemory: resource.MustParse(data.Memory),
 	}
 	//调用sdk去更新deployment
-	if _, err := K8s.clientSet.AppsV1().Deployments(data.NameSpace).Create(context.TODO(), deployment, metaV1.CreateOptions{}); err != nil {
+	if _, err := K8s.ClientSet.AppsV1().Deployments(data.NameSpace).Create(context.TODO(), deployment, metaV1.CreateOptions{}); err != nil {
 		return err
 	}
 	logger.Info("创建deployment成功:", deployment.Name)
@@ -189,7 +189,7 @@ func (d *deployment) CreateDeployment(data *dto.DeployCreateInput) error {
 
 // DeleteDeployment 删除deployment
 func (d *deployment) DeleteDeployment(deployName, namespace string) error {
-	return K8s.clientSet.AppsV1().Deployments(namespace).Delete(context.TODO(), deployName, metaV1.DeleteOptions{})
+	return K8s.ClientSet.AppsV1().Deployments(namespace).Delete(context.TODO(), deployName, metaV1.DeleteOptions{})
 }
 
 // UpdateDeployment 更新deployment
@@ -198,7 +198,7 @@ func (d *deployment) UpdateDeployment(namespace, content string) error {
 	if err := json.Unmarshal([]byte(content), deploy); err != nil {
 		return err
 	}
-	if _, err := K8s.clientSet.AppsV1().Deployments(namespace).Update(context.TODO(), deploy, metaV1.UpdateOptions{}); err != nil {
+	if _, err := K8s.ClientSet.AppsV1().Deployments(namespace).Update(context.TODO(), deploy, metaV1.UpdateOptions{}); err != nil {
 		return err
 	}
 	return nil
@@ -229,7 +229,7 @@ func (d *deployment) RestartDeployment(deployName, namespace string) error {
 		return err
 	}
 	//调用patch方法更新deployment
-	if _, err := K8s.clientSet.AppsV1().Deployments(namespace).Patch(context.TODO(), deployName, "application/strategic-merge-patch+json", patchByte, metaV1.PatchOptions{}); err != nil {
+	if _, err := K8s.ClientSet.AppsV1().Deployments(namespace).Patch(context.TODO(), deployName, "application/strategic-merge-patch+json", patchByte, metaV1.PatchOptions{}); err != nil {
 		return err
 	}
 	return nil
@@ -237,13 +237,13 @@ func (d *deployment) RestartDeployment(deployName, namespace string) error {
 
 // GetDeployNumPerNS 获取每个namespace下的deploy数量
 func (d *deployment) GetDeployNumPerNS() ([]*DeployNp, error) {
-	namespaceList, err := K8s.clientSet.CoreV1().Namespaces().List(context.TODO(), metaV1.ListOptions{})
+	namespaceList, err := K8s.ClientSet.CoreV1().Namespaces().List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
 	var deploys []*DeployNp
 	for _, namespace := range namespaceList.Items {
-		deployList, err := K8s.clientSet.AppsV1().Deployments(namespace.Name).List(context.TODO(), metaV1.ListOptions{})
+		deployList, err := K8s.ClientSet.AppsV1().Deployments(namespace.Name).List(context.TODO(), metaV1.ListOptions{})
 		if err != nil {
 			return nil, err
 		}

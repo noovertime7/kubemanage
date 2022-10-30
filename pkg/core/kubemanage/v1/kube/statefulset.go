@@ -38,7 +38,7 @@ func (d *statefulSet) FromCells(cells []DataCell) []appsV1.StatefulSet {
 }
 
 func (d *statefulSet) GetStatefulSets(filterName, namespace string, limit, page int) (*statefulSetResp, error) {
-	statefulSetList, err := K8s.clientSet.AppsV1().StatefulSets(namespace).List(context.TODO(), metaV1.ListOptions{})
+	statefulSetList, err := K8s.ClientSet.AppsV1().StatefulSets(namespace).List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (d *statefulSet) GetStatefulSets(filterName, namespace string, limit, page 
 }
 
 func (d *statefulSet) GetStatefulSetDetail(name, namespace string) (*appsV1.StatefulSet, error) {
-	data, err := K8s.clientSet.AppsV1().StatefulSets(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
+	data, err := K8s.ClientSet.AppsV1().StatefulSets(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (d *statefulSet) GetStatefulSetDetail(name, namespace string) (*appsV1.Stat
 }
 
 func (d *statefulSet) DeleteStatefulSet(name, namespace string) error {
-	return K8s.clientSet.AppsV1().StatefulSets(namespace).Delete(context.TODO(), name, metaV1.DeleteOptions{})
+	return K8s.ClientSet.AppsV1().StatefulSets(namespace).Delete(context.TODO(), name, metaV1.DeleteOptions{})
 }
 
 func (d *statefulSet) UpdateStatefulSet(content, namespace string) error {
@@ -79,7 +79,7 @@ func (d *statefulSet) UpdateStatefulSet(content, namespace string) error {
 	if err := json.Unmarshal([]byte(content), statefulSet); err != nil {
 		return err
 	}
-	if _, err := K8s.clientSet.AppsV1().StatefulSets(namespace).Update(context.TODO(), statefulSet, metaV1.UpdateOptions{}); err != nil {
+	if _, err := K8s.ClientSet.AppsV1().StatefulSets(namespace).Update(context.TODO(), statefulSet, metaV1.UpdateOptions{}); err != nil {
 		return err
 	}
 	return nil

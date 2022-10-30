@@ -39,7 +39,7 @@ func (d *persistentVolumeClaim) FromCells(cells []DataCell) []coreV1.PersistentV
 }
 
 func (d *persistentVolumeClaim) DeletePersistentVolumeClaim(name, namespace string) error {
-	return K8s.clientSet.CoreV1().PersistentVolumeClaims(namespace).Delete(context.TODO(), name, metaV1.DeleteOptions{})
+	return K8s.ClientSet.CoreV1().PersistentVolumeClaims(namespace).Delete(context.TODO(), name, metaV1.DeleteOptions{})
 }
 
 func (d *persistentVolumeClaim) UpdatePersistentVolumeClaim(content, namespace string) error {
@@ -47,14 +47,14 @@ func (d *persistentVolumeClaim) UpdatePersistentVolumeClaim(content, namespace s
 	if err := json.Unmarshal([]byte(content), PersistentVolumeClaim); err != nil {
 		return err
 	}
-	if _, err := K8s.clientSet.CoreV1().PersistentVolumeClaims(namespace).Update(context.TODO(), PersistentVolumeClaim, metaV1.UpdateOptions{}); err != nil {
+	if _, err := K8s.ClientSet.CoreV1().PersistentVolumeClaims(namespace).Update(context.TODO(), PersistentVolumeClaim, metaV1.UpdateOptions{}); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (d *persistentVolumeClaim) GetPersistentVolumeClaims(filterName, namespace string, limit, page int) (*PersistentVolumeClaimResp, error) {
-	PersistentVolumeClaimList, err := K8s.clientSet.CoreV1().PersistentVolumeClaims(namespace).List(context.TODO(), metaV1.ListOptions{})
+	PersistentVolumeClaimList, err := K8s.ClientSet.CoreV1().PersistentVolumeClaims(namespace).List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (d *persistentVolumeClaim) GetPersistentVolumeClaims(filterName, namespace 
 }
 
 func (d *persistentVolumeClaim) GetPersistentVolumeClaimDetail(name, namespace string) (*coreV1.PersistentVolumeClaim, error) {
-	data, err := K8s.clientSet.CoreV1().PersistentVolumeClaims(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
+	data, err := K8s.ClientSet.CoreV1().PersistentVolumeClaims(namespace).Get(context.TODO(), name, metaV1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}

@@ -1,11 +1,10 @@
-package workflow
+package v1
 
 import (
 	"context"
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/dto"
-	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 )
 
@@ -21,13 +20,13 @@ type WorkFlowService interface {
 }
 
 type workflow struct {
-	app     *v1.KubeManage
+	app     *KubeManage
 	factory dao.ShareDaoFactory
 }
 
 var _ WorkFlowService = &workflow{}
 
-func NewWorkFlow(app *v1.KubeManage) *workflow {
+func NewWorkFlow(app *KubeManage) *workflow {
 	return &workflow{
 		app:     app,
 		factory: app.Factory,

@@ -34,7 +34,7 @@ func (n *namespace) FromCells(cells []DataCell) []coreV1.Namespace {
 }
 
 func (n *namespace) GetNameSpaces(filterName string, limit, page int) (nodesResp *NameSpaceResp, err error) {
-	NamespaceList, err := K8s.clientSet.CoreV1().Namespaces().List(context.TODO(), metaV1.ListOptions{})
+	NamespaceList, err := K8s.ClientSet.CoreV1().Namespaces().List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
 		logger.Error("获取Pod列表失败:", err.Error())
 		return nil, errors.New("获取Pod列表失败")
@@ -62,7 +62,7 @@ func (n *namespace) GetNameSpaces(filterName string, limit, page int) (nodesResp
 
 // GetNameSpacesDetail 获取Node详情
 func (n *namespace) GetNameSpacesDetail(Name string) (*coreV1.Namespace, error) {
-	namespacesRes, err := K8s.clientSet.CoreV1().Namespaces().Get(context.TODO(), Name, metaV1.GetOptions{})
+	namespacesRes, err := K8s.ClientSet.CoreV1().Namespaces().Get(context.TODO(), Name, metaV1.GetOptions{})
 	if err != nil {
 		logger.Error("获取Pod详情失败", err.Error())
 		return nil, err
@@ -79,12 +79,12 @@ func (n *namespace) CreateNameSpace(name string) error {
 		Spec:   coreV1.NamespaceSpec{},
 		Status: coreV1.NamespaceStatus{},
 	}
-	if _, err := K8s.clientSet.CoreV1().Namespaces().Create(context.TODO(), ns, metaV1.CreateOptions{}); err != nil {
+	if _, err := K8s.ClientSet.CoreV1().Namespaces().Create(context.TODO(), ns, metaV1.CreateOptions{}); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (n *namespace) DeleteNameSpace(name string) error {
-	return K8s.clientSet.CoreV1().Namespaces().Delete(context.TODO(), name, metaV1.DeleteOptions{})
+	return K8s.ClientSet.CoreV1().Namespaces().Delete(context.TODO(), name, metaV1.DeleteOptions{})
 }

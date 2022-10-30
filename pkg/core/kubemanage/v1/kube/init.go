@@ -14,7 +14,7 @@ import (
 var K8s k8s
 
 type k8s struct {
-	clientSet *kubernetes.Clientset
+	ClientSet *kubernetes.Clientset
 }
 
 func (k *k8s) Init() error {
@@ -43,7 +43,7 @@ func (k *k8s) Init() error {
 		return err
 	}
 	logger.Info("获取clientSet成功")
-	k.clientSet = clientSet
+	k.ClientSet = clientSet
 	return nil
 }
 

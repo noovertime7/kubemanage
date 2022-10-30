@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	"github.com/noovertime7/kubemanage/pkg/core/kubemanage"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/wonderivan/logger"
 )
 
@@ -37,7 +37,7 @@ func (w *workflow) CreateWorkFlow(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 60001, err)
 		return
 	}
-	if err := kubemanage.CoreV1.WorkFlow().Save(ctx, params); err != nil {
+	if err := v1.CoreV1.WorkFlow().Save(ctx, params); err != nil {
 		logger.Error("创建失败", err)
 		middleware.ResponseError(ctx, 60002, err)
 		return
@@ -63,7 +63,7 @@ func (w *workflow) DeleteWorkflow(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 60001, err)
 		return
 	}
-	if err := kubemanage.CoreV1.WorkFlow().Delete(ctx, params.ID); err != nil {
+	if err := v1.CoreV1.WorkFlow().Delete(ctx, params.ID); err != nil {
 		logger.Error("删除失败", err)
 		middleware.ResponseError(ctx, 60002, err)
 		return
@@ -91,7 +91,7 @@ func (w *workflow) GetWorkflowList(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 60001, err)
 		return
 	}
-	data, err := kubemanage.CoreV1.WorkFlow().FindList(ctx, params)
+	data, err := v1.CoreV1.WorkFlow().FindList(ctx, params)
 	if err != nil {
 		logger.Error("查询失败", err)
 		middleware.ResponseError(ctx, 60002, err)
@@ -118,7 +118,7 @@ func (w *workflow) GetWorkflowByID(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 60001, err)
 		return
 	}
-	data, err := kubemanage.CoreV1.WorkFlow().Find(ctx, params)
+	data, err := v1.CoreV1.WorkFlow().Find(ctx, params)
 	if err != nil {
 		logger.Error("查询失败", err)
 		middleware.ResponseError(ctx, 60002, err)
