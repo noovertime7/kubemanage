@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/noovertime7/kubemanage/config"
 	"github.com/wonderivan/logger"
 	"io"
 	coreV1 "k8s.io/api/core/v1"
@@ -106,7 +105,7 @@ func (p *pod) GetPodContainer(podName, namespace string) (containers []string, e
 // GetPodLog 获取容器日志
 func (p *pod) GetPodLog(containerName, podName, namespace string) (log string, err error) {
 	//设置日志的配置，容器名，获取的内容的配置
-	lineLimit := int64(config.PodLogTailLine)
+	lineLimit := int64(100)
 	op := &coreV1.PodLogOptions{
 		Container: containerName,
 		TailLines: &lineLimit,

@@ -1,16 +1,19 @@
 package config
 
+var SysConfig *Config
+
 type Config struct {
 	Default DefaultOptions `yaml:"default"`
 	Mysql   MysqlOptions   `yaml:"mysql"`
 }
 
 type DefaultOptions struct {
-	PodLogTailLine      string `yaml:"podLogTailLine"`
-	ListenAddr          string `yaml:"listenAddr"`
-	WebSocketListenAddr string `yaml:"webSocketListenAddr"`
-	JWTSecret           string `yaml:"JWTSecret"`
-	ExpireTime          int64  `yaml:"expireTime"`
+	PodLogTailLine       string `yaml:"podLogTailLine"`
+	ListenAddr           string `yaml:"listenAddr"`
+	WebSocketListenAddr  string `yaml:"webSocketListenAddr"`
+	JWTSecret            string `yaml:"JWTSecret"`
+	ExpireTime           int64  `yaml:"expireTime"`
+	KubernetesConfigFile string `yaml:"kubernetesConfigFile"`
 }
 
 type MysqlOptions struct {

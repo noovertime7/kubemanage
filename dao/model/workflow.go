@@ -1,7 +1,7 @@
 package model
 
 type Workflow struct {
-	CommonModel
+	ID          int    `gorm:"column:id;primary_key;AUTO_INCREMENT;not null" json:"id"`
 	Name        string `json:"name" gorm:"column:name"`
 	NameSpace   string `json:"namespace" gorm:"column:namespace"`
 	Replicas    int32  `json:"replicas" gorm:"column:replicas"`
@@ -9,6 +9,7 @@ type Workflow struct {
 	Service     string `json:"service" gorm:"column:service"`
 	Ingress     string `json:"ingress" gorm:"column:ingress"`
 	ServiceType string `json:"service_type" gorm:"column:service_type"`
+	CommonModel
 }
 
 func (w *Workflow) TableName() string {

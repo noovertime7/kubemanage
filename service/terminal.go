@@ -2,11 +2,10 @@ package service
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/gorilla/websocket"
-	"github.com/noovertime7/kubemanage/config"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
+	"github.com/pkg/errors"
 	"github.com/wonderivan/logger"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -52,7 +51,7 @@ type terminal struct{}
 // WsHandler 定义websocket的handler方法
 func (t *terminal) WsHandler(w http.ResponseWriter, r *http.Request) {
 	// 加载k8s配置
-	conf, err := clientcmd.BuildConfigFromFlags("", config.KubeConfigFile)
+	conf, err := clientcmd.BuildConfigFromFlags("", "C:\\Users\\18495\\.kube\\config")
 	if err != nil {
 		logger.Error("初始化kubernetes配置失败,错误信息," + err.Error())
 	}

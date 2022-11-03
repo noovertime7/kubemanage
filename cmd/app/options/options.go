@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/noovertime7/kubemanage/cmd/app/config"
 	"github.com/noovertime7/kubemanage/dao"
+	"github.com/noovertime7/kubemanage/pkg"
 	"github.com/noovertime7/kubemanage/pkg/source"
 	"github.com/spf13/cobra"
 	"gorm.io/driver/mysql"
@@ -13,17 +14,15 @@ import (
 )
 
 const (
-	defaultConfigFile = "F:\\kubemanage\\config.yaml"
+	defaultConfigFile = "G:\\kubemanage\\config.yaml"
 )
 
-// Options has all the params needed to run a pixiu
 type Options struct {
 	// The default values.
 	ComponentConfig config.Config
 	DB              *gorm.DB
 	Factory         dao.ShareDaoFactory // 数据库接口
-	// ConfigFile is the location of the pixiu server's configuration file.
-	ConfigFile string
+	ConfigFile      string
 }
 
 func NewOptions() (*Options, error) {
@@ -41,7 +40,7 @@ func (o *Options) Complete() error {
 	// 配置文件优先级: 默认配置，环境变量，命令行
 	if len(o.ConfigFile) == 0 {
 		// Try to read config file path from env.
-		if cfgFile := os.Getenv("ConfigFile"); cfgFile != "" {
+		if cfgFile := os.Getenv("KubeManageConfigFile"); cfgFile != "" {
 			o.ConfigFile = cfgFile
 		} else {
 			o.ConfigFile = defaultConfigFile
@@ -97,4 +96,8 @@ func (o *Options) registerDatabase() error {
 	sqlDB.SetConnMaxLifetime(time.Duration(o.ComponentConfig.Mysql.MaxLifetime) * time.Second)
 	o.Factory = dao.NewShareDaoFactory(o.DB)
 	return nil
+}
+
+func (o *Options) registerJwt() {
+	pkg.RegisterJwt(o.ComponentConfig.Default.JWTSecret)
 }

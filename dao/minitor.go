@@ -17,11 +17,11 @@ func (k *K8SDB) TableName() string {
 	return "t_k8s"
 }
 
-func (k *K8SDB) Find(search *K8SDB) (*K8SDB, error) {
-	out := &K8SDB{}
-	return out, Gorm.Where(search).Find(out).Error
-}
-
-func (k *K8SDB) Save() error {
-	return Gorm.Save(k).Error
-}
+//func (k *K8SDB) Find(search *K8SDB) (*K8SDB, error) {
+//	out := &K8SDB{}
+//	return out, Gorm.Where(search).Find(out).Error
+//}
+//
+//func (k *K8SDB) Save() error {
+//	return Gorm.Save(k).Error
+//}

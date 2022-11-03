@@ -2,10 +2,11 @@ package dao
 
 import (
 	"context"
-	"github.com/noovertime7/kubemanage/dao/model"
-	"github.com/noovertime7/kubemanage/pkg/source"
 	"gorm.io/gorm"
 	"strings"
+
+	"github.com/noovertime7/kubemanage/dao/model"
+	"github.com/noovertime7/kubemanage/pkg/source"
 )
 
 func init() {
@@ -23,7 +24,7 @@ func (s *SystemInitTable) InitializerName() string {
 func (s *SystemInitTable) MigrateTable(ctx context.Context, db *gorm.DB) error {
 	tables := []interface{}{
 		model.Workflow{},
-		Admin{},
+		model.UserModel{},
 	}
 	for _, t := range tables {
 		if err := db.AutoMigrate(&t); err != nil {
@@ -41,7 +42,7 @@ func (s *SystemInitTable) InitializeData(ctx context.Context) error {
 func (s *SystemInitTable) TableCreated(ctx context.Context, db *gorm.DB) bool {
 	tables := []interface{}{
 		model.Workflow{},
-		Admin{},
+		model.UserModel{},
 	}
 	yes := true
 	for _, t := range tables {

@@ -3,7 +3,6 @@ package pkg
 import (
 	"errors"
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/noovertime7/kubemanage/config"
 	"github.com/wonderivan/logger"
 	"time"
 )
@@ -11,10 +10,13 @@ import (
 var JWTToken jwtToken
 
 // 定义jwtToken结构体
-type jwtToken struct{}
+type jwtToken struct {
+	secret string
+}
 
-// 从配置中获取jwtSecret
-var jwtSecret = []byte(config.JWTSecret)
+func RegisterJwt(secret string) {
+	JWTToken.secret = secret
+}
 
 // CustomClaims 自定义token中携带的信息
 type CustomClaims struct {
@@ -23,7 +25,7 @@ type CustomClaims struct {
 }
 
 // GenerateToken 生成token函数方法
-func GenerateToken(uid *int) (string, error) {
+func (j *jwtToken) GenerateToken(uid *int) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(24 * time.Hour)
 	claims := CustomClaims{
@@ -33,16 +35,16 @@ func GenerateToken(uid *int) (string, error) {
 		},
 	}
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := tokenClaims.SignedString(jwtSecret)
+	token, err := tokenClaims.SignedString([]byte(j.secret))
 	logger.Info("生成token信息成功!")
 	return token, err
 }
 
 // ParseToken 解析token函数
-func (*jwtToken) ParseToken(tokenString string) (claims *CustomClaims, err error) {
+func (j *jwtToken) ParseToken(tokenString string) (claims *CustomClaims, err error) {
 	// 使用jwt.ParseWithClaims方法解析token，这个token是前端传给我们的,获得一个*Token类型的对象
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(config.JWTSecret), nil
+		return []byte(j.secret), nil
 	})
 	if err != nil {
 		logger.Error("解析token失败,错误信息," + err.Error())

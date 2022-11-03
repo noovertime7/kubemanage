@@ -5,7 +5,7 @@ import (
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg"
-	"github.com/noovertime7/kubemanage/service"
+	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/wonderivan/logger"
 )
 
@@ -35,7 +35,7 @@ func (a *AdminLoginController) AdminLogin(ctx *gin.Context) {
 		middleware.ResponseError(ctx, 20001, err)
 		return
 	}
-	token, err := service.Admin.Login(params)
+	token, err := v1.CoreV1.User().Login(ctx, params)
 	if err != nil {
 		logger.Error("登录失败", err.Error())
 		middleware.ResponseError(ctx, 20002, err)
@@ -50,9 +50,9 @@ func (a *AdminLoginController) AdminLoginOut(ctx *gin.Context) {
 		logger.Error("claims不存在,请检查jwt中间件")
 	}
 	cla, _ := claims.(*pkg.CustomClaims)
-	if err := service.Admin.Logout(cla.Uid); err != nil {
-		logger.Error("退出失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+	if err := v1.CoreV1.User().LoginOut(ctx, cla.Uid); err != nil {
+		logger.Error("退出登录失败", err)
+		middleware.ResponseSuccess(ctx, "退出失败")
 		return
 	}
 	middleware.ResponseSuccess(ctx, "退出成功")

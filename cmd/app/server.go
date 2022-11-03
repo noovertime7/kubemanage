@@ -58,7 +58,7 @@ func Run(opt *options.Options) error {
 	//初始化K8s client
 	InitLocalK8s()
 	// 初始化 api 路由
-	InitRouters()
+	InitRouters(opt)
 	// 初始化内置K8S组件
 	return nil
 }
@@ -70,9 +70,9 @@ func InitLocalK8s() {
 	}
 }
 
-func InitRouters() {
+func InitRouters(opt *options.Options) {
 	pkg.PrintColor()
-	router.HttpServerRun()
+	router.HttpServerRun(opt.ComponentConfig.Default.ListenAddr)
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGKILL, syscall.SIGQUIT, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
