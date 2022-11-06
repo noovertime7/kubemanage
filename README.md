@@ -33,7 +33,7 @@ go mod tidy
 
 go run cmd/main.go
 ```
-
+默认用户名密码 admin/chenteng
 
 ## 效果演示
 首页
