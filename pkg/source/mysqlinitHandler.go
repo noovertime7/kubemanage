@@ -16,7 +16,13 @@ func newMysqlInitHandler(db *gorm.DB) InitHandler {
 }
 
 func (m *mysqlInitHandler) InitTables(ctx context.Context, inits initSlice) error {
-	return m.createTables(ctx, inits)
+	if err := m.createTables(ctx, inits); err != nil {
+		return err
+	}
+	if err := m.createDatas(ctx, inits); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (m *mysqlInitHandler) createTables(ctx context.Context, inits initSlice) error {
@@ -26,6 +32,17 @@ func (m *mysqlInitHandler) createTables(ctx context.Context, inits initSlice) er
 		}
 		if err := init.MigrateTable(ctx, m.db); err != nil {
 			return err
+		}
+	}
+	return nil
+}
+
+func (m *mysqlInitHandler) createDatas(ctx context.Context, inits initSlice) error {
+	for _, init := range inits {
+		if !init.DataInserted(ctx, m.db) {
+			if err := init.InitializeData(ctx, m.db); err != nil {
+				return err
+			}
 		}
 	}
 	return nil

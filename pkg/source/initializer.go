@@ -9,9 +9,9 @@ import (
 type SubInitializer interface {
 	InitializerName() string // 不一定代表单独一个表，所以改成了更宽泛的语义
 	MigrateTable(ctx context.Context, db *gorm.DB) error
-	InitializeData(ctx context.Context) error
+	InitializeData(ctx context.Context, db *gorm.DB) error
 	TableCreated(ctx context.Context, db *gorm.DB) bool
-	DataInserted(ctx context.Context) bool
+	DataInserted(ctx context.Context, db *gorm.DB) bool
 }
 
 type InitHandler interface {
