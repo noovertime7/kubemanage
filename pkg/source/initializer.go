@@ -11,7 +11,7 @@ type SubInitializer interface {
 	MigrateTable(ctx context.Context, db *gorm.DB) error
 	InitializeData(ctx context.Context, db *gorm.DB) error
 	TableCreated(ctx context.Context, db *gorm.DB) bool
-	DataInserted(ctx context.Context, db *gorm.DB) bool
+	DataInserted(ctx context.Context, db *gorm.DB) (bool, error)
 }
 
 type InitHandler interface {
