@@ -3,7 +3,7 @@ kubemanage是一个简单的K8S管理平台，前端使用vue3，后端使用gin
 
 ## 开始部署
 ### 初始化数据库
-刷入sql文件夹下的init.sql
+需要手动创建数据库，数据表会自动初始化
 
 ### 运行工程
 
@@ -29,7 +29,7 @@ cd kubemanage
 
 go mod tidy 
 
-go run main.go
+go run cmd/main.go
 ```
 
 
