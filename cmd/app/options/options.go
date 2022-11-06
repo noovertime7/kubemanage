@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	defaultConfigFile = "G:\\kubemanage\\config.yaml"
+	defaultConfigFile = "/etc/kubemanage/config.yaml"
 )
 
 type Options struct {
@@ -32,7 +32,7 @@ func NewOptions() (*Options, error) {
 }
 
 func (o *Options) BindFlags(cmd *cobra.Command) {
-	cmd.Flags().StringVar(&o.ConfigFile, "configfile", "", "The location of the kubemanage configuration file")
+	cmd.Flags().StringVar(&o.ConfigFile, "KubeManageConfigFile", "", "The location of the kubemanage configuration file")
 }
 
 // Complete completes all the required options
