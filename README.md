@@ -1,6 +1,8 @@
 # kubemanage
 kubemanage是一个简单易用的K8S管理平台，前端使用vue3，后端使用gin+gorm,对于初学k8s开发的同学来说，是一个很方便练手的项目，也可以作为企业二次开发的模板
 
+前端项目地址 https://github.com/noovertime7/kubemanage-web
+
 ## 开始部署
 ### 初始化数据库
 需要手动创建数据库，数据表与数据会通过`DBInitializer`自动初始化
