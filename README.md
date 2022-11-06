@@ -22,6 +22,8 @@ npm run serve
 
 注意：请确保用户名/./kube  文件夹下存在k8s的kubeconfig文件，后面会改成使用crd，容器部署
 
+开始前请设置配置文件环境变量 KubeManageConfigFile="配置文件位置"，配置文件优先级: 默认配置 < 环境变量< 命令行
+
 ```
 git clone https://github.com/noovertime7/kubemanage.git
 
