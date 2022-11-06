@@ -29,7 +29,7 @@ cd kubemanage
 
 go mod tidy 
 
-go run main.go
+go run cmd/main.go
 ```
 
 
