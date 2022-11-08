@@ -41,6 +41,14 @@ go run cmd/main.go
 ```
 默认用户名密码 admin/chenteng
 
+
+## Roadmap
+
+- 支持RBAC的权限管理
+- 支持多集群管理
+- 支持应用一键发布
+- 支持资产管理
+
 ## 效果演示
 首页
 ![首页](https://github.com/noovertime7/kubemanage/blob/master/img/dashboard.jpg?raw=true)
