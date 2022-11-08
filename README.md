@@ -20,7 +20,7 @@ git clone https://github.com/noovertime7/kubemanage-web.git
 
 cd kubemanage-web
 
-npm install 
+npm install
 
 npm run serve
 ```
@@ -35,12 +35,11 @@ git clone https://github.com/noovertime7/kubemanage.git
 
 cd kubemanage
 
-go mod tidy 
+go mod tidy
 
 go run cmd/main.go
 ```
 默认用户名密码 admin/chenteng
-
 
 ## Roadmap
 
