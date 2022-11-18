@@ -3,6 +3,7 @@ package pkg
 import (
 	"errors"
 	jwt "github.com/dgrijalva/jwt-go"
+	uuid "github.com/satori/go.uuid"
 	"github.com/wonderivan/logger"
 	"time"
 )
@@ -18,20 +19,30 @@ func RegisterJwt(secret string) {
 	JWTToken.secret = secret
 }
 
+type BaseClaims struct {
+	UUID        uuid.UUID
+	ID          int
+	Username    string
+	NickName    string
+	AuthorityId uint
+}
+
 // CustomClaims 自定义token中携带的信息
 type CustomClaims struct {
-	Uid int
+	BaseClaims
 	jwt.StandardClaims
 }
 
 // GenerateToken 生成token函数方法
-func (j *jwtToken) GenerateToken(uid *int) (string, error) {
+func (j *jwtToken) GenerateToken(baseClaims BaseClaims) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(24 * time.Hour)
 	claims := CustomClaims{
-		*uid,
+		baseClaims,
 		jwt.StandardClaims{
+			NotBefore: time.Now().Unix() - 1000, // 签名生效时间
 			ExpiresAt: expireTime.Unix(),
+			Issuer:    "kubemanage", // 签名的发行者
 		},
 	}
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

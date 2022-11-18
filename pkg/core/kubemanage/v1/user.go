@@ -35,10 +35,16 @@ func (u userService) Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (str
 	if err != nil {
 		return "", err
 	}
-	if !loginCheck(&checkInfo{salt: user.Salt, inputPwd: userInfo.Password, dbPwd: user.Password}) {
+	if !loginCheck(&checkInfo{salt: pkg.Salt, inputPwd: userInfo.Password, dbPwd: user.Password}) {
 		return "", errors.New("密码错误,请重新输入")
 	}
-	token, err := pkg.JWTToken.GenerateToken(&user.ID)
+	token, err := pkg.JWTToken.GenerateToken(pkg.BaseClaims{
+		UUID:        user.UUID,
+		ID:          user.ID,
+		Username:    user.UserName,
+		NickName:    user.NickName,
+		AuthorityId: user.AuthorityId,
+	})
 	if err != nil {
 		return "", err
 	}

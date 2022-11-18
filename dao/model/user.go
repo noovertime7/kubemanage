@@ -3,16 +3,27 @@ package model
 import (
 	"context"
 	"database/sql"
+	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 	"time"
 )
 
 type UserModel struct {
-	ID       int           `gorm:"column:id;primary_key;AUTO_INCREMENT;not null" json:"id"`
-	UserName string        `json:"user_name" gorm:"column:user_name" description:"管理员用户名"`
-	Salt     string        `json:"salt" gorm:"column:salt" description:"盐"`
-	Password string        `json:"password" gorm:"column:password" description:"密码"`
-	Status   sql.NullInt64 `json:"status" gorm:"column:status" description:"登录状态"`
+	ID          int           `gorm:"column:id;primary_key;AUTO_INCREMENT;not null" json:"id"`
+	UUID        uuid.UUID     `json:"uuid" gorm:"index;comment:用户UUID"`                                                  // 用户UUID
+	UserName    string        `json:"userName" gorm:"index;comment:用户登录名"`                                               // 用户登录名
+	Password    string        `json:"-"  gorm:"comment:用户登录密码"`                                                          // 用户登录密码
+	NickName    string        `json:"nickName" gorm:"default:系统用户;comment:用户昵称"`                                         // 用户昵称
+	SideMode    string        `json:"sideMode" gorm:"default:dark;comment:用户侧边主题"`                                       // 用户侧边主题
+	Avatar      string        `json:"avatar" gorm:"default:https://qmplusimg.henrongyi.top/gva_header.jpg;comment:用户头像"` // 用户头像
+	BaseColor   string        `json:"baseColor" gorm:"default:#fff;comment:基础颜色"`                                        // 基础颜色
+	ActiveColor string        `json:"activeColor" gorm:"default:#1890ff;comment:活跃颜色"`                                   // 活跃颜色
+	AuthorityId uint          `json:"authorityId" gorm:"default:888;comment:用户角色ID"`                                     // 用户角色ID
+	Authority   SysAuthority  `json:"authority" gorm:"foreignKey:AuthorityId;references:AuthorityId;comment:用户角色"`
+	Phone       string        `json:"phone"  gorm:"comment:用户手机号"`                     // 用户手机号
+	Email       string        `json:"email"  gorm:"comment:用户邮箱"`                      // 用户邮箱
+	Enable      int           `json:"enable" gorm:"default:1;comment:用户是否被冻结 1正常 2冻结"` //用户是否被冻结 1正常 2冻结
+	Status      sql.NullInt64 `gorm:"column:status;type:int(11);comment:0离线;1在线" json:"status"`
 	CommonModel
 }
 
@@ -27,10 +38,19 @@ func (u *UserModel) TableName() string {
 func (u *UserModel) InitData(ctx context.Context, db *gorm.DB) error {
 	// 初始化admin
 	datas := []*UserModel{{
-		UserName: "admin",
-		Salt:     "admin",
-		Password: "29c09a3c055e47f704fb7c6df5b530e25f80ee3ab2a3ce44858284f929157389",
-		Status:   sql.NullInt64{Int64: 0, Valid: true},
+		UUID:        uuid.NewV4(),
+		UserName:    "admin",
+		Password:    "29c09a3c055e47f704fb7c6df5b530e25f80ee3ab2a3ce44858284f929157389",
+		NickName:    "admin",
+		SideMode:    "dark",
+		Avatar:      "https://qmplusimg.henrongyi.top/gva_header.jpg",
+		BaseColor:   "#fff",
+		ActiveColor: "#1890ff",
+		AuthorityId: 1,
+		Phone:       "12345678901",
+		Email:       "test@qq.com",
+		Enable:      1,
+		Status:      sql.NullInt64{Int64: 0, Valid: true},
 		CommonModel: CommonModel{
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),

@@ -9,8 +9,8 @@ import (
 type DBInitializer interface {
 	TableName() string
 	MigrateTable(ctx context.Context, db *gorm.DB) error
-	IsInitData(ctx context.Context, db *gorm.DB) (bool, error)
 	InitData(ctx context.Context, db *gorm.DB) error
+	IsInitData(ctx context.Context, db *gorm.DB) (bool, error)
 	TableCreated(ctx context.Context, db *gorm.DB) bool
 }
 

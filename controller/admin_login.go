@@ -50,7 +50,7 @@ func (a *AdminLoginController) AdminLoginOut(ctx *gin.Context) {
 		logger.Error("claims不存在,请检查jwt中间件")
 	}
 	cla, _ := claims.(*pkg.CustomClaims)
-	if err := v1.CoreV1.User().LoginOut(ctx, cla.Uid); err != nil {
+	if err := v1.CoreV1.User().LoginOut(ctx, cla.ID); err != nil {
 		logger.Error("退出登录失败", err)
 		middleware.ResponseSuccess(ctx, "退出失败")
 		return
