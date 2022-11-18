@@ -2,6 +2,9 @@ package options
 
 import (
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/noovertime7/kubemanage/cmd/app/config"
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/pkg"
@@ -9,12 +12,10 @@ import (
 	"github.com/spf13/cobra"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"os"
-	"time"
 )
 
 const (
-	defaultConfigFile = "/etc/kubemanage/config.yaml"
+	defaultConfigFile = "./config.yaml"
 )
 
 type Options struct {
