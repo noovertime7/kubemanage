@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	RegisterInitializer(&Workflow{})
+	RegisterInitializer(WorkFlowOrder, &Workflow{})
 }
 
 type Workflow struct {

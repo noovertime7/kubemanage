@@ -31,7 +31,7 @@ func NewUserService(app *KubeManage) *userService {
 var _ UserService = &userService{}
 
 func (u userService) Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (string, error) {
-	user, err := u.factory.User().Find(ctx, &model.UserModel{UserName: userInfo.UserName})
+	user, err := u.factory.User().Find(ctx, &model.SysUser{UserName: userInfo.UserName})
 	if err != nil {
 		return "", err
 	}
@@ -52,7 +52,7 @@ func (u userService) Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (str
 }
 
 func (u userService) LoginOut(ctx *gin.Context, uid int) error {
-	user := &model.UserModel{ID: uid, Status: sql.NullInt64{Int64: 0, Valid: true}}
+	user := &model.SysUser{ID: uid, Status: sql.NullInt64{Int64: 0, Valid: true}}
 	return u.factory.User().Updates(ctx, user)
 }
 

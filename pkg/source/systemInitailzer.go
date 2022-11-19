@@ -39,7 +39,7 @@ func (s *SystemInitTable) InitializeData(ctx context.Context, db *gorm.DB) error
 func (s *SystemInitTable) TableCreated(ctx context.Context, db *gorm.DB) bool {
 	yes := true
 	for _, initializer := range model.InitializerList {
-		yes = yes && db.Migrator().HasTable(initializer)
+		yes = yes && db.Migrator().HasTable(initializer.TableName())
 	}
 	return yes
 }

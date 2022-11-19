@@ -84,7 +84,10 @@ func (o *Options) registerDatabase() error {
 		sqlConfig.Name)
 
 	var err error
-	if o.DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{}); err != nil {
+	if o.DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+		SkipDefaultTransaction:                   false,
+		DisableForeignKeyConstraintWhenMigrating: true,
+	}); err != nil {
 		return err
 	}
 	// 设置数据库连接池
