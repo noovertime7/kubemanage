@@ -3,7 +3,7 @@ package kube
 import (
 	"context"
 	"encoding/json"
-	"github.com/noovertime7/kubemanage/dto"
+	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/wonderivan/logger"
 	appsV1 "k8s.io/api/apps/v1"
 	coreV1 "k8s.io/api/core/v1"
@@ -95,7 +95,7 @@ func (d *deployment) ScaleDeployment(deployName, namespace string, scaleNum int)
 }
 
 // CreateDeployment 新增deployment,接收deployCreate的对象
-func (d *deployment) CreateDeployment(data *dto.DeployCreateInput) error {
+func (d *deployment) CreateDeployment(data *kubernetes.DeployCreateInput) error {
 	//初始化appsV1.deployment类型的对象
 	deployment := &appsV1.Deployment{
 		ObjectMeta: metaV1.ObjectMeta{

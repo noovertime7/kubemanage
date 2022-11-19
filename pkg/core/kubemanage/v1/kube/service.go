@@ -3,7 +3,7 @@ package kube
 import (
 	"context"
 	"encoding/json"
-	"github.com/noovertime7/kubemanage/dto"
+	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/pkg/errors"
 	"github.com/wonderivan/logger"
 	coreV1 "k8s.io/api/core/v1"
@@ -41,7 +41,7 @@ func (s *service) FromCells(cells []DataCell) []coreV1.Service {
 	return services
 }
 
-func (s *service) CreateService(data *dto.ServiceCreateInput) error {
+func (s *service) CreateService(data *kubernetes.ServiceCreateInput) error {
 	service := &coreV1.Service{
 		ObjectMeta: metaV1.ObjectMeta{
 			Name:      data.Name,

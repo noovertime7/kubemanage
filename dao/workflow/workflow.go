@@ -3,7 +3,7 @@ package workflow
 import (
 	"context"
 	"github.com/noovertime7/kubemanage/dao/model"
-	"github.com/noovertime7/kubemanage/dto"
+	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 	"time"
@@ -14,7 +14,7 @@ type WorkFlowInterface interface {
 	Updates(ctx context.Context, obj *model.Workflow) error
 	Find(ctx context.Context, id int) (*model.Workflow, error)
 	FindList(ctx context.Context, search *model.Workflow) ([]*model.Workflow, error)
-	PageList(ctx context.Context, params *dto.WorkFlowListInput) ([]*model.Workflow, int, error)
+	PageList(ctx context.Context, params *kubernetes.WorkFlowListInput) ([]*model.Workflow, int, error)
 	Delete(ctx context.Context, wid int) error
 }
 
@@ -26,7 +26,7 @@ func NewWorkFlow(db *gorm.DB) WorkFlowInterface {
 	return &workflow{db: db}
 }
 
-func (w *workflow) PageList(ctx context.Context, params *dto.WorkFlowListInput) ([]*model.Workflow, int, error) {
+func (w *workflow) PageList(ctx context.Context, params *kubernetes.WorkFlowListInput) ([]*model.Workflow, int, error) {
 	var total int64 = 0
 	var list []*model.Workflow
 	offset := (params.Page - 1) * params.Limit

@@ -3,9 +3,9 @@ package app
 import (
 	"fmt"
 	"github.com/noovertime7/kubemanage/cmd/app/options"
-	"github.com/noovertime7/kubemanage/pkg"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
+	"github.com/noovertime7/kubemanage/pkg/utils"
 	"github.com/noovertime7/kubemanage/router"
 	"github.com/spf13/cobra"
 	"k8s.io/klog/v2"
@@ -66,12 +66,12 @@ func Run(opt *options.Options) error {
 func InitLocalK8s() {
 	//初始化K8s client
 	if err := kube.K8s.Init(); err != nil {
-		pkg.Must(err)
+		utils.Must(err)
 	}
 }
 
 func InitRouters(opt *options.Options) {
-	pkg.PrintColor()
+	utils.PrintColor()
 	router.HttpServerRun(opt.ComponentConfig.Default.ListenAddr)
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGKILL, syscall.SIGQUIT, syscall.SIGINT, syscall.SIGTERM)

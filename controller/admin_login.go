@@ -9,8 +9,7 @@ import (
 	"github.com/wonderivan/logger"
 )
 
-type AdminLoginController struct {
-}
+type AdminLoginController struct{}
 
 func AdminLoginRegister(group *gin.RouterGroup) {
 	adminLogin := &AdminLoginController{}

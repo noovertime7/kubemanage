@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/controller"
+	"github.com/noovertime7/kubemanage/controller/kubeController"
 	"github.com/noovertime7/kubemanage/docs"
 	"github.com/noovertime7/kubemanage/middleware"
 	swaggerFiles "github.com/swaggo/files"
@@ -78,7 +79,7 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 		middleware.JWTAuth(),
 	)
 	{
-		controller.PodRegister(podGroup)
+		kubeController.PodRegister(podGroup)
 	}
 
 	deploymentGroup := router.Group("/api/k8s/deployment")
@@ -87,73 +88,73 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 		middleware.JWTAuth(),
 	)
 	{
-		controller.DeploymentRegister(deploymentGroup)
+		kubeController.DeploymentRegister(deploymentGroup)
 	}
 
 	daemonSetGroup := router.Group("/api/k8s/daemonset")
 	daemonSetGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
-		controller.DaemonSetRegister(daemonSetGroup)
+		kubeController.DaemonSetRegister(daemonSetGroup)
 	}
 
 	statefulSetGroup := router.Group("/api/k8s/statefulset")
 	statefulSetGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
-		controller.StatefulSetRegister(statefulSetGroup)
+		kubeController.StatefulSetRegister(statefulSetGroup)
 	}
 
 	nodeGroup := router.Group("/api/k8s/node")
 	nodeGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
-		controller.NodeRegister(nodeGroup)
+		kubeController.NodeRegister(nodeGroup)
 	}
 
 	namespaceGroup := router.Group("/api/k8s/namespace")
 	namespaceGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
-		controller.NameSpaceRegister(namespaceGroup)
+		kubeController.NameSpaceRegister(namespaceGroup)
 	}
 
 	persistentVolumeGroup := router.Group("/api/k8s/persistentvolume")
 	persistentVolumeGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
-		controller.PersistentVolumeRegister(persistentVolumeGroup)
+		kubeController.PersistentVolumeRegister(persistentVolumeGroup)
 	}
 
 	serviceGroup := router.Group("/api/k8s/service")
 	serviceGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
-		controller.ServiceRegister(serviceGroup)
+		kubeController.ServiceRegister(serviceGroup)
 	}
 
 	ingressGroup := router.Group("/api/k8s/ingress")
 	ingressGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
-		controller.IngressRegister(ingressGroup)
+		kubeController.IngressRegister(ingressGroup)
 	}
 
 	configmapGroup := router.Group("/api/k8s/configmap")
 	configmapGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
-		controller.ConfigmapRegister(configmapGroup)
+		kubeController.ConfigmapRegister(configmapGroup)
 	}
 
 	persistentVolumeClaimGroup := router.Group("/api/k8s/persistentvolumeclaim")
 	persistentVolumeClaimGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
-		controller.PersistentVolumeClaimRegister(persistentVolumeClaimGroup)
+		kubeController.PersistentVolumeClaimRegister(persistentVolumeClaimGroup)
 	}
 
 	secretGroup := router.Group("/api/k8s/secret")
 	secretGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
-		controller.SecretRegister(secretGroup)
+		kubeController.SecretRegister(secretGroup)
 	}
 
 	workGroup := router.Group("/api/k8s/workflow")
 	workGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
-		controller.WorkFlowRegister(workGroup)
+		kubeController.WorkFlowRegister(workGroup)
 	}
 
 	loginGroup := router.Group("/api/user")
@@ -165,7 +166,14 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	monitorGroup := router.Group("/api/monitor")
 	monitorGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
 	{
-		controller.MonitroRegister(monitorGroup)
+		kubeController.MonitroRegister(monitorGroup)
 	}
+
+	menuGroup := router.Group("/api/menu")
+	menuGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	{
+		controller.MenuRegister(menuGroup)
+	}
+
 	return router
 }

@@ -3,7 +3,7 @@ package kube
 import (
 	"context"
 	"encoding/json"
-	"github.com/noovertime7/kubemanage/dto"
+	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	nwV1 "k8s.io/api/networking/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -38,7 +38,7 @@ func (i *ingress) FromCells(cells []DataCell) []nwV1.Ingress {
 	return ingress
 }
 
-func (i *ingress) CreateIngress(data *dto.IngressCreteInput) error {
+func (i *ingress) CreateIngress(data *kubernetes.IngressCreteInput) error {
 	//声明两个变量,用于后面组装数据
 	var ingressRules []nwV1.IngressRule
 	var httpIngressPaths []nwV1.HTTPIngressPath

@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
-	"github.com/noovertime7/kubemanage/dto"
+	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 )
 
@@ -13,9 +13,9 @@ type WorkFlowServiceGetter interface {
 }
 
 type WorkFlowService interface {
-	Save(context.Context, *dto.WorkFlowCreateInput) error
-	Find(context.Context, *dto.WorkFlowIDInput) (*model.Workflow, error)
-	FindList(context.Context, *dto.WorkFlowListInput) (*WorkflowResp, error)
+	Save(context.Context, *kubernetes.WorkFlowCreateInput) error
+	Find(context.Context, *kubernetes.WorkFlowIDInput) (*model.Workflow, error)
+	FindList(context.Context, *kubernetes.WorkFlowListInput) (*WorkflowResp, error)
 	Delete(context.Context, int) error
 }
 
@@ -38,7 +38,7 @@ type WorkflowResp struct {
 	Total int               `json:"total"`
 }
 
-func (w *workflow) Save(ctx context.Context, params *dto.WorkFlowCreateInput) error {
+func (w *workflow) Save(ctx context.Context, params *kubernetes.WorkFlowCreateInput) error {
 	//若workflow不是ingress类型，传入空字符串即可
 	var ingressName string
 	if params.Type == "Ingress" {
@@ -75,12 +75,12 @@ func (w *workflow) Delete(ctx context.Context, id int) (err error) {
 	return nil
 }
 
-func (w *workflow) Find(ctx context.Context, params *dto.WorkFlowIDInput) (data *model.Workflow, err error) {
+func (w *workflow) Find(ctx context.Context, params *kubernetes.WorkFlowIDInput) (data *model.Workflow, err error) {
 	return w.factory.WorkFlow().Find(ctx, params.ID)
 }
 
-func (w *workflow) FindList(ctx context.Context, params *dto.WorkFlowListInput) (*WorkflowResp, error) {
-	workflows, total, err := w.factory.WorkFlow().PageList(ctx, &dto.WorkFlowListInput{
+func (w *workflow) FindList(ctx context.Context, params *kubernetes.WorkFlowListInput) (*WorkflowResp, error) {
+	workflows, total, err := w.factory.WorkFlow().PageList(ctx, &kubernetes.WorkFlowListInput{
 		FilterName: params.FilterName,
 		Page:       params.Page,
 		Limit:      params.Limit,
@@ -95,7 +95,7 @@ func (w *workflow) FindList(ctx context.Context, params *dto.WorkFlowListInput) 
 }
 
 func (w *workflow) delWorkflowRes(ctx context.Context, id int) error {
-	workFlowInfo, err := w.Find(ctx, &dto.WorkFlowIDInput{ID: id})
+	workFlowInfo, err := w.Find(ctx, &kubernetes.WorkFlowIDInput{ID: id})
 	if err != nil {
 		return err
 	}
@@ -116,11 +116,11 @@ func (w *workflow) delWorkflowRes(ctx context.Context, id int) error {
 	return nil
 }
 
-func createWorkflowRes(params *dto.WorkFlowCreateInput) error {
+func createWorkflowRes(params *kubernetes.WorkFlowCreateInput) error {
 	//声明service类型
 	var serviceType string
 	//组装DeployCreate类型的数据
-	dc := &dto.DeployCreateInput{
+	dc := &kubernetes.DeployCreateInput{
 		Name:          params.Name,
 		NameSpace:     params.NameSpace,
 		Replicas:      params.Replicas,
@@ -144,7 +144,7 @@ func createWorkflowRes(params *dto.WorkFlowCreateInput) error {
 	}
 
 	//组装ServiceCreate类型的数据
-	sc := &dto.ServiceCreateInput{
+	sc := &kubernetes.ServiceCreateInput{
 		Name:          getServiceName(params.Name),
 		NameSpace:     params.NameSpace,
 		Type:          serviceType,
@@ -158,7 +158,7 @@ func createWorkflowRes(params *dto.WorkFlowCreateInput) error {
 	}
 	//组装IngressCreate类型的数据，创建ingress，只有ingress类型的workflow才有ingress资源，所以这里做了一层判断
 	if params.Type == "Ingress" {
-		ic := &dto.IngressCreteInput{
+		ic := &kubernetes.IngressCreteInput{
 			Name:      getIngressName(params.Name),
 			NameSpace: params.NameSpace,
 			Label:     params.Label,
