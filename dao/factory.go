@@ -9,6 +9,7 @@ import (
 )
 
 type ShareDaoFactory interface {
+	GetDB() *gorm.DB
 	WorkFlow() workflow.WorkFlowInterface
 	User() user.User
 	Authority() authority.Authority
@@ -22,6 +23,10 @@ func NewShareDaoFactory(db *gorm.DB) ShareDaoFactory {
 
 type shareDaoFactory struct {
 	db *gorm.DB
+}
+
+func (s *shareDaoFactory) GetDB() *gorm.DB {
+	return s.db
 }
 
 func (s *shareDaoFactory) WorkFlow() workflow.WorkFlowInterface {

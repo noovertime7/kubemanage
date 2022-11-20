@@ -8,9 +8,18 @@ import (
 
 func GetClaims(c *gin.Context) (*pkg.CustomClaims, error) {
 	token := c.Request.Header.Get("token")
+	if token == "" {
+		return nil, errors.New("请求未携带token,无权限访问")
+	}
+	// 解析token内容
 	claims, err := pkg.JWTToken.ParseToken(token)
 	if err != nil {
-		return nil, errors.New("从Gin的Context中获取从jwt解析信息失败, 请检查请求头是否存在token且claims是否为规定结构")
+		// token过期错误
+		if err.Error() == "TokenExpired" {
+			return nil, errors.New("token过期")
+		}
+		// 解析其他错误
+		return nil, errors.New("token解析失败")
 	}
 	return claims, err
 }

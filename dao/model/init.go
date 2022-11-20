@@ -2,8 +2,9 @@ package model
 
 import (
 	"database/sql"
+	adapter "github.com/casbin/gorm-adapter/v3"
+	"github.com/noovertime7/kubemanage/pkg"
 	uuid "github.com/satori/go.uuid"
-	"time"
 )
 
 // 初始化顺序
@@ -12,6 +13,7 @@ const (
 	MenuAuthorityOrder
 	SysBaseMenuOrder
 	SysAuthorityOrder
+	CasbinInitOrder
 	WorkFlowOrder
 )
 
@@ -27,15 +29,11 @@ var (
 			Avatar:      "https://qmplusimg.henrongyi.top/gva_header.jpg",
 			BaseColor:   "#fff",
 			ActiveColor: "#1890ff",
-			AuthorityId: 111,
+			AuthorityId: pkg.AdminDefaultAuth,
 			Phone:       "12345678901",
 			Email:       "test@qq.com",
 			Enable:      1,
 			Status:      sql.NullInt64{Int64: 0, Valid: true},
-			CommonModel: CommonModel{
-				CreatedAt: time.Now(),
-				UpdatedAt: time.Now(),
-			},
 		},
 		{
 			UUID:        uuid.NewV4(),
@@ -46,15 +44,26 @@ var (
 			Avatar:      "https://qmplusimg.henrongyi.top/gva_header.jpg",
 			BaseColor:   "#fff",
 			ActiveColor: "#1890ff",
-			AuthorityId: 222,
+			AuthorityId: pkg.UserDefaultAuth,
 			Phone:       "12345678901",
 			Email:       "test@qq.com",
 			Enable:      1,
 			Status:      sql.NullInt64{Int64: 0, Valid: true},
-			CommonModel: CommonModel{
-				CreatedAt: time.Now(),
-				UpdatedAt: time.Now(),
-			},
+		},
+		{
+			UUID:        uuid.NewV4(),
+			UserName:    "chentengsub",
+			Password:    "29c09a3c055e47f704fb7c6df5b530e25f80ee3ab2a3ce44858284f929157389",
+			NickName:    "chentengsub",
+			SideMode:    "dark",
+			Avatar:      "https://qmplusimg.henrongyi.top/gva_header.jpg",
+			BaseColor:   "#fff",
+			ActiveColor: "#1890ff",
+			AuthorityId: pkg.UserSubDefaultAuth,
+			Phone:       "12345678901",
+			Email:       "test@qq.com",
+			Enable:      1,
+			Status:      sql.NullInt64{Int64: 0, Valid: true},
 		},
 	}
 )
@@ -100,22 +109,36 @@ var (
 var (
 	SysAuthorityEntities = []SysAuthority{
 		{
-			AuthorityId:   111,
+			AuthorityId:   pkg.AdminDefaultAuth,
 			AuthorityName: "管理员",
 			DefaultRouter: "dashboard",
 			ParentId:      0,
 		},
 		{
-			AuthorityId:   222,
+			AuthorityId:   pkg.UserDefaultAuth,
 			AuthorityName: "普通用户",
 			DefaultRouter: "dashboard",
 			ParentId:      0,
 		},
 		{
-			AuthorityId:   2221,
+			AuthorityId:   pkg.UserSubDefaultAuth,
 			AuthorityName: "普通用户子角色",
 			DefaultRouter: "dashboard",
 			ParentId:      222,
 		},
 	}
 )
+
+var CasbinApi = []adapter.CasbinRule{
+	{Ptype: "p", V0: pkg.AdminDefaultAuthStr, V1: "/api/user/login", V2: "POST"},
+	{Ptype: "p", V0: pkg.AdminDefaultAuthStr, V1: "/api/user/loginout ", V2: "GET"},
+	{Ptype: "p", V0: pkg.AdminDefaultAuthStr, V1: "/api/menu/get_menus", V2: "GET"},
+
+	{Ptype: "p", V0: pkg.UserDefaultAuthStr, V1: "/api/user/login", V2: "POST"},
+	{Ptype: "p", V0: pkg.UserDefaultAuthStr, V1: "/api/user/loginout ", V2: "GET"},
+	{Ptype: "p", V0: pkg.UserDefaultAuthStr, V1: "/api/menu/get_menus", V2: "GET"},
+
+	{Ptype: "p", V0: pkg.UserSubDefaultAuthStr, V1: "/api/user/login", V2: "POST"},
+	{Ptype: "p", V0: pkg.UserSubDefaultAuthStr, V1: "/api/user/loginout ", V2: "GET"},
+	{Ptype: "p", V0: pkg.UserSubDefaultAuthStr, V1: "/api/menu/get_menus", V2: "GET"},
+}

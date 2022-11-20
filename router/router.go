@@ -77,6 +77,7 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	podGroup.Use(
 		middleware.TranslationMiddleware(),
 		middleware.JWTAuth(),
+		middleware.CasbinHandler(),
 	)
 	{
 		kubeController.PodRegister(podGroup)
@@ -86,93 +87,103 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	deploymentGroup.Use(
 		middleware.TranslationMiddleware(),
 		middleware.JWTAuth(),
+		middleware.CasbinHandler(),
 	)
 	{
 		kubeController.DeploymentRegister(deploymentGroup)
 	}
 
 	daemonSetGroup := router.Group("/api/k8s/daemonset")
-	daemonSetGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	daemonSetGroup.Use(
+		middleware.TranslationMiddleware(),
+		middleware.JWTAuth(),
+		middleware.CasbinHandler())
 	{
 		kubeController.DaemonSetRegister(daemonSetGroup)
 	}
 
 	statefulSetGroup := router.Group("/api/k8s/statefulset")
-	statefulSetGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	statefulSetGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
 		kubeController.StatefulSetRegister(statefulSetGroup)
 	}
 
 	nodeGroup := router.Group("/api/k8s/node")
-	nodeGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	nodeGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
 		kubeController.NodeRegister(nodeGroup)
 	}
 
 	namespaceGroup := router.Group("/api/k8s/namespace")
-	namespaceGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	namespaceGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
 		kubeController.NameSpaceRegister(namespaceGroup)
 	}
 
 	persistentVolumeGroup := router.Group("/api/k8s/persistentvolume")
-	persistentVolumeGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	persistentVolumeGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
 		kubeController.PersistentVolumeRegister(persistentVolumeGroup)
 	}
 
 	serviceGroup := router.Group("/api/k8s/service")
-	serviceGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	serviceGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
 		kubeController.ServiceRegister(serviceGroup)
 	}
 
 	ingressGroup := router.Group("/api/k8s/ingress")
-	ingressGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	ingressGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
 		kubeController.IngressRegister(ingressGroup)
 	}
 
 	configmapGroup := router.Group("/api/k8s/configmap")
-	configmapGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	configmapGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
 		kubeController.ConfigmapRegister(configmapGroup)
 	}
 
 	persistentVolumeClaimGroup := router.Group("/api/k8s/persistentvolumeclaim")
-	persistentVolumeClaimGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	persistentVolumeClaimGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
 		kubeController.PersistentVolumeClaimRegister(persistentVolumeClaimGroup)
 	}
 
 	secretGroup := router.Group("/api/k8s/secret")
-	secretGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	secretGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
 		kubeController.SecretRegister(secretGroup)
 	}
 
 	workGroup := router.Group("/api/k8s/workflow")
-	workGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	workGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
 		kubeController.WorkFlowRegister(workGroup)
 	}
 
 	loginGroup := router.Group("/api/user")
-	loginGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	loginGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
 		controller.AdminLoginRegister(loginGroup)
 	}
 
 	monitorGroup := router.Group("/api/monitor")
-	monitorGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	monitorGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
 		kubeController.MonitroRegister(monitorGroup)
 	}
 
 	menuGroup := router.Group("/api/menu")
-	menuGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth())
+	menuGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
 		controller.MenuRegister(menuGroup)
+	}
+
+	casbinGroup := router.Group("/api/casbin")
+	casbinGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
+	{
+		controller.CasbinRegister(casbinGroup)
 	}
 
 	return router
