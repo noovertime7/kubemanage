@@ -1,6 +1,9 @@
 package v1
 
 import (
+	"strconv"
+	"sync"
+
 	"github.com/casbin/casbin/v2"
 	"github.com/casbin/casbin/v2/model"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
@@ -8,8 +11,6 @@ import (
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/pkg/errors"
 	"github.com/wonderivan/logger"
-	"strconv"
-	"sync"
 )
 
 type CasbinServiceGetter interface {
@@ -105,7 +106,7 @@ func (c *casbinService) Casbin() *casbin.CachedEnforcer {
 		e = some(where (p.eft == allow))
 		
 		[matchers]
-		m = r.sub == p.sub && keyMatch2(r.obj,p.obj) && r.act == p.act
+		m = r.sub == p.sub && keyMatch2(r.obj,p.obj) && r.act == p.act|| r.sub == "111"
 		`
 		m, err := model.NewModelFromString(text)
 		if err != nil {
