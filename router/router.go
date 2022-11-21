@@ -165,7 +165,7 @@ func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	loginGroup := router.Group("/api/user")
 	loginGroup.Use(middleware.TranslationMiddleware(), middleware.JWTAuth(), middleware.CasbinHandler())
 	{
-		controller.AdminLoginRegister(loginGroup)
+		controller.UserRegister(loginGroup)
 	}
 
 	monitorGroup := router.Group("/api/monitor")

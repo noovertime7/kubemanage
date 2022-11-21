@@ -17,6 +17,7 @@ type UserServiceGetter interface {
 type UserService interface {
 	Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (string, error)
 	LoginOut(ctx *gin.Context, uid int) error
+	GetUserInfo(ctx *gin.Context, uid int, aid uint) (*dto.UserInfoOut, error)
 }
 
 type userService struct {
@@ -54,6 +55,28 @@ func (u userService) Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (str
 func (u userService) LoginOut(ctx *gin.Context, uid int) error {
 	user := &model.SysUser{ID: uid, Status: sql.NullInt64{Int64: 0, Valid: true}}
 	return u.factory.User().Updates(ctx, user)
+}
+
+func (u userService) GetUserInfo(ctx *gin.Context, uid int, aid uint) (*dto.UserInfoOut, error) {
+	user, err := u.factory.User().Find(ctx, &model.SysUser{ID: uid})
+	if err != nil {
+		return nil, err
+	}
+	menus, err := CoreV1.Menu().GetMenu(ctx, aid)
+	if err != nil {
+		return nil, err
+	}
+	var outRules []string
+	rules := CoreV1.CasbinService().GetPolicyPathByAuthorityId(aid)
+	for _, rule := range rules {
+		item := rule.Path + "," + rule.Method
+		outRules = append(outRules, item)
+	}
+	return &dto.UserInfoOut{
+		User:      *user,
+		Menus:     menus,
+		RuleNames: outRules,
+	}, nil
 }
 
 type checkInfo struct {

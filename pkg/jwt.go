@@ -61,11 +61,11 @@ func (j *jwtToken) ParseToken(tokenString string) (claims *CustomClaims, err err
 		logger.Error("解析token失败,错误信息," + err.Error())
 		// 处理token解析后的各种错误
 		if ve, ok := err.(*jwt.ValidationError); ok {
-			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
+			if ve.Errors == jwt.ValidationErrorMalformed {
 				return nil, errors.New("token格式错误," + err.Error())
-			} else if ve.Errors&jwt.ValidationErrorExpired != 0 {
-				return nil, errors.New("token已过期," + err.Error())
-			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
+			} else if ve.Errors == jwt.ValidationErrorExpired {
+				return nil, errors.New("登录已过期，请重新登录")
+			} else if ve.Errors == jwt.ValidationErrorNotValidYet {
 				return nil, errors.New("token还不可用," + err.Error())
 			} else {
 				return nil, errors.New("token不可用," + err.Error())

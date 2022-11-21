@@ -14,12 +14,7 @@ func GetClaims(c *gin.Context) (*pkg.CustomClaims, error) {
 	// 解析token内容
 	claims, err := pkg.JWTToken.ParseToken(token)
 	if err != nil {
-		// token过期错误
-		if err.Error() == "TokenExpired" {
-			return nil, errors.New("token过期")
-		}
-		// 解析其他错误
-		return nil, errors.New("token解析失败")
+		return nil, err
 	}
 	return claims, err
 }

@@ -2,6 +2,7 @@ package dto
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/pkg"
 )
 
@@ -12,6 +13,12 @@ type AdminLoginInput struct {
 
 type AdminLoginOut struct {
 	Token string `form:"token" json:"token" comment:"token"  example:"token"`
+}
+
+type UserInfoOut struct {
+	User      model.SysUser   `json:"user"`
+	Menus     []model.SysMenu `json:"menus"`
+	RuleNames []string        `json:"ruleNames"`
 }
 
 // BindingValidParams 绑定并校验参数

@@ -6,15 +6,17 @@ import (
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
+	"github.com/noovertime7/kubemanage/pkg/utils"
 	"github.com/wonderivan/logger"
 )
 
-type AdminLoginController struct{}
+type UserController struct{}
 
-func AdminLoginRegister(group *gin.RouterGroup) {
-	adminLogin := &AdminLoginController{}
-	group.POST("/login", adminLogin.AdminLogin)
-	group.GET("/loginout", adminLogin.AdminLoginOut)
+func UserRegister(group *gin.RouterGroup) {
+	user := &UserController{}
+	group.POST("/login", user.AdminLogin)
+	group.GET("/loginout", user.AdminLoginOut)
+	group.GET("/getinfo", user.GetUserInfo)
 }
 
 // AdminLogin godoc
@@ -27,7 +29,7 @@ func AdminLoginRegister(group *gin.RouterGroup) {
 // @Param polygon body dto.AdminLoginInput true "body"
 // @Success 200 {object} middleware.Response{data=dto.AdminLoginOut} "success"
 // @Router /admin_login/login [post]
-func (a *AdminLoginController) AdminLogin(ctx *gin.Context) {
+func (u *UserController) AdminLogin(ctx *gin.Context) {
 	params := &dto.AdminLoginInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败", err.Error())
@@ -43,7 +45,7 @@ func (a *AdminLoginController) AdminLogin(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, &dto.AdminLoginOut{Token: token})
 }
 
-func (a *AdminLoginController) AdminLoginOut(ctx *gin.Context) {
+func (u *UserController) AdminLoginOut(ctx *gin.Context) {
 	claims, exists := ctx.Get("claims")
 	if !exists {
 		logger.Error("claims不存在,请检查jwt中间件")
@@ -55,4 +57,18 @@ func (a *AdminLoginController) AdminLoginOut(ctx *gin.Context) {
 		return
 	}
 	middleware.ResponseSuccess(ctx, "退出成功")
+}
+
+func (u *UserController) GetUserInfo(ctx *gin.Context) {
+	clalms, err := utils.GetClaims(ctx)
+	if err != nil {
+		logger.Error("获取CustomClaims失败", err)
+		return
+	}
+	userInfo, err := v1.CoreV1.User().GetUserInfo(ctx, clalms.ID, clalms.AuthorityId)
+	if err != nil {
+		logger.Error("获取userInfo失败", err)
+		middleware.ResponseError(ctx, 30001, err)
+	}
+	middleware.ResponseSuccess(ctx, userInfo)
 }
