@@ -29,25 +29,25 @@ func (i *MenuAuthority) InitData(ctx context.Context, db *gorm.DB) error {
 		err         error
 	)
 	// admin
-	if err = db.Model(&adminRole).Association("SysBaseMenus").Replace(SysBaseMenuEntities[:20]); err != nil {
+	if err = db.Model(&adminRole).Association("SysBaseMenus").Replace(SysBaseMenuEntities[:6]); err != nil {
 		return err
 	}
-	if err = db.Model(&adminRole).Association("SysBaseMenus").Append(SysBaseMenuEntities[21:]); err != nil {
+	if err = db.Model(&adminRole).Association("SysBaseMenus").Append(SysBaseMenuEntities[6:]); err != nil {
 		return err
 	}
 
 	// userRole
-	menu8881 := SysBaseMenuEntities[:2]
-	menu8881 = append(menu8881, SysBaseMenuEntities[7])
+	menu8881 := SysBaseMenuEntities[:6]
+	menu8881 = append(menu8881, SysBaseMenuEntities[6])
 	if err = db.Model(&userRole).Association("SysBaseMenus").Replace(menu8881); err != nil {
 		return err
 	}
 
 	// userSubRole
-	if err = db.Model(&userSubRole).Association("SysBaseMenus").Replace(SysBaseMenuEntities[:12]); err != nil {
+	if err = db.Model(&userSubRole).Association("SysBaseMenus").Replace(SysBaseMenuEntities[:6]); err != nil {
 		return err
 	}
-	if err = db.Model(&userSubRole).Association("SysBaseMenus").Append(SysBaseMenuEntities[13:17]); err != nil {
+	if err = db.Model(&userSubRole).Association("SysBaseMenus").Append(SysBaseMenuEntities[5:6]); err != nil {
 		return err
 	}
 	return nil
