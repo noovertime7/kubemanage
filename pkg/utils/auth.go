@@ -32,3 +32,17 @@ func GetUserAuthorityId(c *gin.Context) (uint, error) {
 		return waitUse.AuthorityId, nil
 	}
 }
+
+// GetUserInfo 从Gin的Context中获取从jwt解析出来的用户角色id
+func GetUserInfo(c *gin.Context) *pkg.CustomClaims {
+	if claims, exists := c.Get("claims"); !exists {
+		if cl, err := GetClaims(c); err != nil {
+			return nil
+		} else {
+			return cl
+		}
+	} else {
+		waitUse := claims.(*pkg.CustomClaims)
+		return waitUse
+	}
+}

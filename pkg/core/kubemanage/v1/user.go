@@ -18,6 +18,10 @@ type UserService interface {
 	Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (string, error)
 	LoginOut(ctx *gin.Context, uid int) error
 	GetUserInfo(ctx *gin.Context, uid int, aid uint) (*dto.UserInfoOut, error)
+	SetUserAuth(ctx *gin.Context, uid int, aid uint) error
+	DeleteUser(ctx *gin.Context, uid int) error
+	ChangePassword(ctx *gin.Context, uid int, info *dto.ChangeUserPwdInput) error
+	ResetPassword(ctx *gin.Context, uid int) error
 }
 
 type userService struct {
@@ -31,7 +35,7 @@ func NewUserService(app *KubeManage) *userService {
 
 var _ UserService = &userService{}
 
-func (u userService) Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (string, error) {
+func (u *userService) Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (string, error) {
 	user, err := u.factory.User().Find(ctx, &model.SysUser{UserName: userInfo.UserName})
 	if err != nil {
 		return "", err
@@ -52,12 +56,23 @@ func (u userService) Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (str
 	return token, nil
 }
 
-func (u userService) LoginOut(ctx *gin.Context, uid int) error {
+type checkInfo struct {
+	salt     string
+	inputPwd string
+	dbPwd    string
+}
+
+func loginCheck(info *checkInfo) bool {
+	encryptInputPwd := pkg.GenSaltPassword(info.salt, info.inputPwd)
+	return encryptInputPwd == info.dbPwd
+}
+
+func (u *userService) LoginOut(ctx *gin.Context, uid int) error {
 	user := &model.SysUser{ID: uid, Status: sql.NullInt64{Int64: 0, Valid: true}}
 	return u.factory.User().Updates(ctx, user)
 }
 
-func (u userService) GetUserInfo(ctx *gin.Context, uid int, aid uint) (*dto.UserInfoOut, error) {
+func (u *userService) GetUserInfo(ctx *gin.Context, uid int, aid uint) (*dto.UserInfoOut, error) {
 	user, err := u.factory.User().Find(ctx, &model.SysUser{ID: uid})
 	if err != nil {
 		return nil, err
@@ -79,13 +94,36 @@ func (u userService) GetUserInfo(ctx *gin.Context, uid int, aid uint) (*dto.User
 	}, nil
 }
 
-type checkInfo struct {
-	salt     string
-	inputPwd string
-	dbPwd    string
+func (u *userService) SetUserAuth(ctx *gin.Context, uid int, aid uint) error {
+	user := &model.SysUser{ID: uid, AuthorityId: aid}
+	return u.factory.User().Updates(ctx, user)
 }
 
-func loginCheck(info *checkInfo) bool {
-	encryptInputPwd := pkg.GenSaltPassword(info.salt, info.inputPwd)
-	return encryptInputPwd == info.dbPwd
+func (u *userService) DeleteUser(ctx *gin.Context, uid int) error {
+	user := &model.SysUser{ID: uid}
+	return u.factory.User().Delete(ctx, user)
+}
+
+func (u *userService) ChangePassword(ctx *gin.Context, uid int, info *dto.ChangeUserPwdInput) error {
+	userDB := &model.SysUser{ID: uid}
+	user, err := u.factory.User().Find(ctx, userDB)
+	if err != nil {
+		return err
+	}
+	check := &checkInfo{
+		salt:     pkg.Salt,
+		inputPwd: info.OldPwd,
+		dbPwd:    user.Password,
+	}
+	if !loginCheck(check) {
+		return errors.New("原密码错误,请重新输入")
+	}
+	//生成新密码
+	user.Password = pkg.GenSaltPassword(pkg.Salt, info.NewPwd)
+	return u.factory.User().Updates(ctx, user)
+}
+
+func (u *userService) ResetPassword(ctx *gin.Context, uid int) error {
+	user := &model.SysUser{ID: uid, Password: pkg.GenSaltPassword(pkg.Salt, "kubemanage")}
+	return u.factory.User().Updates(ctx, user)
 }

@@ -36,6 +36,10 @@ func (u *SysUser) TableName() string {
 }
 
 func (u *SysUser) InitData(ctx context.Context, db *gorm.DB) error {
+	ok, err := u.IsInitData(ctx, db)
+	if err != nil || ok {
+		return err
+	}
 	if err := db.WithContext(ctx).Create(SysUserEntities).Error; err != nil {
 		return err
 	}
@@ -54,7 +58,7 @@ func (u *SysUser) InitData(ctx context.Context, db *gorm.DB) error {
 func (u *SysUser) IsInitData(ctx context.Context, db *gorm.DB) (bool, error) {
 	adminOk, err := u.isAdminInit(ctx, db)
 	if err != nil {
-		return false, err
+		return false, nil
 	}
 	return adminOk, nil
 }

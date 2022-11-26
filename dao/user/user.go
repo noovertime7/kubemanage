@@ -11,6 +11,7 @@ type User interface {
 	Find(ctx context.Context, userInfo *model.SysUser) (*model.SysUser, error)
 	Save(ctx context.Context, userInfo *model.SysUser) error
 	Updates(ctx context.Context, userInfo *model.SysUser) error
+	Delete(ctx context.Context, userInfo *model.SysUser) error
 }
 
 var _ User = &user{}
@@ -43,4 +44,8 @@ func (u *user) Updates(ctx context.Context, userInfo *model.SysUser) error {
 		return errors.New("id not set")
 	}
 	return u.db.WithContext(ctx).Updates(userInfo).Error
+}
+
+func (u *user) Delete(ctx context.Context, userInfo *model.SysUser) error {
+	return u.db.WithContext(ctx).Delete(userInfo).Error
 }
