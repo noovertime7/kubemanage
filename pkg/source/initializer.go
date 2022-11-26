@@ -41,6 +41,7 @@ func (i *initDBService) InitDB() error {
 	if len(initializers) == 0 {
 		return errors.New("无可用初始化过程，请检查初始化是否已执行完成")
 	}
+	// TODO support more database
 	handler := newMysqlInitHandler(i.db)
 	return handler.InitTables(context.TODO(), initializers)
 }
