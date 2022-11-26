@@ -27,6 +27,10 @@ func (s *SysAuthority) MigrateTable(ctx context.Context, db *gorm.DB) error {
 }
 
 func (s *SysAuthority) InitData(ctx context.Context, db *gorm.DB) error {
+	ok, err := s.IsInitData(ctx, db)
+	if err != nil || ok {
+		return err
+	}
 	if err := db.Model(&SysAuthorityEntities[0]).Association("DataAuthorityId").Replace(
 		[]*SysAuthority{
 			{AuthorityId: 111},
@@ -50,7 +54,7 @@ func (s *SysAuthority) InitData(ctx context.Context, db *gorm.DB) error {
 func (s *SysAuthority) IsInitData(ctx context.Context, db *gorm.DB) (bool, error) {
 	var out *SysAuthority
 	if err := db.WithContext(ctx).Where("authority_id = '111' ").Find(&out).Error; err != nil {
-		return false, err
+		return false, nil
 	}
 	return out.AuthorityId != 0, nil
 }

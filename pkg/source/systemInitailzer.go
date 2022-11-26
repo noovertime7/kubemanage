@@ -43,14 +43,3 @@ func (s *SystemInitTable) TableCreated(ctx context.Context, db *gorm.DB) bool {
 	}
 	return yes
 }
-
-func (s *SystemInitTable) DataInserted(ctx context.Context, db *gorm.DB) (bool, error) {
-	for _, initializer := range model.InitializerList {
-		ok, err := initializer.IsInitData(ctx, db)
-		if err != nil || !ok {
-			return false, err
-		}
-		continue
-	}
-	return true, nil
-}

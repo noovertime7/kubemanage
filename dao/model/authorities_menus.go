@@ -27,7 +27,12 @@ func (i *MenuAuthority) InitData(ctx context.Context, db *gorm.DB) error {
 		userRole    = SysAuthorityEntities[1]
 		userSubRole = SysAuthorityEntities[2]
 		err         error
+		ok          bool
 	)
+	ok, err = i.IsInitData(ctx, db)
+	if err != nil || ok {
+		return err
+	}
 	// admin
 	if err = db.Model(&adminRole).Association("SysBaseMenus").Replace(SysBaseMenuEntities[:6]); err != nil {
 		return err

@@ -39,14 +39,8 @@ func (m *mysqlInitHandler) createTables(ctx context.Context, inits initSlice) er
 
 func (m *mysqlInitHandler) createDatas(ctx context.Context, inits initSlice) error {
 	for _, init := range inits {
-		ok, err := init.DataInserted(ctx, m.db)
-		if err != nil {
+		if err := init.InitializeData(ctx, m.db); err != nil {
 			return err
-		}
-		if !ok {
-			if err := init.InitializeData(ctx, m.db); err != nil {
-				return err
-			}
 		}
 	}
 	return nil
