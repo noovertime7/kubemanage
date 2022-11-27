@@ -191,7 +191,7 @@ func (u *UserController) ChangePassword(ctx *gin.Context) {
 // @Security  ApiKeyAuth
 // @Produce  application/json
 // @Success   200   {object}  middleware.Response{msg=string}  "重置用户密码"
-// @Router    /api/user/{id}/reset_pwd [post]
+// @Router    /api/user/{id}/reset_pwd [put]
 func (u *UserController) ResetPassword(ctx *gin.Context) {
 	uid, err := utils.ParseInt(ctx.Param("id"))
 	if err != nil {

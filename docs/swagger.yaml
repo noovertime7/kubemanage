@@ -1,0 +1,2154 @@
+definitions:
+  dto.AdminLoginInput:
+    properties:
+      password:
+        example: 密码
+        type: string
+      username:
+        example: 用户名
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  dto.AdminLoginOut:
+    properties:
+      token:
+        example: token
+        type: string
+    type: object
+  dto.CasbinInReceive:
+    properties:
+      authorityId:
+        description: 权限id
+        type: integer
+    type: object
+  dto.CasbinInfo:
+    properties:
+      method:
+        description: 方法
+        type: string
+      path:
+        description: 路径
+        type: string
+    type: object
+  dto.ChangeUserPwdInput:
+    properties:
+      new_pwd:
+        type: string
+      old_pwd:
+        type: string
+    required:
+    - new_pwd
+    - old_pwd
+    type: object
+  dto.SetUserAuth:
+    properties:
+      authorityId:
+        description: 角色ID
+        type: integer
+    type: object
+  kubernetes.DeployCreateInput:
+    properties:
+      container_port:
+        type: integer
+      cpu:
+        type: string
+      health_check:
+        type: boolean
+      health_path:
+        type: string
+      image:
+        type: string
+      label:
+        additionalProperties:
+          type: string
+        type: object
+      memory:
+        type: string
+      name:
+        description: DeploymentNameNS
+        type: string
+      namespace:
+        type: string
+      replicas:
+        type: integer
+    required:
+    - image
+    - name
+    - namespace
+    - replicas
+    type: object
+  kubernetes.HttpPath:
+    properties:
+      path:
+        type: string
+      path_type:
+        type: string
+      service_name:
+        type: string
+      service_port:
+        type: integer
+    type: object
+  kubernetes.IngressCreteInput:
+    properties:
+      hosts:
+        additionalProperties:
+          items:
+            $ref: '#/definitions/kubernetes.HttpPath'
+          type: array
+        type: object
+      label:
+        additionalProperties:
+          type: string
+        type: object
+      name:
+        type: string
+      namespace:
+        type: string
+    type: object
+  kubernetes.ServiceCreateInput:
+    properties:
+      container_port:
+        type: integer
+      label:
+        additionalProperties:
+          type: string
+        type: object
+      name:
+        type: string
+      namespace:
+        type: string
+      node_port:
+        type: integer
+      port:
+        type: integer
+      type:
+        type: string
+    type: object
+  kubernetes.WorkFlowCreateInput:
+    properties:
+      container_port:
+        type: integer
+      cpu:
+        type: string
+      deployment:
+        type: string
+      health_path:
+        type: string
+      healthCheck:
+        type: boolean
+      hosts:
+        additionalProperties:
+          items:
+            $ref: '#/definitions/kubernetes.HttpPath'
+          type: array
+        type: object
+      image:
+        type: string
+      label:
+        additionalProperties:
+          type: string
+        type: object
+      memory:
+        type: string
+      name:
+        type: string
+      namespace:
+        type: string
+      node_port:
+        type: integer
+      port:
+        type: integer
+      replicas:
+        type: integer
+      type:
+        type: string
+    type: object
+  middleware.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
+        type: string
+    type: object
+  model.Meta:
+    properties:
+      activeName:
+        type: string
+      closeTab:
+        description: 自动关闭tab
+        type: boolean
+      icon:
+        description: 菜单图标
+        type: string
+      keepAlive:
+        description: 是否缓存
+        type: boolean
+      title:
+        description: 菜单名
+        type: string
+    type: object
+  model.SysAuthority:
+    properties:
+      authorityId:
+        description: 角色ID
+        type: integer
+      authorityName:
+        description: 角色名
+        type: string
+      children:
+        items:
+          $ref: '#/definitions/model.SysAuthority'
+        type: array
+      created_at:
+        type: string
+      dataAuthorityId:
+        items:
+          $ref: '#/definitions/model.SysAuthority'
+        type: array
+      defaultRouter:
+        description: 默认菜单(默认dashboard)
+        type: string
+      menus:
+        items:
+          $ref: '#/definitions/model.SysBaseMenu'
+        type: array
+      parentId:
+        description: 父角色ID
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  model.SysBaseMenu:
+    properties:
+      authoritys:
+        items:
+          $ref: '#/definitions/model.SysAuthority'
+        type: array
+      children:
+        items:
+          $ref: '#/definitions/model.SysBaseMenu'
+        type: array
+      created_at:
+        type: string
+      hidden:
+        description: 是否在列表隐藏
+        type: boolean
+      id:
+        type: integer
+      meta:
+        allOf:
+        - $ref: '#/definitions/model.Meta'
+        description: 附加属性
+      name:
+        description: 路由name
+        type: string
+      parentId:
+        description: 父菜单ID
+        type: string
+      path:
+        description: 路由path
+        type: string
+      sort:
+        description: 排序标记
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  model.SysUser:
+    properties:
+      activeColor:
+        description: 活跃颜色
+        type: string
+      authorities:
+        items:
+          $ref: '#/definitions/model.SysAuthority'
+        type: array
+      authority:
+        $ref: '#/definitions/model.SysAuthority'
+      authorityId:
+        description: 用户角色ID
+        type: integer
+      avatar:
+        description: 用户头像
+        type: string
+      baseColor:
+        description: 基础颜色
+        type: string
+      created_at:
+        type: string
+      email:
+        description: 用户邮箱
+        type: string
+      enable:
+        description: 用户是否被冻结 1正常 2冻结
+        type: integer
+      id:
+        type: integer
+      nickName:
+        description: 用户昵称
+        type: string
+      phone:
+        description: 用户手机号
+        type: string
+      sideMode:
+        description: 用户侧边主题
+        type: string
+      status:
+        $ref: '#/definitions/sql.NullInt64'
+      updated_at:
+        type: string
+      userName:
+        description: 用户登录名
+        type: string
+      uuid:
+        description: 用户UUID
+        type: string
+    type: object
+  sql.NullInt64:
+    properties:
+      int64:
+        type: integer
+      valid:
+        description: Valid is true if Int64 is not NULL
+        type: boolean
+    type: object
+info:
+  contact: {}
+paths:
+  /api/k8s/Secret/del:
+    delete:
+      consumes:
+      - application/json
+      description: 删除Secret
+      operationId: /api/k8s/Secret/del
+      parameters:
+      - description: Secret名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "删除成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 删除Secret
+      tags:
+      - Secret
+  /api/k8s/Secret/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取Secret详情
+      operationId: /api/k8s/Secret/detail
+      parameters:
+      - description: Secret名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":v1.Deployment }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取Secret详情
+      tags:
+      - Secret
+  /api/k8s/Secret/list:
+    get:
+      consumes:
+      - application/json
+      description: 查看Secret列表
+      operationId: /api/k8s/Secret/list
+      parameters:
+      - description: 过滤
+        in: query
+        name: filter_name
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 查看Secret列表
+      tags:
+      - Secret
+  /api/k8s/configmap/del:
+    delete:
+      consumes:
+      - application/json
+      description: 删除Configmap
+      operationId: /api/k8s/configmap/del
+      parameters:
+      - description: Configmap名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "删除成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 删除Configmap
+      tags:
+      - Configmap
+  /api/k8s/configmap/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取Configmap详情
+      operationId: /api/k8s/configmap/detail
+      parameters:
+      - description: Configmap名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":v1.Deployment }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取Configmap详情
+      tags:
+      - Configmap
+  /api/k8s/configmap/list:
+    get:
+      consumes:
+      - application/json
+      description: 查看Configmap列表
+      operationId: /api/k8s/configmap/list
+      parameters:
+      - description: 过滤
+        in: query
+        name: filter_name
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 查看Configmap列表
+      tags:
+      - Configmap
+  /api/k8s/configmap/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新Configmap
+      operationId: /api/k8s/configmap/update
+      parameters:
+      - description: 无状态控制器名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      - description: 更新内容
+        in: query
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "更新成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 更新Configmap
+      tags:
+      - Configmap
+  /api/k8s/daemonset/del:
+    delete:
+      consumes:
+      - application/json
+      description: 删除DaemonSet
+      operationId: /api/k8s/DaemonSet/del
+      parameters:
+      - description: DaemonSet名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "删除成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 删除DaemonSet
+      tags:
+      - DaemonSet
+  /api/k8s/daemonset/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取DaemonSet详情
+      operationId: /api/k8s/DaemonSet/detail
+      parameters:
+      - description: DaemonSet名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":v1.Deployment }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取DaemonSet详情
+      tags:
+      - DaemonSet
+  /api/k8s/daemonset/list:
+    get:
+      consumes:
+      - application/json
+      description: 查看DaemonSet列表
+      operationId: /api/k8s/DaemonSet/list
+      parameters:
+      - description: 过滤
+        in: query
+        name: filter_name
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 查看DaemonSet列表
+      tags:
+      - DaemonSet
+  /api/k8s/daemonset/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新DaemonSet
+      operationId: /api/k8s/DaemonSet/update
+      parameters:
+      - description: 无状态控制器名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      - description: 更新内容
+        in: query
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "更新成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 更新DaemonSet
+      tags:
+      - DaemonSet
+  /api/k8s/deployment/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建deployment
+      operationId: /api/k8s/deployment/create
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/kubernetes.DeployCreateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "新增成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 创建deployment
+      tags:
+      - deployment
+  /api/k8s/deployment/del:
+    delete:
+      consumes:
+      - application/json
+      description: 删除deployment
+      operationId: /api/k8s/deployment/del
+      parameters:
+      - description: Deployment名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "删除成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 删除deployment
+      tags:
+      - deployment
+  /api/k8s/deployment/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取deployment详情
+      operationId: /api/k8s/deployment/detail
+      parameters:
+      - description: Deployment名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":v1.Deployment }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取deployment详情
+      tags:
+      - pod
+  /api/k8s/deployment/list:
+    get:
+      consumes:
+      - application/json
+      description: 查看deployment列表
+      operationId: /api/k8s/deployment/list
+      parameters:
+      - description: 过滤
+        in: query
+        name: filter_name
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 查看deployment列表
+      tags:
+      - deployment
+  /api/k8s/deployment/numnp:
+    get:
+      consumes:
+      - application/json
+      description: 根据命名空间获取无状态控制器数量
+      operationId: /api/k8s/deployment/numnp
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":service.DeployNp }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 根据命名空间获取无状态控制器数量
+      tags:
+      - deployment
+  /api/k8s/deployment/restart:
+    put:
+      consumes:
+      - application/json
+      description: 重启deployment
+      operationId: /api/k8s/deployment/restart
+      parameters:
+      - description: 无状态控制器名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": 重启Deployment成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 重启deployment
+      tags:
+      - deployment
+  /api/k8s/deployment/scale:
+    get:
+      consumes:
+      - application/json
+      description: 扩容deployment
+      operationId: /api/k8s/deployment/scale
+      parameters:
+      - description: 无状态控制器名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      - description: 期望副本数
+        in: query
+        name: scale_num
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": num}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 扩容deployment
+      tags:
+      - deployment
+  /api/k8s/deployment/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新deployment
+      operationId: /api/k8s/deployment/update
+      parameters:
+      - description: 无状态控制器名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      - description: 更新内容
+        in: query
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "更新成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 更新deployment
+      tags:
+      - deployment
+  /api/k8s/ingress/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建ingress
+      operationId: /api/k8s/ingress/create
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/kubernetes.IngressCreteInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "新增成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 创建ingress
+      tags:
+      - ingress
+  /api/k8s/ingress/del:
+    delete:
+      consumes:
+      - application/json
+      description: 删除ingress
+      operationId: /api/k8s/ingress/del
+      parameters:
+      - description: ingress名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "删除成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 删除ingress
+      tags:
+      - ingress
+  /api/k8s/ingress/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取ingress详情
+      operationId: /api/k8s/ingress/detail
+      parameters:
+      - description: ingress名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":""  }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取ingress详情
+      tags:
+      - ingress
+  /api/k8s/ingress/list:
+    get:
+      consumes:
+      - application/json
+      description: 查看ingress列表
+      operationId: /api/k8s/ingress/list
+      parameters:
+      - description: 过滤
+        in: query
+        name: filter_name
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":""  }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 查看ingress列表
+      tags:
+      - ingress
+  /api/k8s/ingress/numnp:
+    get:
+      consumes:
+      - application/json
+      description: 根据命名空间获取ingress数量
+      operationId: /api/k8s/ingress/numnp
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":"" }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 根据命名空间获取ingress数量
+      tags:
+      - ingress
+  /api/k8s/ingress/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新ingress
+      operationId: /api/k8s/ingress/update
+      parameters:
+      - description: ingress名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      - description: 更新内容
+        in: query
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "更新成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 更新ingress
+      tags:
+      - ingress
+  /api/k8s/namespace/create:
+    put:
+      consumes:
+      - application/json
+      description: 创建namespace
+      operationId: /api/k8s/namespace/create
+      parameters:
+      - description: namespace名称
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "创建成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 创建namespace
+      tags:
+      - NameSpace
+  /api/k8s/namespace/del:
+    delete:
+      consumes:
+      - application/json
+      description: 删除namespace
+      operationId: /api/k8s/namespace/del
+      parameters:
+      - description: namespace名称
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "删除成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 删除namespace
+      tags:
+      - NameSpace
+  /api/k8s/namespace/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取NameSpace详情
+      operationId: /api/k8s/namespace/detail
+      parameters:
+      - description: namespace名称
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":data }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取NameSpace详情
+      tags:
+      - NameSpace
+  /api/k8s/namespace/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取NameSpace列表
+      operationId: /api/k8s/namespace/list
+      parameters:
+      - description: 过滤
+        in: query
+        name: filter_name
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": service.NameSpaceResp}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取NameSpace列表
+      tags:
+      - NameSpace
+  /api/k8s/node/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取Node详情
+      operationId: /api/k8s/node/detail
+      parameters:
+      - description: node名称
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":data }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取Node详情
+      tags:
+      - Node
+  /api/k8s/node/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取Node列表
+      operationId: /api/k8s/node/list
+      parameters:
+      - description: 过滤
+        in: query
+        name: filter_name
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": service.NameSpaceResp}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取Node列表
+      tags:
+      - Node
+  /api/k8s/persistentvolume/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取PV的详细信息
+      operationId: /api/k8s/persistentvolume/detail
+      parameters:
+      - description: persistentVolume名称
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": *coreV1.PersistentVolume}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取PV的详细信息
+      tags:
+      - PersistentVolume
+  /api/k8s/persistentvolume/list:
+    get:
+      consumes:
+      - application/json
+      description: 获取PV列表
+      operationId: /api/k8s/persistentvolume/list
+      parameters:
+      - description: 过滤
+        in: query
+        name: filter_name
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": service.PersistentVolumeResp}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取PV列表
+      tags:
+      - PersistentVolume
+  /api/k8s/persistentvolumeclaim/del:
+    delete:
+      consumes:
+      - application/json
+      description: 删除PersistentVolumeClaim
+      operationId: /api/k8s/persistentvolumeclaim/del
+      parameters:
+      - description: PersistentVolumeClaim名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "删除成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 删除PersistentVolumeClaim
+      tags:
+      - PersistentVolumeClaim
+  /api/k8s/persistentvolumeclaim/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取PersistentVolumeClaim详情
+      operationId: /api/k8s/persistentvolumeclaim/detail
+      parameters:
+      - description: PersistentVolumeClaim名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":v1.Deployment }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取PersistentVolumeClaim详情
+      tags:
+      - PersistentVolumeClaim
+  /api/k8s/persistentvolumeclaim/list:
+    get:
+      consumes:
+      - application/json
+      description: 查看PersistentVolumeClaim列表
+      operationId: /api/k8s/persistentvolumeclaim/list
+      parameters:
+      - description: 过滤
+        in: query
+        name: filter_name
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 查看PersistentVolumeClaim列表
+      tags:
+      - PersistentVolumeClaim
+  /api/k8s/persistentvolumeclaim/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新PersistentVolumeClaim
+      operationId: /api/k8s/persistentvolumeclaim/update
+      parameters:
+      - description: 无状态控制器名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      - description: 更新内容
+        in: query
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "更新成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 更新PersistentVolumeClaim
+      tags:
+      - PersistentVolumeClaim
+  /api/k8s/pod/container:
+    get:
+      consumes:
+      - application/json
+      description: 获取Pod内容器名
+      operationId: /api/k8s/pod/container
+      parameters:
+      - description: POD名称
+        in: query
+        name: pod_name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":"" }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取Pod内容器名
+      tags:
+      - pod
+  /api/k8s/pod/del:
+    delete:
+      consumes:
+      - application/json
+      description: 删除POD
+      operationId: /api/k8s/pod/del
+      parameters:
+      - description: POD名称
+        in: query
+        name: pod_name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":"" }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 删除POD
+      tags:
+      - pod
+  /api/k8s/pod/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取Pod详情
+      operationId: /api/k8s/pod/detail
+      parameters:
+      - description: POD名称
+        in: query
+        name: pod_name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":v1.Pod }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取Pod详情
+      tags:
+      - pod
+  /api/k8s/pod/log:
+    get:
+      consumes:
+      - application/json
+      description: 获取容器日志
+      operationId: /api/k8s/pod/log
+      parameters:
+      - description: POD名称
+        in: query
+        name: pod_name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      - description: 容器名
+        in: query
+        name: container_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":"" }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取容器日志
+      tags:
+      - pod
+  /api/k8s/pod/numnp:
+    get:
+      consumes:
+      - application/json
+      description: 根据命名空间获取数量
+      operationId: /api/k8s/pod/numnp
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":[]service.PodsNp }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 根据命名空间获取数量
+      tags:
+      - pod
+  /api/k8s/pod/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新POD
+      operationId: /api/k8s/pod/update
+      parameters:
+      - description: POD名称
+        in: query
+        name: pod_name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      - description: 更新内容
+        in: query
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":"" }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 更新POD
+      tags:
+      - pod
+  /api/k8s/pods:
+    get:
+      consumes:
+      - application/json
+      description: 获取pod列表
+      operationId: /api/k8s/pods
+      parameters:
+      - description: 过滤
+        in: query
+        name: filter_name
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": service.PodsResp}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取pod列表
+      tags:
+      - pod
+  /api/k8s/secret/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新Secret
+      operationId: /api/k8s/secret/update
+      parameters:
+      - description: 无状态控制器名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      - description: 更新内容
+        in: query
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "更新成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 更新Secret
+      tags:
+      - Secret
+  /api/k8s/service/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建service
+      operationId: /api/k8s/service/create
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/kubernetes.ServiceCreateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "创建成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 创建service
+      tags:
+      - service
+  /api/k8s/service/del:
+    delete:
+      consumes:
+      - application/json
+      description: 删除service
+      operationId: /api/k8s/service/del
+      parameters:
+      - description: service名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "删除成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 删除service
+      tags:
+      - service
+  /api/k8s/service/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取service详情
+      operationId: /api/k8s/service/detail
+      parameters:
+      - description: service名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":v1.Deployment }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取service详情
+      tags:
+      - service
+  /api/k8s/service/list:
+    get:
+      consumes:
+      - application/json
+      description: 查看service列表
+      operationId: /api/k8s/service/list
+      parameters:
+      - description: 过滤
+        in: query
+        name: filter_name
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 查看service列表
+      tags:
+      - service
+  /api/k8s/service/numnp:
+    get:
+      consumes:
+      - application/json
+      description: 根据命名空间获取service数量
+      operationId: /api/k8s/service/numnp
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":service.serviceNp }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 根据命名空间获取service数量
+      tags:
+      - service
+  /api/k8s/service/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新service
+      operationId: /api/k8s/service/update
+      parameters:
+      - description: service名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      - description: 更新内容
+        in: query
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "更新成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 更新service
+      tags:
+      - service
+  /api/k8s/spersistentvolume/del:
+    delete:
+      consumes:
+      - application/json
+      description: 删除persistentVolume
+      operationId: /api/k8s/spersistentvolume/del
+      parameters:
+      - description: persistentvolume名称
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "删除成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 删除persistentVolume
+      tags:
+      - PersistentVolume
+  /api/k8s/statefulset/del:
+    delete:
+      consumes:
+      - application/json
+      description: 删除statefulSet
+      operationId: /api/k8s/statefulset/del
+      parameters:
+      - description: statefulSet名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "删除成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 删除statefulSet
+      tags:
+      - statefulSet
+  /api/k8s/statefulset/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取statefulSet详情
+      operationId: /api/k8s/statefulSet/detail
+      parameters:
+      - description: statefulSet名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data":v1.Deployment }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 获取statefulSet详情
+      tags:
+      - statefulSet
+  /api/k8s/statefulset/list:
+    get:
+      consumes:
+      - application/json
+      description: 查看statefulSet列表
+      operationId: /api/k8s/statefulset/list
+      parameters:
+      - description: 过滤
+        in: query
+        name: filter_name
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 查看statefulSet列表
+      tags:
+      - statefulSet
+  /api/k8s/statefulset/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新statefulSet
+      operationId: /api/k8s/statefulset/update
+      parameters:
+      - description: 无状态控制器名称
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: 命名空间
+        in: query
+        name: namespace
+        required: true
+        type: string
+      - description: 更新内容
+        in: query
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "更新成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 更新statefulSet
+      tags:
+      - statefulSet
+  /api/k8s/workflow/create:
+    post:
+      consumes:
+      - application/json
+      description: 创建workflow
+      operationId: /api/k8s/workflow/create
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/kubernetes.WorkFlowCreateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "创建成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 创建workflow
+      tags:
+      - Workflow
+  /api/k8s/workflow/del:
+    delete:
+      consumes:
+      - application/json
+      description: 删除Workflow
+      operationId: /api/k8s/workflow/del
+      parameters:
+      - description: Workflow ID
+        in: query
+        name: ID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": "删除成功}'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 删除Workflow
+      tags:
+      - Workflow
+  /api/k8s/workflow/id:
+    get:
+      consumes:
+      - application/json
+      description: 根据ID查看workflow
+      operationId: /api/k8s/workflow/id
+      parameters:
+      - description: Workflow ID
+        in: query
+        name: ID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 根据ID查看workflow
+      tags:
+      - Workflow
+  /api/k8s/workflow/list:
+    get:
+      consumes:
+      - application/json
+      description: 查看Configmap列表
+      operationId: /api/k8s/workflow/list
+      parameters:
+      - description: 过滤
+        in: query
+        name: filter_name
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code": 200, msg="","data": }'
+          schema:
+            $ref: '#/definitions/middleware.Response'
+      summary: 查看Configmap列表
+      tags:
+      - Workflow
+  /api/user/{id}/change_pwd:
+    post:
+      parameters:
+      - description: 用户ID, 原密码, 新密码
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ChangeUserPwdInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户修改密码
+          schema:
+            allOf:
+            - $ref: '#/definitions/middleware.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 用户修改密码
+      tags:
+      - SysUser
+  /api/user/{id}/delete_user:
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除用户
+          schema:
+            allOf:
+            - $ref: '#/definitions/middleware.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 删除用户
+      tags:
+      - SysUser
+  /api/user/{id}/reset_pwd:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 重置用户密码
+          schema:
+            allOf:
+            - $ref: '#/definitions/middleware.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 重置用户密码
+      tags:
+      - SysUser
+  /api/user/{id}/set_auth:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 角色ID
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SetUserAuth'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 设置用户权限
+          schema:
+            allOf:
+            - $ref: '#/definitions/middleware.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 更改用户权限
+      tags:
+      - SysUser
+  /api/user/getinfo:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取用户信息
+          schema:
+            allOf:
+            - $ref: '#/definitions/middleware.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.SysUser'
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户信息
+      tags:
+      - SysUser
+  /api/user/login:
+    post:
+      consumes:
+      - application/json
+      description: 管理员登录
+      operationId: /user/login
+      parameters:
+      - description: body
+        in: body
+        name: polygon
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AdminLoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/middleware.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.AdminLoginOut'
+              type: object
+      summary: 管理员登录
+      tags:
+      - 管理员接口
+  /api/user/loginout:
+    get:
+      consumes:
+      - application/json
+      description: 管理员登录
+      operationId: /user/loginout
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/middleware.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.AdminLoginOut'
+              type: object
+      summary: 管理员退出登录
+      tags:
+      - 管理员接口
+  /casbin/getPolicyPathByAuthorityId:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 权限id, 权限模型列表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CasbinInReceive'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取权限列表,返回包括casbin详情列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/middleware.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.CasbinInfo'
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取权限列表
+      tags:
+      - Casbin
+swagger: "2.0"

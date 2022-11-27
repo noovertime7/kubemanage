@@ -62,8 +62,6 @@ go run cmd/main.go
 
 - 合并代码需要两名维护人员参与：一人进行 review 后 approve，另一人再次 review，通过后即可合并。
 
-
-
 ## 生成APi文档
 
 使用swag生成api文档
