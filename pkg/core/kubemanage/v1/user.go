@@ -40,9 +40,11 @@ func (u *userService) Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (st
 	if err != nil {
 		return "", err
 	}
-	if !loginCheck(&checkInfo{salt: pkg.Salt, inputPwd: userInfo.Password, dbPwd: user.Password}) {
+
+	if !pkg.CheckPassword(userInfo.Password, user.Password) {
 		return "", errors.New("密码错误,请重新输入")
 	}
+
 	token, err := pkg.JWTToken.GenerateToken(pkg.BaseClaims{
 		UUID:        user.UUID,
 		ID:          user.ID,
@@ -54,17 +56,6 @@ func (u *userService) Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (st
 		return "", err
 	}
 	return token, nil
-}
-
-type checkInfo struct {
-	salt     string
-	inputPwd string
-	dbPwd    string
-}
-
-func loginCheck(info *checkInfo) bool {
-	encryptInputPwd := pkg.GenSaltPassword(info.salt, info.inputPwd)
-	return encryptInputPwd == info.dbPwd
 }
 
 func (u *userService) LoginOut(ctx *gin.Context, uid int) error {
@@ -110,20 +101,24 @@ func (u *userService) ChangePassword(ctx *gin.Context, uid int, info *dto.Change
 	if err != nil {
 		return err
 	}
-	check := &checkInfo{
-		salt:     pkg.Salt,
-		inputPwd: info.OldPwd,
-		dbPwd:    user.Password,
-	}
-	if !loginCheck(check) {
+
+	if !pkg.CheckPassword(info.OldPwd, user.Password) {
 		return errors.New("原密码错误,请重新输入")
 	}
+
 	//生成新密码
-	user.Password = pkg.GenSaltPassword(pkg.Salt, info.NewPwd)
+	user.Password, err = pkg.GenSaltPassword(info.NewPwd)
+	if err != nil {
+		return err
+	}
 	return u.factory.User().Updates(ctx, user)
 }
 
 func (u *userService) ResetPassword(ctx *gin.Context, uid int) error {
-	user := &model.SysUser{ID: uid, Password: pkg.GenSaltPassword(pkg.Salt, "kubemanage")}
+	newPwd, err := pkg.GenSaltPassword("kubemanage")
+	if err != nil {
+		return err
+	}
+	user := &model.SysUser{ID: uid, Password: newPwd}
 	return u.factory.User().Updates(ctx, user)
 }

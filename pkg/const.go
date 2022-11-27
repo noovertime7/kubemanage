@@ -7,8 +7,6 @@ const (
 	TranslatorKey = "TranslatorKey"
 )
 
-const Salt = "admin"
-
 var (
 	AdminDefaultAuth      uint = 111
 	AdminDefaultAuthStr        = strconv.Itoa(int(AdminDefaultAuth))

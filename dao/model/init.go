@@ -23,7 +23,7 @@ var (
 		{
 			UUID:        uuid.NewV4(),
 			UserName:    "admin",
-			Password:    "29c09a3c055e47f704fb7c6df5b530e25f80ee3ab2a3ce44858284f929157389",
+			Password:    "$2a$14$Zfb6w0UDBFMN0.nJeVXCUO3zH/iWKGtbBYyIzDDRnC..EgTS0Et0S",
 			NickName:    "admin",
 			SideMode:    "dark",
 			Avatar:      "https://qmplusimg.henrongyi.top/gva_header.jpg",
@@ -38,7 +38,7 @@ var (
 		{
 			UUID:        uuid.NewV4(),
 			UserName:    "chenteng",
-			Password:    "29c09a3c055e47f704fb7c6df5b530e25f80ee3ab2a3ce44858284f929157389",
+			Password:    "$2a$14$yLCxKYP46M2NRnXujYe3mOfNe00GtBtjpaLM2eIzYCzYKQXqzsuka",
 			NickName:    "chenteng",
 			SideMode:    "dark",
 			Avatar:      "https://qmplusimg.henrongyi.top/gva_header.jpg",
@@ -53,7 +53,7 @@ var (
 		{
 			UUID:        uuid.NewV4(),
 			UserName:    "chentengsub",
-			Password:    "29c09a3c055e47f704fb7c6df5b530e25f80ee3ab2a3ce44858284f929157389",
+			Password:    "$2a$14$MPINiht5QO2wlR3DynizXOtuqcNAOrNZdrSUKXrbjqcKbK.jcfyAW",
 			NickName:    "chentengsub",
 			SideMode:    "dark",
 			Avatar:      "https://qmplusimg.henrongyi.top/gva_header.jpg",
