@@ -11,6 +11,8 @@ type Authority interface {
 	FindList(ctx context.Context, authInfo *model.SysAuthority) ([]*model.SysAuthority, error)
 	Save(ctx context.Context, authInfo *model.SysAuthority) error
 	Updates(ctx context.Context, authInfo *model.SysAuthority) error
+
+	SetMenuAuthority(ctx context.Context, authInfo *model.SysAuthority) error
 }
 
 var _ Authority = &authority{}
@@ -39,4 +41,11 @@ func (a *authority) Save(ctx context.Context, authInfo *model.SysAuthority) erro
 
 func (a *authority) Updates(ctx context.Context, authInfo *model.SysAuthority) error {
 	return a.db.WithContext(ctx).Updates(authInfo).Error
+}
+
+// SetMenuAuthority 菜单与角色绑定
+func (a *authority) SetMenuAuthority(ctx context.Context, authInfo *model.SysAuthority) error {
+	var s model.SysAuthority
+	a.db.WithContext(ctx).Preload("SysBaseMenus").First(&s, "authority_id = ?", authInfo.AuthorityId)
+	return a.db.WithContext(ctx).Model(&s).Association("SysBaseMenus").Replace(&authInfo.SysBaseMenus)
 }

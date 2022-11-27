@@ -10,6 +10,7 @@ type CoreService interface {
 	UserServiceGetter
 	MenuGetter
 	CasbinServiceGetter
+	AuthorityGetter
 }
 
 type KubeManage struct {
@@ -31,6 +32,10 @@ func (c *KubeManage) Menu() MenuService {
 
 func (c *KubeManage) CasbinService() CasbinService {
 	return NewCasbinService(c)
+}
+
+func (c *KubeManage) Authority() Authority {
+	return NewAuthority(c)
 }
 
 func New(cfg config.Config, factory dao.ShareDaoFactory) CoreService {

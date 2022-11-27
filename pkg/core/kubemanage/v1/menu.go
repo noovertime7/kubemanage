@@ -4,6 +4,9 @@ import (
 	"context"
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
+	"github.com/noovertime7/kubemanage/dto"
+	"github.com/pkg/errors"
+	"gorm.io/gorm"
 	"strconv"
 )
 
@@ -13,6 +16,8 @@ type MenuGetter interface {
 
 type MenuService interface {
 	GetMenu(ctx context.Context, authorityId uint) ([]model.SysMenu, error)
+	AddBaseMenu(ctx context.Context, in *dto.AddSysMenusInput) error
+	AddMenuAuthority(ctx context.Context, menus []model.SysBaseMenu, authorityId uint) error
 }
 
 type menuService struct {
@@ -75,4 +80,27 @@ func (m *menuService) getChildrenList(menu *model.SysMenu, treeMap map[string][]
 		}
 	}
 	return nil
+}
+
+// AddBaseMenu 添加基础路由
+func (m *menuService) AddBaseMenu(ctx context.Context, in *dto.AddSysMenusInput) error {
+	menuInfo := &model.SysBaseMenu{
+		ParentId: in.ParentId,
+		Name:     in.Name,
+		Path:     in.Path,
+		Hidden:   in.Hidden,
+		Sort:     in.Sort,
+		Meta:     in.Meta,
+	}
+	menu, err := m.factory.BaseMenu().Find(ctx, menuInfo)
+	if !errors.Is(err, gorm.ErrRecordNotFound) && menu.ID != 0 {
+		return errors.New("存在重复名称菜单，请修改菜单名称")
+	}
+	return m.factory.BaseMenu().Save(ctx, menuInfo)
+}
+
+// AddMenuAuthority 为角色增加menu树
+func (m *menuService) AddMenuAuthority(ctx context.Context, menus []model.SysBaseMenu, authorityId uint) error {
+	auth := &model.SysAuthority{AuthorityId: authorityId, SysBaseMenus: menus}
+	return CoreV1.Authority().SetMenuAuthority(ctx, auth)
 }
