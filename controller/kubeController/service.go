@@ -29,7 +29,7 @@ func ServiceRegister(router *gin.RouterGroup) {
 // @ID           /api/k8s/service/create
 // @Accept       json
 // @Produce      json
-// @Param        body  body  dto.ServiceCreateInput  true  "body"
+// @Param        body  body  kubernetes.ServiceCreateInput  true  "body"
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "创建成功}"
 // @Router       /api/k8s/service/create [post]
 func (s *serviceController) CreateService(ctx *gin.Context) {

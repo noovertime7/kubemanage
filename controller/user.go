@@ -57,7 +57,6 @@ func (u *UserController) Login(ctx *gin.Context) {
 // @ID /user/loginout
 // @Accept  json
 // @Produce  json
-// @Param polygon body  true "body"
 // @Success 200 {object} middleware.Response{data=dto.AdminLoginOut} "success"
 // @Router /api/user/loginout [get]
 func (u *UserController) LoginOut(ctx *gin.Context) {
@@ -142,7 +141,6 @@ func (u *UserController) SetUserAuthority(ctx *gin.Context) {
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param     data  body                   true  "用户ID"
 // @Success   200   {object}  middleware.Response{msg=string}  "删除用户"
 // @Router    /api/user/{id}/delete_user [delete]
 func (u *UserController) DeleteUser(ctx *gin.Context) {
@@ -192,7 +190,6 @@ func (u *UserController) ChangePassword(ctx *gin.Context) {
 // @Summary   重置用户密码
 // @Security  ApiKeyAuth
 // @Produce  application/json
-// @Param     data  body                   true  "ID"
 // @Success   200   {object}  middleware.Response{msg=string}  "重置用户密码"
 // @Router    /api/user/{id}/reset_pwd [post]
 func (u *UserController) ResetPassword(ctx *gin.Context) {

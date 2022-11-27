@@ -32,7 +32,7 @@ func DeploymentRegister(router *gin.RouterGroup) {
 // @ID           /api/k8s/deployment/create
 // @Accept       json
 // @Produce      json
-// @Param        body  body  dto.DeployCreateInput  true  "body"
+// @Param        body  body  kubernetes.DeployCreateInput  true  "body"
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "新增成功}"
 // @Router       /api/k8s/deployment/create [post]
 func (d *deployment) CreateDeployment(ctx *gin.Context) {

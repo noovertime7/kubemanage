@@ -29,7 +29,7 @@ func IngressRegister(router *gin.RouterGroup) {
 // @ID           /api/k8s/ingress/create
 // @Accept       json
 // @Produce      json
-// @Param        body  body  dto.IngressCreteInput  true  "body"
+// @Param        body  body  kubernetes.IngressCreteInput  true  "body"
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "新增成功}"
 // @Router       /api/k8s/ingress/create [post]
 func (i *ingressController) CreateIngress(ctx *gin.Context) {

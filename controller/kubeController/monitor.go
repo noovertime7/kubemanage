@@ -15,7 +15,7 @@ func MonitroRegister(router *gin.RouterGroup) {
 }
 
 func (m *monitor) GetImageList(ctx *gin.Context) {
-	//params := &dto.ImageListInput{}
+	//params := dto.ImageListInput{}
 	//if err := params.BindingValidParams(ctx); err != nil {
 	//	logger.Error("绑定参数失败:", err)
 	//	middleware.ResponseError(ctx, 20001, err)

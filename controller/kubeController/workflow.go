@@ -27,7 +27,7 @@ func WorkFlowRegister(router *gin.RouterGroup) {
 // @ID           /api/k8s/workflow/create
 // @Accept       json
 // @Produce      json
-// @Param        body  body  dto.WorkFlowCreateInput  true  "body"
+// @Param        body  body  kubernetes.WorkFlowCreateInput  true  "body"
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "创建成功}"
 // @Router       /api/k8s/workflow/create [post]
 func (w *workflow) CreateWorkFlow(ctx *gin.Context) {

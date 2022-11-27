@@ -58,10 +58,10 @@ import (
 // InitRouter  初始化路由规则
 func InitRouter(middlewares ...gin.HandlerFunc) *gin.Engine {
 	// programmatically set swagger info
-	docs.SwaggerInfo.Title = "swagger API"
-	docs.SwaggerInfo.Description = ""
+	docs.SwaggerInfo.Title = "Kubemanage API"
+	docs.SwaggerInfo.Description = "Kubemanage"
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "127.0.0.1:9090"
+	docs.SwaggerInfo.Host = "127.0.0.1:6180"
 	docs.SwaggerInfo.BasePath = ""
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 	router := gin.Default()

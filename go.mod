@@ -16,7 +16,7 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.1
-	github.com/swaggo/swag v1.8.4
+	github.com/swaggo/swag v1.8.8
 	github.com/wonderivan/logger v1.0.0
 	golang.org/x/crypto v0.3.0
 	gopkg.in/go-playground/validator.v9 v9.29.0
