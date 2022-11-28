@@ -10,11 +10,8 @@ kubemanage是一个简单易用的K8S管理平台，前端使用vue3，后端使
 ```sql
 CREATE DATABASE kubemanage;
 ```
-
 ### 运行工程
-
 前端
-
 ```shell
 git clone https://github.com/noovertime7/kubemanage-web.git
 
