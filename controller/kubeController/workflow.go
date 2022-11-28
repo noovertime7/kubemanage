@@ -12,13 +12,6 @@ var WorkFlow workflow
 
 type workflow struct{}
 
-func WorkFlowRegister(router *gin.RouterGroup) {
-	router.POST("/create", WorkFlow.CreateWorkFlow)
-	router.DELETE("/del", WorkFlow.DeleteWorkflow)
-	router.GET("/list", WorkFlow.GetWorkflowList)
-	router.GET("/id", WorkFlow.GetWorkflowByID)
-}
-
 // CreateWorkFlow 创建workflow
 // ListPage godoc
 // @Summary      创建workflow

@@ -12,13 +12,6 @@ var NameSpace namespace
 
 type namespace struct{}
 
-func NameSpaceRegister(router *gin.RouterGroup) {
-	router.PUT("/create", NameSpace.CreateNameSpace)
-	router.DELETE("/del", NameSpace.DeleteNameSpace)
-	router.GET("/list", NameSpace.GetNameSpaceList)
-	router.GET("/detail", NameSpace.GetNameSpaceDetail)
-}
-
 // CreateNameSpace 创建namespace
 // ListPage godoc
 // @Summary      创建namespace

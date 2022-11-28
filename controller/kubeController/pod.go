@@ -13,16 +13,6 @@ var Pod pod
 
 type pod struct{}
 
-func PodRegister(router *gin.RouterGroup) {
-	router.GET("/list", Pod.GetPods)
-	router.GET("/detail", Pod.GetPodDetail)
-	router.DELETE("/del", Pod.DeletePod)
-	router.PUT("/update", Pod.UpdatePod)
-	router.GET("/container", Pod.GetPodContainer)
-	router.GET("/log", Pod.GetPodLog)
-	router.GET("/numnp", Pod.GetPodNumPreNp)
-}
-
 // GetPods 获取pod，支持分页过滤排序
 // ListPage godoc
 // @Summary      获取pod列表

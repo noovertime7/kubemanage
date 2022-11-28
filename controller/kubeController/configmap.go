@@ -12,13 +12,6 @@ var Configmap configmap
 
 type configmap struct{}
 
-func ConfigmapRegister(router *gin.RouterGroup) {
-	router.DELETE("/del", Configmap.DeleteConfigmap)
-	router.PUT("/update", Configmap.UpdateConfigmap)
-	router.GET("/list", Configmap.GetConfigmapList)
-	router.GET("/detail", Configmap.GetConfigmapDetail)
-}
-
 // DeleteConfigmap 删除Configmap
 // ListPage godoc
 // @Summary      删除Configmap

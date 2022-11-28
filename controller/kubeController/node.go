@@ -12,11 +12,6 @@ var Node node
 
 type node struct{}
 
-func NodeRegister(router *gin.RouterGroup) {
-	router.GET("/list", Node.GetNodeList)
-	router.GET("/detail", Node.GetNodeDetail)
-}
-
 // GetNodeList 获取Node列表
 // ListPage godoc
 // @Summary      获取Node列表

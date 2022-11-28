@@ -5,13 +5,15 @@ import (
 	"os"
 	"time"
 
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/cobra"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+
 	"github.com/noovertime7/kubemanage/cmd/app/config"
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/pkg"
 	"github.com/noovertime7/kubemanage/pkg/source"
-	"github.com/spf13/cobra"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 )
 
 const (
@@ -19,6 +21,7 @@ const (
 )
 
 type Options struct {
+	GinEngine *gin.Engine
 	// The default values.
 	DB         *gorm.DB
 	Factory    dao.ShareDaoFactory // 数据库接口
@@ -50,6 +53,9 @@ func (o *Options) Complete() error {
 	if err := config.Binding(o.ConfigFile); err != nil {
 		return err
 	}
+
+	// 初始化默认 api 路由
+	o.GinEngine = gin.Default()
 
 	// 注册依赖组件
 	if err := o.register(); err != nil {

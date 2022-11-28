@@ -12,13 +12,6 @@ var StatefulSet statefulSet
 
 type statefulSet struct{}
 
-func StatefulSetRegister(router *gin.RouterGroup) {
-	router.DELETE("/del", StatefulSet.DeleteStatefulSet)
-	router.PUT("/update", StatefulSet.UpdateStatefulSet)
-	router.GET("/list", StatefulSet.GetStatefulSetList)
-	router.GET("/detail", StatefulSet.GetStatefulSetDetail)
-}
-
 // DeleteStatefulSet 删除statefulSet
 // ListPage godoc
 // @Summary      删除statefulSet

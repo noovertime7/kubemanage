@@ -13,17 +13,6 @@ var Deployment deployment
 
 type deployment struct{}
 
-func DeploymentRegister(router *gin.RouterGroup) {
-	router.POST("/create", Deployment.CreateDeployment)
-	router.DELETE("/del", Deployment.DeleteDeployment)
-	router.PUT("/update", Deployment.UpdateDeployment)
-	router.GET("/list", Deployment.GetDeploymentList)
-	router.GET("/detail", Deployment.GetDeploymentDetail)
-	router.PUT("/restart", Deployment.RestartDeployment)
-	router.GET("/scale", Deployment.ScaleDeployment)
-	router.GET("/numnp", Deployment.GetDeploymentNumPreNS)
-}
-
 // CreateDeployment 创建deployment
 // ListPage godoc
 // @Summary      创建deployment

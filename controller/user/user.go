@@ -1,4 +1,4 @@
-package controller
+package user
 
 import (
 	"github.com/gin-gonic/gin"
@@ -11,19 +11,6 @@ import (
 	"strconv"
 )
 
-type UserController struct{}
-
-func UserRegister(group *gin.RouterGroup) {
-	user := &UserController{}
-	group.POST("/login", user.Login)
-	group.GET("/loginout", user.LoginOut)
-	group.GET("/getinfo", user.GetUserInfo)
-	group.PUT("/:id/set_auth", user.SetUserAuthority)
-	group.DELETE("/:id/delete_user", user.DeleteUser)
-	group.POST("/:id/change_pwd", user.ChangePassword)
-	group.PUT("/:id/reset_pwd", user.ResetPassword)
-}
-
 // Login godoc
 // @Summary 管理员登录
 // @Description 管理员登录
@@ -34,7 +21,7 @@ func UserRegister(group *gin.RouterGroup) {
 // @Param polygon body dto.AdminLoginInput true "body"
 // @Success 200 {object} middleware.Response{data=dto.AdminLoginOut} "success"
 // @Router /api/user/login [post]
-func (u *UserController) Login(ctx *gin.Context) {
+func (u *userController) Login(ctx *gin.Context) {
 	params := &dto.AdminLoginInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败", err.Error())
@@ -59,7 +46,7 @@ func (u *UserController) Login(ctx *gin.Context) {
 // @Produce  json
 // @Success 200 {object} middleware.Response{data=dto.AdminLoginOut} "success"
 // @Router /api/user/loginout [get]
-func (u *UserController) LoginOut(ctx *gin.Context) {
+func (u *userController) LoginOut(ctx *gin.Context) {
 	claims, exists := ctx.Get("claims")
 	if !exists {
 		logger.Error("claims不存在,请检查jwt中间件")
@@ -81,7 +68,7 @@ func (u *UserController) LoginOut(ctx *gin.Context) {
 // @Produce   application/json
 // @Success   200  {object}  middleware.Response{data=model.SysUser,msg=string}  "获取用户信息"
 // @Router    /api/user/getinfo [get]
-func (u *UserController) GetUserInfo(ctx *gin.Context) {
+func (u *userController) GetUserInfo(ctx *gin.Context) {
 	clalms, err := utils.GetClaims(ctx)
 	if err != nil {
 		logger.Error("获取CustomClaims失败", err)
@@ -104,7 +91,7 @@ func (u *UserController) GetUserInfo(ctx *gin.Context) {
 // @Param     data  body      dto.SetUserAuth          true  "角色ID"
 // @Success   200   {object}  middleware.Response{msg=string}  "设置用户权限"
 // @Router    /api/user/{id}/set_auth [put]
-func (u *UserController) SetUserAuthority(ctx *gin.Context) {
+func (u *userController) SetUserAuthority(ctx *gin.Context) {
 	uid, err := utils.ParseInt(ctx.Param("id"))
 	if err != nil {
 		logger.Error("绑定参数失败", err.Error())
@@ -143,7 +130,7 @@ func (u *UserController) SetUserAuthority(ctx *gin.Context) {
 // @Produce   application/json
 // @Success   200   {object}  middleware.Response{msg=string}  "删除用户"
 // @Router    /api/user/{id}/delete_user [delete]
-func (u *UserController) DeleteUser(ctx *gin.Context) {
+func (u *userController) DeleteUser(ctx *gin.Context) {
 	uid, err := utils.ParseInt(ctx.Param("id"))
 	if err != nil {
 		logger.Error("绑定参数失败", err.Error())
@@ -165,7 +152,7 @@ func (u *UserController) DeleteUser(ctx *gin.Context) {
 // @Param     data  body      dto.ChangeUserPwdInput    true  "用户ID, 原密码, 新密码"
 // @Success   200   {object}  middleware.Response{msg=string}  "用户修改密码"
 // @Router    /api/user/{id}/change_pwd [post]
-func (u *UserController) ChangePassword(ctx *gin.Context) {
+func (u *userController) ChangePassword(ctx *gin.Context) {
 	uid, err := utils.ParseInt(ctx.Param("id"))
 	if err != nil {
 		logger.Error("绑定参数失败", err.Error())
@@ -192,7 +179,7 @@ func (u *UserController) ChangePassword(ctx *gin.Context) {
 // @Produce  application/json
 // @Success   200   {object}  middleware.Response{msg=string}  "重置用户密码"
 // @Router    /api/user/{id}/reset_pwd [put]
-func (u *UserController) ResetPassword(ctx *gin.Context) {
+func (u *userController) ResetPassword(ctx *gin.Context) {
 	uid, err := utils.ParseInt(ctx.Param("id"))
 	if err != nil {
 		logger.Error("绑定参数失败", err.Error())

@@ -12,13 +12,6 @@ var DaemonSet daemonSet
 
 type daemonSet struct{}
 
-func DaemonSetRegister(router *gin.RouterGroup) {
-	router.DELETE("/del", DaemonSet.DeleteDaemonSet)
-	router.PUT("/update", DaemonSet.UpdateDaemonSet)
-	router.GET("/list", DaemonSet.GetDaemonSetList)
-	router.GET("/detail", DaemonSet.GetDaemonSetDetail)
-}
-
 // DeleteDaemonSet 删除DaemonSet
 // ListPage godoc
 // @Summary      删除DaemonSet

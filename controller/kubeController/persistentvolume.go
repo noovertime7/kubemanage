@@ -12,12 +12,6 @@ var PersistentVolume persistentVolume
 
 type persistentVolume struct{}
 
-func PersistentVolumeRegister(router *gin.RouterGroup) {
-	router.DELETE("/del", PersistentVolume.DeletePersistentVolume)
-	router.GET("/list", PersistentVolume.GetPersistentVolumeList)
-	router.GET("/detail", PersistentVolume.GetPersistentVolumeDetail)
-}
-
 // DeletePersistentVolume 删除persistentVolume
 // ListPage godoc
 // @Summary      删除persistentVolume

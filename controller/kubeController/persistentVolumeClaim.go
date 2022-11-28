@@ -12,13 +12,6 @@ var PersistentVolumeClaim persistentVolumeClaim
 
 type persistentVolumeClaim struct{}
 
-func PersistentVolumeClaimRegister(router *gin.RouterGroup) {
-	router.DELETE("/del", PersistentVolumeClaim.DeletePersistentVolumeClaim)
-	router.PUT("/update", PersistentVolumeClaim.UpdatePersistentVolumeClaim)
-	router.GET("/list", PersistentVolumeClaim.GetPersistentVolumeClaimList)
-	router.GET("/detail", PersistentVolumeClaim.GetPersistentVolumeClaimDetail)
-}
-
 // DeletePersistentVolumeClaim 删除PersistentVolumeClaim
 // ListPage godoc
 // @Summary      删除PersistentVolumeClaim

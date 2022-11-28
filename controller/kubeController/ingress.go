@@ -12,15 +12,6 @@ var IngressController ingressController
 
 type ingressController struct{}
 
-func IngressRegister(router *gin.RouterGroup) {
-	router.PUT("/create", IngressController.CreateIngress)
-	router.DELETE("/del", IngressController.DeleteIngress)
-	router.PUT("/update", IngressController.UpdateIngress)
-	router.GET("/list", IngressController.GetIngressList)
-	router.GET("/detail", IngressController.GetIngressDetail)
-	router.GET("/numnp", IngressController.GetIngressNumPreNp)
-}
-
 // CreateIngress 创建ingress
 // ListPage godoc
 // @Summary      创建ingress

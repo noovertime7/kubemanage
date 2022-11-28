@@ -1,4 +1,4 @@
-package controller
+package authority
 
 import (
 	"fmt"
@@ -9,13 +9,6 @@ import (
 	"github.com/wonderivan/logger"
 )
 
-type CasbinController struct{}
-
-func CasbinRegister(group *gin.RouterGroup) {
-	rule := &CasbinController{}
-	group.GET("/getPolicyPathByAuthorityId", rule.GetPolicyPathByAuthorityId)
-}
-
 // GetPolicyPathByAuthorityId
 // @Tags      Casbin
 // @Summary   获取权限列表
@@ -25,7 +18,7 @@ func CasbinRegister(group *gin.RouterGroup) {
 // @Param     data  body      dto.CasbinInReceive                                          true  "权限id, 权限模型列表"
 // @Success   200   {object}  middleware.Response{data=dto.CasbinInfo,msg=string}  "获取权限列表,返回包括casbin详情列表"
 // @Router    /casbin/getPolicyPathByAuthorityId [post]
-func (c *CasbinController) GetPolicyPathByAuthorityId(ctx *gin.Context) {
+func (c *casbinController) GetPolicyPathByAuthorityId(ctx *gin.Context) {
 	rule := &dto.CasbinInReceive{}
 	if err := rule.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败", err.Error())

@@ -12,13 +12,6 @@ var Secret secret
 
 type secret struct{}
 
-func SecretRegister(router *gin.RouterGroup) {
-	router.DELETE("/del", Secret.DeleteSecret)
-	router.PUT("/update", Secret.UpdateSecret)
-	router.GET("/list", Secret.GetSecretList)
-	router.GET("/detail", Secret.GetSecretDetail)
-}
-
 // DeleteSecret 删除Secret
 // ListPage godoc
 // @Summary      删除Secret
