@@ -3,7 +3,7 @@ module github.com/noovertime7/kubemanage
 go 1.18
 
 require (
-github.com/casbin/casbin/v2 v2.55.1
+	github.com/casbin/casbin/v2 v2.55.1
 	github.com/casbin/gorm-adapter/v3 v3.13.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/color v1.13.0
@@ -31,6 +31,9 @@ github.com/casbin/casbin/v2 v2.55.1
 	k8s.io/api v0.24.3
 	k8s.io/apimachinery v0.24.3
 	k8s.io/client-go v0.24.3
+)
+
+require (
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
@@ -109,6 +112,7 @@ github.com/casbin/casbin/v2 v2.55.1
 	gorm.io/driver/postgres v1.4.4 // indirect
 	gorm.io/driver/sqlserver v1.4.1 // indirect
 	gorm.io/plugin/dbresolver v1.3.0 // indirect
+	k8s.io/klog/v2 v2.60.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20220328201542-3ee0da9b0b42 // indirect
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9 // indirect
 	modernc.org/libc v1.19.0 // indirect
