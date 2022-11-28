@@ -8,6 +8,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/color v1.13.0
 	github.com/fsnotify/fsnotify v1.6.0
+	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-playground/locales v0.14.0
 	github.com/go-playground/universal-translator v0.18.0
@@ -21,6 +22,7 @@ require (
 	github.com/swaggo/swag v1.8.8
 	github.com/wonderivan/logger v1.0.0
 	golang.org/x/crypto v0.3.0
+	golang.org/x/time v0.0.0-20220609170525-579cf78fd858
 	gopkg.in/go-playground/validator.v9 v9.29.0
 	gorm.io/driver/mysql v1.4.1
 	gorm.io/gorm v1.24.0
@@ -95,7 +97,6 @@ require (
 	golang.org/x/sys v0.2.0 // indirect
 	golang.org/x/term v0.2.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
-	golang.org/x/time v0.0.0-20220609170525-579cf78fd858 // indirect
 	golang.org/x/tools v0.1.12 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
