@@ -25,7 +25,9 @@ func InitLogger() (err error) {
 	var core zapcore.Core
 	if cfg.Level == "debug" {
 		// 进入开发模式，日志输出到终端
-		consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
+		config := zap.NewDevelopmentEncoderConfig()
+		config.EncodeLevel = zapcore.LowercaseColorLevelEncoder
+		consoleEncoder := zapcore.NewConsoleEncoder(config)
 		core = zapcore.NewTee(
 			zapcore.NewCore(encoder, writeSyncer, l),
 			zapcore.NewCore(consoleEncoder, zapcore.Lock(os.Stdout), zapcore.DebugLevel),
@@ -45,7 +47,7 @@ func getEncoder() zapcore.Encoder {
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	encoderConfig.TimeKey = "time"
-	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	encoderConfig.EncodeDuration = zapcore.SecondsDurationEncoder
 	encoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
 	return zapcore.NewJSONEncoder(encoderConfig)
