@@ -1,3 +1,4 @@
+简体中文 | [English](./README_en.md)
 # kubemanage
 kubemanage是一个简单易用的K8S管理平台，前端使用vue3，后端使用gin+gorm,对于初学k8s开发的同学来说，是一个很方便练手的项目，也可以作为企业二次开发的模板
 
@@ -76,28 +77,28 @@ swag init   --pd  -d ./cmd,docs
 
 ## 效果演示
 首页
-![首页](https://github.com/noovertime7/kubemanage/blob/master/img/dashboard.jpg?raw=true)
+![首页](./img/dashboard.jpg?raw=true)
 
 工作流
-![工作流](https://github.com/noovertime7/kubemanage/blob/master/img/wordflow.jpg?raw=true)
+![工作流](./img/wordflow.jpg?raw=true)
 
 deployment
-![deployment](https://github.com/noovertime7/kubemanage/blob/master/img/deployment.jpg?raw=true)
+![deployment](./img/deployment.jpg?raw=true)
 
 pod
-![首页](https://github.com/noovertime7/kubemanage/blob/master/img/pod.jpg?raw=true)
+![首页](./img/pod.jpg?raw=true)
 
 POD日志
-![POD 日志](https://github.com/noovertime7/kubemanage/blob/master/img/pod_log.jpg?raw=true)
+![POD 日志](./img/pod_log.jpg?raw=true)
 
 POD终端
-![POD 终端](https://github.com/noovertime7/kubemanage/blob/master/img/pod_ter.jpg?raw=true)
+![POD 终端](./img/pod_ter.jpg?raw=true)
 
 service
-![service](https://github.com/noovertime7/kubemanage/blob/master/img/service.jpg?raw=true)
+![service](./img/service.jpg?raw=true)
 
 configmap
-![configmap](https://github.com/noovertime7/kubemanage/blob/master/img/cm_detail.jpg?raw=true)
+![configmap](./img/cm_detail.jpg?raw=true)
 
 node
-![node](https://github.com/noovertime7/kubemanage/blob/master/img/node.jpg?raw=true)
+![node](./img/node.jpg?raw=true)
