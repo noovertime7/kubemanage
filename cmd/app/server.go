@@ -3,25 +3,28 @@ package app
 import (
 	"context"
 	"fmt"
-	"github.com/noovertime7/kubemanage/cmd/app/config"
-	"github.com/noovertime7/kubemanage/cmd/app/options"
-	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
-	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
-	"github.com/noovertime7/kubemanage/pkg/utils"
-	"github.com/noovertime7/kubemanage/router"
-	"github.com/spf13/cobra"
-	"k8s.io/klog/v2"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/spf13/cobra"
+	"go.uber.org/zap"
+
+	"github.com/noovertime7/kubemanage/cmd/app/config"
+	"github.com/noovertime7/kubemanage/cmd/app/options"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
+	"github.com/noovertime7/kubemanage/pkg/logger"
+	"github.com/noovertime7/kubemanage/pkg/utils"
+	"github.com/noovertime7/kubemanage/router"
 )
 
 func NewServerCommand() *cobra.Command {
 	opts, err := options.NewOptions()
 	if err != nil {
-		klog.Fatalf("unable to initialize command options: %v", err)
+		logger.LG.Fatal("unable to initialize command options: %v", zap.Error(err))
 	}
 
 	cmd := &cobra.Command{
@@ -81,13 +84,12 @@ func runServer(opt *options.Options) {
 		Addr:    fmt.Sprintf("%s", config.SysConfig.Default.ListenAddr),
 		Handler: opt.GinEngine,
 	}
-	stopCh := make(chan struct{})
 
 	// Initializing the server in a goroutine so that it won't block the graceful shutdown handling below
 	go func() {
-		klog.Infof("starting kubemanage server running on %s", config.SysConfig.Default.ListenAddr)
+		logger.LG.Info("Success", zap.String("starting kubemanage server running on", config.SysConfig.Default.ListenAddr))
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			klog.Fatal("failed to listen kubemanage server: ", err)
+			logger.LG.Fatal("failed to listen kubemanage server: ", zap.Error(err))
 		}
 	}()
 
@@ -95,16 +97,15 @@ func runServer(opt *options.Options) {
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	klog.Infof("shutting kubemanage server down ...")
-	stopCh <- struct{}{}
+	logger.LG.Info("shutting kubemanage server down ...")
 
 	// The context is used to inform the server it has 5 seconds to finish the request
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
-		klog.Fatal("kubemanage server forced to shutdown: ", err)
+		logger.LG.Fatal("kubemanage server forced to shutdown: ", zap.Error(err))
 		os.Exit(1)
 	}
-	klog.Infof("kubemanage server exit successful")
+	logger.LG.Info("kubemanage server exit successful")
 }

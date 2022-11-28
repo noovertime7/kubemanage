@@ -3,26 +3,35 @@ package config
 var SysConfig *Config
 
 type Config struct {
-	Default DefaultOptions `yaml:"default"`
-	Mysql   MysqlOptions   `yaml:"mysql"`
+	Default DefaultOptions `mapstructure:"default"`
+	Mysql   MysqlOptions   `mapstructure:"mysql"`
+	Log     LogConfig      `mapstructure:"log"`
 }
 
 type DefaultOptions struct {
-	PodLogTailLine       string `yaml:"podLogTailLine"`
-	ListenAddr           string `yaml:"listenAddr"`
-	WebSocketListenAddr  string `yaml:"webSocketListenAddr"`
-	JWTSecret            string `yaml:"JWTSecret"`
-	ExpireTime           int64  `yaml:"expireTime"`
-	KubernetesConfigFile string `yaml:"kubernetesConfigFile"`
+	PodLogTailLine       string `mapstructure:"podLogTailLine"`
+	ListenAddr           string `mapstructure:"listenAddr"`
+	WebSocketListenAddr  string `mapstructure:"webSocketListenAddr"`
+	JWTSecret            string `mapstructure:"JWTSecret"`
+	ExpireTime           int64  `mapstructure:"expireTime"`
+	KubernetesConfigFile string `mapstructure:"kubernetesConfigFile"`
 }
 
 type MysqlOptions struct {
-	Host         string `yaml:"host"`
-	User         string `yaml:"user"`
-	Password     string `yaml:"password"`
-	Port         string `yaml:"port"`
-	Name         string `yaml:"name"`
-	MaxOpenConns int    `yaml:"maxOpenConns"`
-	MaxLifetime  int    `yaml:"maxLifetime"`
-	MaxIdleConns int    `yaml:"maxIdleConns"`
+	Host         string `mapstructure:"host"`
+	User         string `mapstructure:"user"`
+	Password     string `mapstructure:"password"`
+	Port         string `mapstructure:"port"`
+	Name         string `mapstructure:"name"`
+	MaxOpenConns int    `mapstructure:"maxOpenConns"`
+	MaxLifetime  int    `mapstructure:"maxLifetime"`
+	MaxIdleConns int    `mapstructure:"maxIdleConns"`
+}
+
+type LogConfig struct {
+	Level      string `mapstructure:"level"`
+	Filename   string `mapstructure:"filename"`
+	MaxSize    int    `mapstructure:"max_size"`
+	MaxAge     int    `mapstructure:"max_age"`
+	MaxBackups int    `mapstructure:"max_backups"`
 }

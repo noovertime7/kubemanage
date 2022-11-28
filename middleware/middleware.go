@@ -3,5 +3,5 @@ package middleware
 import "github.com/gin-gonic/gin"
 
 func InstallMiddlewares(ginEngine *gin.RouterGroup) {
-	ginEngine.Use(Cores(), Limiter(), TranslationMiddleware(), JWTAuth(), CasbinHandler())
+	ginEngine.Use(Logger(), Cores(), Limiter(), Recovery(true), TranslationMiddleware(), JWTAuth(), CasbinHandler())
 }

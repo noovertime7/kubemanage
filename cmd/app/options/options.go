@@ -2,6 +2,7 @@ package options
 
 import (
 	"fmt"
+	"github.com/noovertime7/kubemanage/pkg/logger"
 	"os"
 	"time"
 
@@ -70,10 +71,17 @@ func (o *Options) InitDB() error {
 }
 
 func (o *Options) register() error {
+	if err := o.registerLogger(); err != nil {
+		return err
+	}
 	if err := o.registerDatabase(); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (o *Options) registerLogger() error {
+	return logger.InitLogger()
 }
 
 func (o *Options) registerDatabase() error {
