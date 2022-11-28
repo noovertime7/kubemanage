@@ -14,7 +14,7 @@ type CoreService interface {
 }
 
 type KubeManage struct {
-	Cfg     config.Config
+	Cfg     *config.Config
 	Factory dao.ShareDaoFactory
 }
 
@@ -38,7 +38,7 @@ func (c *KubeManage) Authority() Authority {
 	return NewAuthority(c)
 }
 
-func New(cfg config.Config, factory dao.ShareDaoFactory) CoreService {
+func New(cfg *config.Config, factory dao.ShareDaoFactory) CoreService {
 	return &KubeManage{
 		Cfg:     cfg,
 		Factory: factory,

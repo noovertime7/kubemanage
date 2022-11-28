@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/noovertime7/kubemanage/cmd/app/config"
 	"github.com/noovertime7/kubemanage/cmd/app/options"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
@@ -72,7 +73,7 @@ func InitLocalK8s() {
 
 func InitRouters(opt *options.Options) {
 	utils.PrintColor()
-	router.HttpServerRun(opt.ComponentConfig.Default.ListenAddr)
+	router.HttpServerRun(config.SysConfig.Default.ListenAddr)
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGKILL, syscall.SIGQUIT, syscall.SIGINT, syscall.SIGTERM)
 	<-quit

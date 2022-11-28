@@ -20,10 +20,9 @@ const (
 
 type Options struct {
 	// The default values.
-	ComponentConfig config.Config
-	DB              *gorm.DB
-	Factory         dao.ShareDaoFactory // 数据库接口
-	ConfigFile      string
+	DB         *gorm.DB
+	Factory    dao.ShareDaoFactory // 数据库接口
+	ConfigFile string
 }
 
 func NewOptions() (*Options, error) {
@@ -48,10 +47,7 @@ func (o *Options) Complete() error {
 		}
 	}
 
-	c := config.New()
-	c.SetConfigFile(o.ConfigFile)
-	c.SetConfigType("yaml")
-	if err := c.Binding(&o.ComponentConfig); err != nil {
+	if err := config.Binding(o.ConfigFile); err != nil {
 		return err
 	}
 
@@ -75,7 +71,7 @@ func (o *Options) register() error {
 }
 
 func (o *Options) registerDatabase() error {
-	sqlConfig := o.ComponentConfig.Mysql
+	sqlConfig := config.SysConfig.Mysql
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		sqlConfig.User,
 		sqlConfig.Password,
@@ -95,13 +91,13 @@ func (o *Options) registerDatabase() error {
 	if err != nil {
 		return err
 	}
-	sqlDB.SetMaxIdleConns(o.ComponentConfig.Mysql.MaxIdleConns)
-	sqlDB.SetMaxOpenConns(o.ComponentConfig.Mysql.MaxOpenConns)
-	sqlDB.SetConnMaxLifetime(time.Duration(o.ComponentConfig.Mysql.MaxLifetime) * time.Second)
+	sqlDB.SetMaxIdleConns(config.SysConfig.Mysql.MaxIdleConns)
+	sqlDB.SetMaxOpenConns(config.SysConfig.Mysql.MaxOpenConns)
+	sqlDB.SetConnMaxLifetime(time.Duration(config.SysConfig.Mysql.MaxLifetime) * time.Second)
 	o.Factory = dao.NewShareDaoFactory(o.DB)
 	return nil
 }
 
 func (o *Options) registerJwt() {
-	pkg.RegisterJwt(o.ComponentConfig.Default.JWTSecret)
+	pkg.RegisterJwt(config.SysConfig.Default.JWTSecret)
 }
