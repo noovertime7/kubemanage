@@ -5,6 +5,7 @@ kubemanage是一个简单易用的K8S管理平台，前端使用vue3，后端使
 前端项目地址 https://github.com/noovertime7/kubemanage-web
 
 ## 开始部署
+
 ### 初始化数据库
 需要手动创建数据库，数据表与数据会通过`DBInitializer`自动初始化
 

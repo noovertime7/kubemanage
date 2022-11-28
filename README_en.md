@@ -10,7 +10,7 @@ The database needs to be created manually, and the data table and data will be i
 CREATE DATABASE kubemanage;
 ```
 ### Operation engineering
-front 
+front
 ```shell
 git clone  https://github.com/noovertime7/kubemanage-web.git
 cd kubemanage-web
@@ -48,7 +48,7 @@ PS: Please use the latest version of the swag tool. It is recommended to pull th
 ```shell
 swag init   --pd  -d ./cmd,docs
 ```
-Access after successful generation` http://127.0.0.1:6180/swagger/index.html `
+Access after successful generation `http://127.0.0.1:6180/swagger/index.html`
 ## Effect demonstration
 home page
 ![Home Page](./img/dashboard.jpg?raw=true )
