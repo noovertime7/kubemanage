@@ -14,7 +14,8 @@
     <img src="https://img.shields.io/badge/Vue-3.0.0-orange.svg" alt="vue">
   </a>
 </p>
-kubemanage是一个简单易用的K8S管理平台，前端使用vue3，后端使用gin+gorm,对于初学k8s开发的同学来说，是一个很方便练手的项目，也可以作为企业二次开发的模板
+
+> kubemanage是一个简单易用的K8S管理平台，前端使用vue3，后端使用gin+gorm,对于初学k8s开发的同学来说，是一个很方便练手的项目，也可以作为企业二次开发的模板
 
 前端项目地址 https://github.com/noovertime7/kubemanage-web
 ## 开始部署
