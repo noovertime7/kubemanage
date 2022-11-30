@@ -1,5 +1,19 @@
 简体中文 | [English](./README_en.md)
 # kubemanage
+<p >
+  <a href="https://golang.google.cn/">
+    <img src="https://img.shields.io/badge/Golang-1.18-green.svg" alt="golang">
+  </a>
+  <a href="https://gin-gonic.com/">
+    <img src="https://img.shields.io/badge/Gin-1.7.4-red.svg" alt="gin">
+  </a>
+  <a href="https://gorm.io/">
+    <img src="https://img.shields.io/badge/Gorm-1.21-orange.svg" alt="gorm">
+  </a>
+  <a href="https://vuejs.org/">
+    <img src="https://img.shields.io/badge/Vue-3.0.0-orange.svg" alt="vue">
+  </a>
+</p>
 kubemanage是一个简单易用的K8S管理平台，前端使用vue3，后端使用gin+gorm,对于初学k8s开发的同学来说，是一个很方便练手的项目，也可以作为企业二次开发的模板
 
 前端项目地址 https://github.com/noovertime7/kubemanage-web
