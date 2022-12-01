@@ -5,6 +5,7 @@ import (
 	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
+	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/wonderivan/logger"
 )
 
@@ -28,12 +29,12 @@ func (s *statefulSet) DeleteStatefulSet(ctx *gin.Context) {
 	params := &kubernetes.StatefulSetNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.StatefulSet.DeleteStatefulSet(params.Name, params.NameSpace); err != nil {
 		logger.Error("删除StatefulSet失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, "删除成功")
@@ -56,12 +57,12 @@ func (s *statefulSet) UpdateStatefulSet(ctx *gin.Context) {
 	params := &kubernetes.StatefulSetUpdateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.StatefulSet.UpdateStatefulSet(params.Content, params.NameSpace); err != nil {
 		logger.Error("更新StatefulSet失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.UpdateError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, "更新成功")
@@ -85,13 +86,13 @@ func (s *statefulSet) GetStatefulSetList(ctx *gin.Context) {
 	params := &kubernetes.StatefulSetListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.StatefulSet.GetStatefulSets(params.FilterName, params.NameSpace, params.Limit, params.Page)
 	if err != nil {
 		logger.Error("获取StatefulSet列表失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)
@@ -113,13 +114,13 @@ func (s *statefulSet) GetStatefulSetDetail(ctx *gin.Context) {
 	params := &kubernetes.StatefulSetNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.StatefulSet.GetStatefulSetDetail(params.Name, params.NameSpace)
 	if err != nil {
 		logger.Error("获取StatefulSet详情失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)

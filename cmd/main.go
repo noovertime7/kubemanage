@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
 
 	cmd := app.NewServerCommand()
 	if err := cmd.Execute(); err != nil {

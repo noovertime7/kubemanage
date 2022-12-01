@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/noovertime7/kubemanage/pkg/utils"
 )
 
@@ -15,7 +16,7 @@ func JWTAuth() gin.HandlerFunc {
 		// 处理验证逻辑
 		claims, err := utils.GetClaims(context)
 		if err != nil {
-			ResponseError(context, 405, err)
+			ResponseError(context, globalError.NewGlobalError(globalError.AuthorizationError, err))
 			context.Abort()
 			return
 		}

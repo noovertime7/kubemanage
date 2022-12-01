@@ -3,8 +3,8 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
+	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/noovertime7/kubemanage/pkg/utils"
-	"github.com/pkg/errors"
 	"strconv"
 )
 
@@ -17,7 +17,7 @@ func CasbinHandler() gin.HandlerFunc {
 		}
 		waitUse, err := utils.GetClaims(c)
 		if err != nil {
-			ResponseError(c, 405, err)
+			ResponseError(c, globalError.NewGlobalError(globalError.ServerError, err))
 			c.Abort()
 			return
 		}
@@ -32,7 +32,7 @@ func CasbinHandler() gin.HandlerFunc {
 		if success {
 			c.Next()
 		} else {
-			ResponseError(c, 403, errors.New("403 forbidden"))
+			ResponseError(c, globalError.NewGlobalError(globalError.AuthErr, err))
 			c.Abort()
 			return
 		}

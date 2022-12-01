@@ -6,6 +6,7 @@ import (
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
+	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/noovertime7/kubemanage/pkg/utils"
 	"github.com/wonderivan/logger"
 	"strconv"
@@ -25,13 +26,13 @@ func (u *userController) Login(ctx *gin.Context) {
 	params := &dto.AdminLoginInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败", err.Error())
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	token, err := v1.CoreV1.User().Login(ctx, params)
 	if err != nil {
 		logger.Error("登录失败", err.Error())
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.LoginErr, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, &dto.AdminLoginOut{Token: token})
@@ -54,7 +55,7 @@ func (u *userController) LoginOut(ctx *gin.Context) {
 	cla, _ := claims.(*pkg.CustomClaims)
 	if err := v1.CoreV1.User().LoginOut(ctx, cla.ID); err != nil {
 		logger.Error("退出登录失败", err)
-		middleware.ResponseSuccess(ctx, "退出失败")
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, "退出成功")
@@ -77,7 +78,7 @@ func (u *userController) GetUserInfo(ctx *gin.Context) {
 	userInfo, err := v1.CoreV1.User().GetUserInfo(ctx, clalms.ID, clalms.AuthorityId)
 	if err != nil {
 		logger.Error("获取userInfo失败", err)
-		middleware.ResponseError(ctx, 30001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.LogoutErr, err))
 	}
 	middleware.ResponseSuccess(ctx, userInfo)
 }
@@ -95,17 +96,17 @@ func (u *userController) SetUserAuthority(ctx *gin.Context) {
 	uid, err := utils.ParseInt(ctx.Param("id"))
 	if err != nil {
 		logger.Error("绑定参数失败", err.Error())
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 	}
 	params := &dto.SetUserAuth{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败", err.Error())
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := v1.CoreV1.User().SetUserAuth(ctx, uid, params.AuthorityId); err != nil {
 		logger.Error("修改用户角色失败", err.Error())
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	// token中存在角色信息，需要生成新的token
@@ -114,7 +115,7 @@ func (u *userController) SetUserAuthority(ctx *gin.Context) {
 	newToken, err := pkg.JWTToken.GenerateToken(claims.BaseClaims)
 	if err != nil {
 		logger.Error("修改用户角色失败,生成新token失败", err.Error())
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	ctx.Header("new-token", newToken)
@@ -134,11 +135,11 @@ func (u *userController) DeleteUser(ctx *gin.Context) {
 	uid, err := utils.ParseInt(ctx.Param("id"))
 	if err != nil {
 		logger.Error("绑定参数失败", err.Error())
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 	}
 	if err := v1.CoreV1.User().DeleteUser(ctx, uid); err != nil {
 		logger.Error("删除用户失败", err.Error())
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, "操作成功")
@@ -156,17 +157,17 @@ func (u *userController) ChangePassword(ctx *gin.Context) {
 	uid, err := utils.ParseInt(ctx.Param("id"))
 	if err != nil {
 		logger.Error("绑定参数失败", err.Error())
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 	}
 	params := &dto.ChangeUserPwdInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败", err.Error())
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := v1.CoreV1.User().ChangePassword(ctx, uid, params); err != nil {
 		logger.Error("修改用户密码失败", err.Error())
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, "操作成功")
@@ -183,11 +184,11 @@ func (u *userController) ResetPassword(ctx *gin.Context) {
 	uid, err := utils.ParseInt(ctx.Param("id"))
 	if err != nil {
 		logger.Error("绑定参数失败", err.Error())
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 	}
 	if err := v1.CoreV1.User().ResetPassword(ctx, uid); err != nil {
 		logger.Error("重置用户密码失败", err.Error())
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, "操作成功")

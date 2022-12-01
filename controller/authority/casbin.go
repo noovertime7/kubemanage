@@ -6,6 +6,7 @@ import (
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
+	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/wonderivan/logger"
 )
 
@@ -22,7 +23,7 @@ func (c *casbinController) GetPolicyPathByAuthorityId(ctx *gin.Context) {
 	rule := &dto.CasbinInReceive{}
 	if err := rule.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败", err.Error())
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	fmt.Println("rule = ", rule)

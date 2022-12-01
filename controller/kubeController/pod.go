@@ -5,6 +5,7 @@ import (
 	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
+	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/wonderivan/logger"
 	_ "k8s.io/api/core/v1"
 )
@@ -32,12 +33,12 @@ func (p *pod) GetPods(ctx *gin.Context) {
 	parmas := &kubernetes.PodListInput{}
 	if err := parmas.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err.Error())
-		middleware.ResponseError(ctx, 10001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.Pod.GetPods(parmas.FilterName, parmas.NameSpace, parmas.Limit, parmas.Page)
 	if err != nil {
-		middleware.ResponseError(ctx, 10002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)
@@ -60,12 +61,12 @@ func (p *pod) GetPodDetail(ctx *gin.Context) {
 	parmas := &kubernetes.PodNameNsInput{}
 	if err := parmas.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err.Error())
-		middleware.ResponseError(ctx, 10003, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.Pod.GetPodDetail(parmas.PodName, parmas.NameSpace)
 	if err != nil {
-		middleware.ResponseError(ctx, 10004, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)
@@ -87,11 +88,11 @@ func (p *pod) DeletePod(ctx *gin.Context) {
 	params := &kubernetes.PodNameNsInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err.Error())
-		middleware.ResponseError(ctx, 10003, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.Pod.DeletePod(params.PodName, params.NameSpace); err != nil {
-		middleware.ResponseError(ctx, 10004, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, "删除成功")
@@ -114,12 +115,12 @@ func (p *pod) UpdatePod(ctx *gin.Context) {
 	params := &kubernetes.PodUpdateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err.Error())
-		middleware.ResponseError(ctx, 10003, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.Pod.UpdatePod(params.NameSpace, params.Content); err != nil {
 		logger.Error("POD更新失败", err.Error())
-		middleware.ResponseError(ctx, 10005, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.UpdateError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, "更新成功")
@@ -141,12 +142,12 @@ func (p *pod) GetPodContainer(ctx *gin.Context) {
 	params := &kubernetes.PodNameNsInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err.Error())
-		middleware.ResponseError(ctx, 10003, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.Pod.GetPodContainer(params.PodName, params.NameSpace)
 	if err != nil {
-		middleware.ResponseError(ctx, 10004, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)
@@ -169,13 +170,13 @@ func (p *pod) GetPodLog(ctx *gin.Context) {
 	params := &kubernetes.PodGetLogInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err.Error())
-		middleware.ResponseError(ctx, 10003, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.Pod.GetPodLog(params.ContainerName, params.PodName, params.NameSpace)
 	if err != nil {
 		logger.Error("POD更新失败", err.Error())
-		middleware.ResponseError(ctx, 10005, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.UpdateError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)
@@ -194,7 +195,7 @@ func (p *pod) GetPodLog(ctx *gin.Context) {
 func (p *pod) GetPodNumPreNp(ctx *gin.Context) {
 	data, err := kube.Pod.GetPodNumPerNp()
 	if err != nil {
-		middleware.ResponseError(ctx, 10006, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)

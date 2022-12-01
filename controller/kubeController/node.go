@@ -5,6 +5,7 @@ import (
 	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
+	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/wonderivan/logger"
 )
 
@@ -29,13 +30,13 @@ func (n *node) GetNodeList(ctx *gin.Context) {
 	params := &kubernetes.NodeListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.Node.GetNodes(params.FilterName, params.Limit, params.Page)
 	if err != nil {
 		logger.Error("获取node列表失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)
@@ -56,13 +57,13 @@ func (n *node) GetNodeDetail(ctx *gin.Context) {
 	params := &kubernetes.NodeNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.Node.GetNodeDetail(params.Name)
 	if err != nil {
 		logger.Error("获取node详情失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)

@@ -5,6 +5,7 @@ import (
 	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
+	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/wonderivan/logger"
 )
 
@@ -28,12 +29,12 @@ func (s *persistentVolumeClaim) DeletePersistentVolumeClaim(ctx *gin.Context) {
 	params := &kubernetes.PersistentVolumeClaimNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.PersistentVolumeClaim.DeletePersistentVolumeClaim(params.Name, params.NameSpace); err != nil {
 		logger.Error("删除PersistentVolumeClaim失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, "删除成功")
@@ -56,12 +57,12 @@ func (s *persistentVolumeClaim) UpdatePersistentVolumeClaim(ctx *gin.Context) {
 	params := &kubernetes.PersistentVolumeClaimUpdateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.PersistentVolumeClaim.UpdatePersistentVolumeClaim(params.Content, params.NameSpace); err != nil {
 		logger.Error("更新PersistentVolumeClaim失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.UpdateError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, "更新成功")
@@ -85,13 +86,13 @@ func (s *persistentVolumeClaim) GetPersistentVolumeClaimList(ctx *gin.Context) {
 	params := &kubernetes.PersistentVolumeClaimListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.PersistentVolumeClaim.GetPersistentVolumeClaims(params.FilterName, params.NameSpace, params.Limit, params.Page)
 	if err != nil {
 		logger.Error("获取PersistentVolumeClaim列表失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)
@@ -113,13 +114,13 @@ func (s *persistentVolumeClaim) GetPersistentVolumeClaimDetail(ctx *gin.Context)
 	params := &kubernetes.PersistentVolumeClaimNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.PersistentVolumeClaim.GetPersistentVolumeClaimDetail(params.Name, params.NameSpace)
 	if err != nil {
 		logger.Error("获取PersistentVolumeClaim详情失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)

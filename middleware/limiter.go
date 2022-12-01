@@ -19,8 +19,8 @@ package middleware
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"golang.org/x/time/rate"
-	"net/http"
 )
 
 func Limiter() gin.HandlerFunc {
@@ -32,7 +32,7 @@ func Limiter() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		if !limiter.Allow() {
-			ResponseError(c, http.StatusForbidden, fmt.Errorf("系统繁忙，请稍后再试"))
+			ResponseError(c, globalError.NewGlobalError(globalError.ServerError, fmt.Errorf("系统繁忙，请稍后重试")))
 		}
 	}
 }

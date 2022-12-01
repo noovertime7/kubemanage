@@ -5,6 +5,7 @@ import (
 	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
+	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/wonderivan/logger"
 )
 
@@ -28,12 +29,12 @@ func (s *secret) DeleteSecret(ctx *gin.Context) {
 	params := &kubernetes.SecretNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.Secret.DeleteSecrets(params.Name, params.NameSpace); err != nil {
 		logger.Error("删除Secret失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, "删除成功")
@@ -56,12 +57,12 @@ func (s *secret) UpdateSecret(ctx *gin.Context) {
 	params := &kubernetes.SecretUpdateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.Secret.UpdateSecrets(params.Content, params.NameSpace); err != nil {
 		logger.Error("更新Secret失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.UpdateError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, "更新成功")
@@ -85,13 +86,13 @@ func (s *secret) GetSecretList(ctx *gin.Context) {
 	params := &kubernetes.SecretListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.Secret.GetSecrets(params.FilterName, params.NameSpace, params.Limit, params.Page)
 	if err != nil {
 		logger.Error("获取Secret列表失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)
@@ -113,13 +114,13 @@ func (s *secret) GetSecretDetail(ctx *gin.Context) {
 	params := &kubernetes.SecretNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		logger.Error("绑定参数失败:", err)
-		middleware.ResponseError(ctx, 20001, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.Secret.GetSecretsDetail(params.Name, params.NameSpace)
 	if err != nil {
 		logger.Error("获取Secret详情失败", err)
-		middleware.ResponseError(ctx, 20002, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)
