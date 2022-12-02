@@ -2,11 +2,12 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
+	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
-	"github.com/wonderivan/logger"
 )
 
 var ServiceController serviceController
@@ -27,12 +28,12 @@ type serviceController struct{}
 func (s *serviceController) CreateService(ctx *gin.Context) {
 	params := &kubernetes.ServiceCreateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.Service.CreateService(params); err != nil {
-		logger.Error("创建ervice失败", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.CreateError, err))
 		return
 	}
@@ -54,12 +55,12 @@ func (s *serviceController) CreateService(ctx *gin.Context) {
 func (s *serviceController) DeleteService(ctx *gin.Context) {
 	params := &kubernetes.ServiceNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.Service.DeleteService(params.Name, params.NameSpace); err != nil {
-		logger.Error("删除service失败", err)
+		v1.Log.ErrorWithCode(globalError.DeleteError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
 		return
 	}
@@ -82,12 +83,12 @@ func (s *serviceController) DeleteService(ctx *gin.Context) {
 func (s *serviceController) UpdateService(ctx *gin.Context) {
 	params := &kubernetes.ServiceUpdateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.Service.UpdateService(params.NameSpace, params.Content); err != nil {
-		logger.Error("修改service失败", err)
+		v1.Log.ErrorWithCode(globalError.UpdateError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.UpdateError, err))
 		return
 	}
@@ -111,13 +112,13 @@ func (s *serviceController) UpdateService(ctx *gin.Context) {
 func (s *serviceController) GetServiceList(ctx *gin.Context) {
 	params := &kubernetes.ServiceListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.Service.GetServiceList(params.FilterName, params.NameSpace, params.Limit, params.Page)
 	if err != nil {
-		logger.Error("获取service列表失败", err)
+		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
@@ -139,13 +140,13 @@ func (s *serviceController) GetServiceList(ctx *gin.Context) {
 func (s *serviceController) GetServiceDetail(ctx *gin.Context) {
 	params := &kubernetes.ServiceNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.Service.GetServiceDetail(params.Name, params.NameSpace)
 	if err != nil {
-		logger.Error("获取service详情失败", err)
+		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
@@ -165,7 +166,7 @@ func (s *serviceController) GetServiceDetail(ctx *gin.Context) {
 func (s *serviceController) GetServicePerNS(ctx *gin.Context) {
 	data, err := kube.Service.GetServiceNp()
 	if err != nil {
-		logger.Error("获取service失败", err)
+		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}

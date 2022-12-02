@@ -4,9 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
+	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
-	"github.com/wonderivan/logger"
 )
 
 var NameSpace namespace
@@ -27,12 +27,12 @@ type namespace struct{}
 func (n *namespace) CreateNameSpace(ctx *gin.Context) {
 	params := &kubernetes.NameSpaceNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败:", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.NameSpace.CreateNameSpace(params.Name); err != nil {
-		logger.Error("创建命名空间失败:", err)
+		v1.Log.ErrorWithCode(globalError.CreateError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.CreateError, err))
 		return
 	}
@@ -53,12 +53,12 @@ func (n *namespace) CreateNameSpace(ctx *gin.Context) {
 func (n *namespace) DeleteNameSpace(ctx *gin.Context) {
 	params := &kubernetes.NameSpaceNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败:", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.NameSpace.DeleteNameSpace(params.Name); err != nil {
-		logger.Error("删除NameSpace失败", err)
+		v1.Log.ErrorWithCode(globalError.DeleteError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
 		return
 	}
@@ -81,13 +81,13 @@ func (n *namespace) DeleteNameSpace(ctx *gin.Context) {
 func (n *namespace) GetNameSpaceList(ctx *gin.Context) {
 	params := &kubernetes.NameSpaceListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败:", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.NameSpace.GetNameSpaces(params.FilterName, params.Limit, params.Page)
 	if err != nil {
-		logger.Error("获取Namespace列表失败", err)
+		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
@@ -108,13 +108,13 @@ func (n *namespace) GetNameSpaceList(ctx *gin.Context) {
 func (n *namespace) GetNameSpaceDetail(ctx *gin.Context) {
 	params := &kubernetes.NameSpaceNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败:", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.NameSpace.GetNameSpacesDetail(params.Name)
 	if err != nil {
-		logger.Error("获取Namespace详情失败", err)
+		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}

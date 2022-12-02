@@ -2,11 +2,11 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
-	"github.com/wonderivan/logger"
 )
 
 var WorkFlow workflow
@@ -27,12 +27,12 @@ type workflow struct{}
 func (w *workflow) CreateWorkFlow(ctx *gin.Context) {
 	params := &kubernetes.WorkFlowCreateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败:", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := v1.CoreV1.WorkFlow().Save(ctx, params); err != nil {
-		logger.Error("创建失败", err)
+		v1.Log.ErrorWithCode(globalError.CreateError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.CreateError, err))
 		return
 	}
@@ -53,12 +53,12 @@ func (w *workflow) CreateWorkFlow(ctx *gin.Context) {
 func (w *workflow) DeleteWorkflow(ctx *gin.Context) {
 	params := &kubernetes.WorkFlowIDInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败:", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := v1.CoreV1.WorkFlow().Delete(ctx, params.ID); err != nil {
-		logger.Error("删除失败", err)
+		v1.Log.ErrorWithCode(globalError.DeleteError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
 		return
 	}
@@ -81,13 +81,13 @@ func (w *workflow) DeleteWorkflow(ctx *gin.Context) {
 func (w *workflow) GetWorkflowList(ctx *gin.Context) {
 	params := &kubernetes.WorkFlowListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败:", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := v1.CoreV1.WorkFlow().FindList(ctx, params)
 	if err != nil {
-		logger.Error("查询失败", err)
+		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
@@ -108,13 +108,13 @@ func (w *workflow) GetWorkflowList(ctx *gin.Context) {
 func (w *workflow) GetWorkflowByID(ctx *gin.Context) {
 	params := &kubernetes.WorkFlowIDInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败:", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := v1.CoreV1.WorkFlow().Find(ctx, params)
 	if err != nil {
-		logger.Error("查询失败", err)
+		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}

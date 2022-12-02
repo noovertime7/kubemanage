@@ -2,11 +2,12 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
+	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
-	"github.com/wonderivan/logger"
 )
 
 var PersistentVolume persistentVolume
@@ -27,12 +28,12 @@ type persistentVolume struct{}
 func (n *persistentVolume) DeletePersistentVolume(ctx *gin.Context) {
 	params := &kubernetes.PersistentVolumeNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败:", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.PersistentVolume.DeletePersistentVolume(params.Name); err != nil {
-		logger.Error("删除persistentvolume失败", err)
+		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
@@ -55,13 +56,13 @@ func (n *persistentVolume) DeletePersistentVolume(ctx *gin.Context) {
 func (n *persistentVolume) GetPersistentVolumeList(ctx *gin.Context) {
 	params := &kubernetes.PersistentVolumeListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败:", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.PersistentVolume.GetPersistentVolumes(params.FilterName, params.Limit, params.Page)
 	if err != nil {
-		logger.Error("获取persistentVolume列表失败", err)
+		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
@@ -82,13 +83,13 @@ func (n *persistentVolume) GetPersistentVolumeList(ctx *gin.Context) {
 func (n *persistentVolume) GetPersistentVolumeDetail(ctx *gin.Context) {
 	params := &kubernetes.PersistentVolumeNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败:", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.PersistentVolume.GetPersistentVolumesDetail(params.Name)
 	if err != nil {
-		logger.Error("获取persistentVolume详情失败", err)
+		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}

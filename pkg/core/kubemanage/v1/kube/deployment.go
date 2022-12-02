@@ -3,15 +3,16 @@ package kube
 import (
 	"context"
 	"encoding/json"
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
-	"github.com/wonderivan/logger"
+	"strconv"
+	"time"
+
 	appsV1 "k8s.io/api/apps/v1"
 	coreV1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
-	"strconv"
-	"time"
+
+	"github.com/noovertime7/kubemanage/dto/kubernetes"
 )
 
 var Deployment deployment
@@ -183,7 +184,6 @@ func (d *deployment) CreateDeployment(data *kubernetes.DeployCreateInput) error 
 	if _, err := K8s.ClientSet.AppsV1().Deployments(data.NameSpace).Create(context.TODO(), deployment, metaV1.CreateOptions{}); err != nil {
 		return err
 	}
-	logger.Info("创建deployment成功:", deployment.Name)
 	return nil
 }
 

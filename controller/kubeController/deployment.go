@@ -2,12 +2,13 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
+	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
+	_ "k8s.io/api/apps/v1"
+
 	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
-	"github.com/wonderivan/logger"
-	_ "k8s.io/api/apps/v1"
 )
 
 var Deployment deployment
@@ -28,12 +29,12 @@ type deployment struct{}
 func (d *deployment) CreateDeployment(ctx *gin.Context) {
 	params := &kubernetes.DeployCreateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败:", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.Deployment.CreateDeployment(params); err != nil {
-		logger.Error("新增deploy失败:", err)
+		v1.Log.ErrorWithCode(globalError.CreateError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.CreateError, err))
 		return
 	}
@@ -55,12 +56,12 @@ func (d *deployment) CreateDeployment(ctx *gin.Context) {
 func (d *deployment) DeleteDeployment(ctx *gin.Context) {
 	params := &kubernetes.DeploymentNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.Deployment.DeleteDeployment(params.Name, params.NameSpace); err != nil {
-		logger.Error("删除deploy失败", err)
+		v1.Log.ErrorWithCode(globalError.DeleteError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
 		return
 	}
@@ -83,12 +84,12 @@ func (d *deployment) DeleteDeployment(ctx *gin.Context) {
 func (d *deployment) UpdateDeployment(ctx *gin.Context) {
 	params := &kubernetes.UpdateDeployInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.Deployment.UpdateDeployment(params.NameSpace, params.Content); err != nil {
-		logger.Error("更新deploy失败", err)
+		v1.Log.ErrorWithCode(globalError.UpdateError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.UpdateError, err))
 		return
 	}
@@ -112,13 +113,13 @@ func (d *deployment) UpdateDeployment(ctx *gin.Context) {
 func (d *deployment) GetDeploymentList(ctx *gin.Context) {
 	params := &kubernetes.DeployListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.Deployment.GetDeployments(params.FilterName, params.NameSpace, params.Limit, params.Page)
 	if err != nil {
-		logger.Error("获取deploy列表失败", err)
+		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
@@ -140,13 +141,13 @@ func (d *deployment) GetDeploymentList(ctx *gin.Context) {
 func (d *deployment) GetDeploymentDetail(ctx *gin.Context) {
 	params := &kubernetes.DeploymentNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	data, err := kube.Deployment.GetDeploymentDetail(params.Name, params.NameSpace)
 	if err != nil {
-		logger.Error("获取deploy详细信息失败", err)
+		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
@@ -166,7 +167,7 @@ func (d *deployment) GetDeploymentDetail(ctx *gin.Context) {
 func (d *deployment) GetDeploymentNumPreNS(ctx *gin.Context) {
 	data, err := kube.Deployment.GetDeployNumPerNS()
 	if err != nil {
-		logger.Error("获取deploy数量失败", err)
+		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
@@ -188,12 +189,12 @@ func (d *deployment) GetDeploymentNumPreNS(ctx *gin.Context) {
 func (d *deployment) RestartDeployment(ctx *gin.Context) {
 	params := &kubernetes.DeploymentNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	if err := kube.Deployment.RestartDeployment(params.Name, params.NameSpace); err != nil {
-		logger.Error("获取deploy详细信息失败", err)
+		v1.Log.ErrorWithCode(globalError.ServerError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ServerError, err))
 		return
 	}
@@ -216,13 +217,13 @@ func (d *deployment) RestartDeployment(ctx *gin.Context) {
 func (d *deployment) ScaleDeployment(ctx *gin.Context) {
 	params := &kubernetes.DeployScaleInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
-		logger.Error("绑定参数失败", err)
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
 	num, err := kube.Deployment.ScaleDeployment(params.Name, params.NameSpace, params.ScaleNum)
 	if err != nil {
-		logger.Error("获取deploy详细信息失败", err)
+		v1.Log.ErrorWithCode(globalError.ServerError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ServerError, err))
 		return
 	}

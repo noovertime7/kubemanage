@@ -4,7 +4,6 @@ import (
 	"errors"
 	jwt "github.com/dgrijalva/jwt-go"
 	uuid "github.com/satori/go.uuid"
-	"github.com/wonderivan/logger"
 	"time"
 )
 
@@ -47,7 +46,6 @@ func (j *jwtToken) GenerateToken(baseClaims BaseClaims) (string, error) {
 	}
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenClaims.SignedString([]byte(j.secret))
-	logger.Info("生成token信息成功!")
 	return token, err
 }
 
@@ -58,7 +56,6 @@ func (j *jwtToken) ParseToken(tokenString string) (claims *CustomClaims, err err
 		return []byte(j.secret), nil
 	})
 	if err != nil {
-		logger.Error("解析token失败,错误信息," + err.Error())
 		// 处理token解析后的各种错误
 		if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors == jwt.ValidationErrorExpired {

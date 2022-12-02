@@ -48,6 +48,10 @@ var codeTag = map[int]string{
 	LogoutErr: "注销失败",
 }
 
+func GetErrorMsg(code int) string {
+	return codeTag[code]
+}
+
 // NewGlobalError 4、新建自定义error实例化
 func NewGlobalError(code int, err error) error {
 	// 初次调用得用Wrap方法，进行实例化

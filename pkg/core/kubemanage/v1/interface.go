@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/noovertime7/kubemanage/cmd/app/config"
 	"github.com/noovertime7/kubemanage/dao"
+	"github.com/noovertime7/kubemanage/pkg/logger"
 )
 
 type CoreService interface {
@@ -11,6 +12,10 @@ type CoreService interface {
 	MenuGetter
 	CasbinServiceGetter
 	AuthorityGetter
+}
+
+type Logger interface {
+	logger.Logger
 }
 
 type KubeManage struct {
