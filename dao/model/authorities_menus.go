@@ -2,7 +2,7 @@ package model
 
 import (
 	"context"
-	"github.com/pkg/errors"
+	"github.com/noovertime7/kubemanage/pkg"
 	"gorm.io/gorm"
 )
 
@@ -60,14 +60,10 @@ func (i *MenuAuthority) InitData(ctx context.Context, db *gorm.DB) error {
 
 func (i *MenuAuthority) IsInitData(ctx context.Context, db *gorm.DB) (bool, error) {
 	auth := &SysAuthority{}
-	if ret := db.Model(auth).
-		Where("authority_id = ?", 9528).Preload("SysBaseMenus").Find(auth); ret != nil {
-		if ret.Error != nil {
-			return false, ret.Error
-		}
-		return len(auth.SysBaseMenus) > 0, nil
+	if err := db.Model(auth).Where("authority_id = ?", pkg.AdminDefaultAuth).Preload("SysBaseMenus").Find(auth).Error; err != nil {
+		return false, err
 	}
-	return false, errors.New("MenuAuthority IsInitData failed")
+	return len(auth.SysBaseMenus) > 0, nil
 }
 
 func (i *MenuAuthority) TableCreated(ctx context.Context, db *gorm.DB) bool {
