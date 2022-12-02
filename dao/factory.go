@@ -3,6 +3,7 @@ package dao
 import (
 	"github.com/noovertime7/kubemanage/dao/authority"
 	"github.com/noovertime7/kubemanage/dao/menu"
+	"github.com/noovertime7/kubemanage/dao/operation"
 	"github.com/noovertime7/kubemanage/dao/user"
 	"github.com/noovertime7/kubemanage/dao/workflow"
 	"gorm.io/gorm"
@@ -15,6 +16,7 @@ type ShareDaoFactory interface {
 	Authority() authority.Authority
 	AuthorityMenu() authority.AuthorityMenu
 	BaseMenu() menu.BaseMenu
+	Opera() operation.Operation
 }
 
 func NewShareDaoFactory(db *gorm.DB) ShareDaoFactory {
@@ -47,4 +49,8 @@ func (s *shareDaoFactory) AuthorityMenu() authority.AuthorityMenu {
 
 func (s *shareDaoFactory) BaseMenu() menu.BaseMenu {
 	return menu.NewBaseMenu(s.db)
+}
+
+func (s *shareDaoFactory) Opera() operation.Operation {
+	return operation.NewOperation(s.db)
 }

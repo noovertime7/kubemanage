@@ -12,6 +12,7 @@ type CoreService interface {
 	MenuGetter
 	CasbinServiceGetter
 	AuthorityGetter
+	OperationServiceGetter
 }
 
 type Logger interface {
@@ -41,6 +42,10 @@ func (c *KubeManage) CasbinService() CasbinService {
 
 func (c *KubeManage) Authority() Authority {
 	return NewAuthority(c)
+}
+
+func (c *KubeManage) Operation() OperationService {
+	return NewOperationService(c)
 }
 
 func New(cfg *config.Config, factory dao.ShareDaoFactory) CoreService {

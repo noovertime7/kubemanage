@@ -2,7 +2,7 @@ package options
 
 import (
 	"fmt"
-	"github.com/noovertime7/kubemanage/pkg/logger"
+	localLog "log"
 	"os"
 	"time"
 
@@ -10,10 +10,12 @@ import (
 	"github.com/spf13/cobra"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"github.com/noovertime7/kubemanage/cmd/app/config"
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/pkg"
+	log "github.com/noovertime7/kubemanage/pkg/logger"
 	"github.com/noovertime7/kubemanage/pkg/source"
 )
 
@@ -81,10 +83,19 @@ func (o *Options) register() error {
 }
 
 func (o *Options) registerLogger() error {
-	return logger.InitLogger()
+	return log.InitLogger()
 }
 
 func (o *Options) registerDatabase() error {
+	newLogger := logger.New(
+		localLog.New(os.Stdout, "\r\n", localLog.LstdFlags), // io writer（日志输出的目标，前缀和日志包含的内容——译者注）
+		logger.Config{
+			SlowThreshold:             time.Second, // 慢 SQL 阈值
+			LogLevel:                  logger.Info, // 日志级别
+			IgnoreRecordNotFoundError: false,       // 忽略ErrRecordNotFound（记录未找到）错误
+			Colorful:                  true,        // 禁用彩色打印
+		},
+	)
 	sqlConfig := config.SysConfig.Mysql
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		sqlConfig.User,
@@ -92,11 +103,11 @@ func (o *Options) registerDatabase() error {
 		sqlConfig.Host,
 		sqlConfig.Port,
 		sqlConfig.Name)
-
 	var err error
 	if o.DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		SkipDefaultTransaction:                   false,
 		DisableForeignKeyConstraintWhenMigrating: true,
+		Logger:                                   newLogger,
 	}); err != nil {
 		return err
 	}
