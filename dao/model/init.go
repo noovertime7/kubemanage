@@ -14,6 +14,7 @@ const (
 	SysBaseMenuOrder
 	SysAuthorityOrder
 	CasbinInitOrder
+	OperatorationOrder
 	WorkFlowOrder
 )
 

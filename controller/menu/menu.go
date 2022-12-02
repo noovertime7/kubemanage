@@ -16,7 +16,7 @@ import (
 // @Produce   application/json
 // @Param     data  body      dto.Empty                                                  true  "空"
 // @Success   200   {object}  middleware.Response{data=dto.SysMenusResponse,msg=string}  "获取用户动态路由,返回包括系统菜单详情列表"
-// @Router    /api//menu/get_menus [get]
+// @Router    /api/menu/get_menus [get]
 func (m *menuController) GetMenus(ctx *gin.Context) {
 	aid, err := utils.GetUserAuthorityId(ctx)
 	if err != nil {
@@ -41,7 +41,7 @@ func (m *menuController) GetMenus(ctx *gin.Context) {
 // @Produce   application/json
 // @Param     data  body      model.SysBaseMenu             true  "路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记"
 // @Success   200   {object}  middleware.Response{msg=string}  "新增菜单"
-// @Router    /menu/add_base_menu [post]
+// @Router    /api/menu/add_base_menu [post]
 func (m *menuController) AddBaseMenu(ctx *gin.Context) {
 	params := &dto.AddSysMenusInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
