@@ -16,6 +16,7 @@ func (o *operationController) initRoutes(ginEngine *gin.RouterGroup) {
 	opera := &operationController{}
 	{
 		operaRoute.GET("/get_operations", opera.GetOperationRecordList)
-		operaRoute.DELETE("/:id/delete_operation", opera.DeleteOperationRecordList)
+		operaRoute.DELETE("/:id/delete_operation", opera.DeleteOperationRecord)
+		operaRoute.POST("/delete_operations", opera.DeleteOperationRecords)
 	}
 }

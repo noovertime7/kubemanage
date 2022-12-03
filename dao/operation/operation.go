@@ -14,6 +14,7 @@ type Operation interface {
 	PageList(ctx context.Context, params *dto.OperationListInput) ([]*model.SysOperationRecord, int64, error)
 	Save(ctx context.Context, in *model.SysOperationRecord) error
 	Delete(ctx context.Context, in *model.SysOperationRecord) error
+	DeleteList(ctx context.Context, in []int) error
 }
 
 type operation struct {
@@ -31,6 +32,10 @@ func (o *operation) Save(ctx context.Context, in *model.SysOperationRecord) erro
 
 func (o *operation) Delete(ctx context.Context, in *model.SysOperationRecord) error {
 	return o.db.WithContext(ctx).Delete(in).Error
+}
+
+func (o *operation) DeleteList(ctx context.Context, in []int) error {
+	return o.db.WithContext(ctx).Delete(&[]model.SysOperationRecord{}, "id in (?)", in).Error
 }
 
 func NewOperation(db *gorm.DB) *operation {

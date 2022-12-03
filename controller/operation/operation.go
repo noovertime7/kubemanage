@@ -35,7 +35,7 @@ func (o *operationController) GetOperationRecordList(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, data)
 }
 
-// DeleteOperationRecordList
+// DeleteOperationRecord
 // @Tags      SysOperationRecord
 // @Summary   删除SysOperationRecord
 // @Security  ApiKeyAuth
@@ -44,7 +44,7 @@ func (o *operationController) GetOperationRecordList(ctx *gin.Context) {
 // @Param     data  body     dto.Empty
 // @Success   200   {object}  middleware.Response{msg=string}  "删除SysOperationRecord"
 // @Router    /api/operation/{id}/delete_operation [delete]
-func (o *operationController) DeleteOperationRecordList(ctx *gin.Context) {
+func (o *operationController) DeleteOperationRecord(ctx *gin.Context) {
 	recordId, err := utils.ParseInt(ctx.Param("id"))
 	if err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
@@ -53,6 +53,30 @@ func (o *operationController) DeleteOperationRecordList(ctx *gin.Context) {
 	if err := v1.CoreV1.Operation().DeleteRecord(ctx, recordId); err != nil {
 		v1.Log.ErrorWithCode(globalError.DeleteError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
+	}
+	middleware.ResponseSuccess(ctx, "删除成功")
+}
+
+// DeleteOperationRecords
+// @Tags      SysOperationRecord
+// @Summary   删除SysOperationRecord
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body     dto.IdsReq
+// @Success   200   {object}  middleware.Response{msg=string}  "删除SysOperationRecord"
+// @Router    /api/operation/delete_operations [delete]
+func (o *operationController) DeleteOperationRecords(ctx *gin.Context) {
+	params := &dto.IdsReq{}
+	if err := params.BindingValidParams(ctx); err != nil {
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
+		return
+	}
+	if err := v1.CoreV1.Operation().DeleteRecords(ctx, params.Ids); err != nil {
+		v1.Log.ErrorWithErr("批量删除失败", err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
+		return
 	}
 	middleware.ResponseSuccess(ctx, "删除成功")
 }

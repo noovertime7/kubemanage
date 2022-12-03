@@ -54,10 +54,12 @@ func OperationRecord() gin.HandlerFunc {
 					m[kv[0]] = kv[1]
 				}
 			}
-			body, err = json.Marshal(&m)
-			if err != nil {
-				logger.LG.Error("marshal body error:", zap.Error(err))
-				body = []byte{}
+			if len(m) > 0 {
+				body, err = json.Marshal(&m)
+				if err != nil {
+					logger.LG.Error("marshal body error:", zap.Error(err))
+					body = []byte{}
+				}
 			}
 		}
 		claims, err := utils.GetClaims(c)

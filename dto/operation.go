@@ -17,6 +17,7 @@ type OperationListInput struct {
 type OperationListOutPut struct {
 	Total         int64                       `json:"total"`
 	OperationList []*model.SysOperationRecord `json:"list"`
+	PageInfo
 }
 
 // BindingValidParams 绑定并校验参数

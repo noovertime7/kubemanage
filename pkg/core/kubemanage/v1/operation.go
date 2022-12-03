@@ -14,6 +14,7 @@ type OperationServiceGetter interface {
 type OperationService interface {
 	CreateOperationRecord(ctx *gin.Context, record *model.SysOperationRecord) error
 	DeleteRecord(ctx *gin.Context, id int) error
+	DeleteRecords(ctx *gin.Context, ids []int) error
 	GetPageList(ctx *gin.Context, in *dto.OperationListInput) (*dto.OperationListOutPut, error)
 }
 
@@ -35,10 +36,14 @@ func (o *operationService) DeleteRecord(ctx *gin.Context, id int) error {
 	return o.factory.Opera().Delete(ctx, record)
 }
 
+func (o *operationService) DeleteRecords(ctx *gin.Context, ids []int) error {
+	return o.factory.Opera().DeleteList(ctx, ids)
+}
+
 func (o *operationService) GetPageList(ctx *gin.Context, in *dto.OperationListInput) (*dto.OperationListOutPut, error) {
 	list, total, err := o.factory.Opera().PageList(ctx, in)
 	if err != nil {
 		return nil, err
 	}
-	return &dto.OperationListOutPut{OperationList: list, Total: total}, nil
+	return &dto.OperationListOutPut{OperationList: list, Total: total, PageInfo: in.PageInfo}, nil
 }
