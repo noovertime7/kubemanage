@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"os/signal"
-	"syscall"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -94,8 +92,7 @@ func runServer(opt *options.Options) {
 	}()
 
 	// Wait for interrupt signal to gracefully shut down the server with a timeout of 5 seconds.
-	quit := make(chan os.Signal)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	quit := utils.SetupSignalHandler()
 	<-quit
 	logger.LG.Info("shutting kubemanage server down ...")
 
