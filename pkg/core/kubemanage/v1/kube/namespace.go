@@ -3,7 +3,6 @@ package kube
 import (
 	"context"
 	"github.com/pkg/errors"
-	"github.com/wonderivan/logger"
 	coreV1 "k8s.io/api/core/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -36,7 +35,6 @@ func (n *namespace) FromCells(cells []DataCell) []coreV1.Namespace {
 func (n *namespace) GetNameSpaces(filterName string, limit, page int) (nodesResp *NameSpaceResp, err error) {
 	NamespaceList, err := K8s.ClientSet.CoreV1().Namespaces().List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
-		logger.Error("获取Pod列表失败:", err.Error())
 		return nil, errors.New("获取Pod列表失败")
 	}
 	//实例化dataSelector结构体，组装数据
@@ -64,7 +62,6 @@ func (n *namespace) GetNameSpaces(filterName string, limit, page int) (nodesResp
 func (n *namespace) GetNameSpacesDetail(Name string) (*coreV1.Namespace, error) {
 	namespacesRes, err := K8s.ClientSet.CoreV1().Namespaces().Get(context.TODO(), Name, metaV1.GetOptions{})
 	if err != nil {
-		logger.Error("获取Pod详情失败", err.Error())
 		return nil, err
 	}
 	return namespacesRes, nil

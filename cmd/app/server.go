@@ -3,8 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	"github.com/noovertime7/kubemanage/service"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -66,8 +64,6 @@ func Run(opt *options.Options) error {
 	InitLocalK8s()
 	// 初始化 APIs 路由
 	router.InstallRouters(opt)
-	// TODO 后续删除 临时启动websocket
-	startWsHandler()
 	// 启动优雅服务
 	runServer(opt)
 	return nil
@@ -78,13 +74,6 @@ func InitLocalK8s() {
 	if err := kube.K8s.Init(); err != nil {
 		utils.Must(err)
 	}
-}
-
-func startWsHandler() {
-	go func() {
-		http.HandleFunc("/ws/terminal", service.Terminal.WsHandler)
-		log.Fatalln(http.ListenAndServe(":6181", nil))
-	}()
 }
 
 // 优雅启动貔貅服务

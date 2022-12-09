@@ -3,12 +3,12 @@ package kube
 import (
 	"context"
 	"encoding/json"
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
-	"github.com/pkg/errors"
-	"github.com/wonderivan/logger"
+
 	coreV1 "k8s.io/api/core/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
+
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 )
 
 var Service service
@@ -41,7 +41,7 @@ func (s *service) FromCells(cells []DataCell) []coreV1.Service {
 	return services
 }
 
-func (s *service) CreateService(data *kubernetes.ServiceCreateInput) error {
+func (s *service) CreateService(data *kubeDto.ServiceCreateInput) error {
 	service := &coreV1.Service{
 		ObjectMeta: metaV1.ObjectMeta{
 			Name:      data.Name,
@@ -93,8 +93,7 @@ func (s *service) UpdateService(namespace, content string) error {
 func (s *service) GetServiceList(filterName, namespace string, limit, page int) (*serviceResp, error) {
 	ServiceList, err := K8s.ClientSet.CoreV1().Services(namespace).List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
-		logger.Error("获取Pod列表失败:", err.Error())
-		return nil, errors.New("获取Pod列表失败")
+		return nil, err
 	}
 	//实例化dataSelector结构体，组装数据
 	selectableData := &dataSelector{

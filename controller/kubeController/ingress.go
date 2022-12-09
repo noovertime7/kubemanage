@@ -2,7 +2,7 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 	"github.com/noovertime7/kubemanage/middleware"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
@@ -25,7 +25,7 @@ type ingressController struct{}
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "新增成功}"
 // @Router       /api/k8s/ingress/create [post]
 func (i *ingressController) CreateIngress(ctx *gin.Context) {
-	params := &kubernetes.IngressCreteInput{}
+	params := &kubeDto.IngressCreteInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -52,7 +52,7 @@ func (i *ingressController) CreateIngress(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/ingress/del [delete]
 func (i *ingressController) DeleteIngress(ctx *gin.Context) {
-	params := &kubernetes.IngressNameNS{}
+	params := &kubeDto.IngressNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -80,7 +80,7 @@ func (i *ingressController) DeleteIngress(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
 // @Router       /api/k8s/ingress/update [put]
 func (i *ingressController) UpdateIngress(ctx *gin.Context) {
-	params := &kubernetes.IngressUpdateInput{}
+	params := &kubeDto.IngressUpdateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -109,7 +109,7 @@ func (i *ingressController) UpdateIngress(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data":""  }"
 // @Router       /api/k8s/ingress/list [get]
 func (i *ingressController) GetIngressList(ctx *gin.Context) {
-	params := &kubernetes.IngressListInput{}
+	params := &kubeDto.IngressListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -137,7 +137,7 @@ func (i *ingressController) GetIngressList(ctx *gin.Context) {
 // @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":""  }"
 // @Router       /api/k8s/ingress/detail [get]
 func (i *ingressController) GetIngressDetail(ctx *gin.Context) {
-	params := &kubernetes.IngressNameNS{}
+	params := &kubeDto.IngressNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))

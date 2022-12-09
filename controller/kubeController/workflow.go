@@ -2,8 +2,8 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
@@ -25,7 +25,7 @@ type workflow struct{}
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "创建成功}"
 // @Router       /api/k8s/workflow/create [post]
 func (w *workflow) CreateWorkFlow(ctx *gin.Context) {
-	params := &kubernetes.WorkFlowCreateInput{}
+	params := &kubeDto.WorkFlowCreateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -51,7 +51,7 @@ func (w *workflow) CreateWorkFlow(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/workflow/del [delete]
 func (w *workflow) DeleteWorkflow(ctx *gin.Context) {
-	params := &kubernetes.WorkFlowIDInput{}
+	params := &kubeDto.WorkFlowIDInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -79,7 +79,7 @@ func (w *workflow) DeleteWorkflow(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/workflow/list [get]
 func (w *workflow) GetWorkflowList(ctx *gin.Context) {
-	params := &kubernetes.WorkFlowListInput{}
+	params := &kubeDto.WorkFlowListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -106,7 +106,7 @@ func (w *workflow) GetWorkflowList(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/workflow/id [get]
 func (w *workflow) GetWorkflowByID(ctx *gin.Context) {
-	params := &kubernetes.WorkFlowIDInput{}
+	params := &kubeDto.WorkFlowIDInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))

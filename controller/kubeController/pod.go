@@ -2,7 +2,7 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 	"github.com/noovertime7/kubemanage/middleware"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
@@ -30,7 +30,7 @@ type pod struct{}
 // @Router       /api/k8s/pods [get]
 func (p *pod) GetPods(ctx *gin.Context) {
 	//处理入参
-	parmas := &kubernetes.PodListInput{}
+	parmas := &kubeDto.PodListInput{}
 	if err := parmas.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -59,7 +59,7 @@ func (p *pod) GetPods(ctx *gin.Context) {
 // @Router       /api/k8s/pod/detail [get]
 func (p *pod) GetPodDetail(ctx *gin.Context) {
 	//处理入参
-	parmas := &kubernetes.PodNameNsInput{}
+	parmas := &kubeDto.PodNameNsInput{}
 	if err := parmas.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -87,7 +87,7 @@ func (p *pod) GetPodDetail(ctx *gin.Context) {
 // @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/pod/del [delete]
 func (p *pod) DeletePod(ctx *gin.Context) {
-	params := &kubernetes.PodNameNsInput{}
+	params := &kubeDto.PodNameNsInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -115,7 +115,7 @@ func (p *pod) DeletePod(ctx *gin.Context) {
 // @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/pod/update [put]
 func (p *pod) UpdatePod(ctx *gin.Context) {
-	params := &kubernetes.PodUpdateInput{}
+	params := &kubeDto.PodUpdateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -142,7 +142,7 @@ func (p *pod) UpdatePod(ctx *gin.Context) {
 // @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/pod/container [get]
 func (p *pod) GetPodContainer(ctx *gin.Context) {
-	params := &kubernetes.PodNameNsInput{}
+	params := &kubeDto.PodNameNsInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -171,7 +171,7 @@ func (p *pod) GetPodContainer(ctx *gin.Context) {
 // @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":"" }"
 // @Router       /api/k8s/pod/log [get]
 func (p *pod) GetPodLog(ctx *gin.Context) {
-	params := &kubernetes.PodGetLogInput{}
+	params := &kubeDto.PodGetLogInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -204,4 +204,15 @@ func (p *pod) GetPodNumPreNp(ctx *gin.Context) {
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)
+}
+
+func (p *pod) WebShell(ctx *gin.Context) {
+	ops := &kubeDto.WebShellOptions{}
+	if err := ops.BindingValidParams(ctx); err != nil {
+		v1.Log.ErrorWithCode(globalError.ServerError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
+	}
+	if err := v1.CoreV1.Cloud().Pods("").WebShellHandler(ops, ctx.Writer, ctx.Request); err != nil {
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ServerError, err))
+	}
 }

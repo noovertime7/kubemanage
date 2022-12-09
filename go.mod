@@ -21,7 +21,6 @@ require (
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.1
 	github.com/swaggo/swag v1.8.8
-	github.com/wonderivan/logger v1.0.0
 	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.3.0
 	golang.org/x/time v0.0.0-20220609170525-579cf78fd858

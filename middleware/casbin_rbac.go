@@ -11,8 +11,7 @@ import (
 // CasbinHandler 拦截器
 func CasbinHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if len(c.Request.URL.String()) == 15 && c.Request.URL.String()[0:15] == "/api/user/login" {
-			c.Next()
+		if AlwaysAllowPath.Has(c.Request.URL.Path) {
 			return
 		}
 		waitUse, err := utils.GetClaims(c)

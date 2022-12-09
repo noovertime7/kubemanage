@@ -16,7 +16,7 @@ type Logger interface {
 	ErrorWithErr(msg string, err error)
 }
 
-func NewErrorLoger() Logger {
+func New() Logger {
 	return logger{}
 }
 

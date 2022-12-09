@@ -2,8 +2,8 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
@@ -26,7 +26,7 @@ type serviceController struct{}
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "创建成功}"
 // @Router       /api/k8s/service/create [post]
 func (s *serviceController) CreateService(ctx *gin.Context) {
-	params := &kubernetes.ServiceCreateInput{}
+	params := &kubeDto.ServiceCreateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -53,7 +53,7 @@ func (s *serviceController) CreateService(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/service/del [delete]
 func (s *serviceController) DeleteService(ctx *gin.Context) {
-	params := &kubernetes.ServiceNameNS{}
+	params := &kubeDto.ServiceNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -81,7 +81,7 @@ func (s *serviceController) DeleteService(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
 // @Router       /api/k8s/service/update [put]
 func (s *serviceController) UpdateService(ctx *gin.Context) {
-	params := &kubernetes.ServiceUpdateInput{}
+	params := &kubeDto.ServiceUpdateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -110,7 +110,7 @@ func (s *serviceController) UpdateService(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/service/list [get]
 func (s *serviceController) GetServiceList(ctx *gin.Context) {
-	params := &kubernetes.ServiceListInput{}
+	params := &kubeDto.ServiceListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -138,7 +138,7 @@ func (s *serviceController) GetServiceList(ctx *gin.Context) {
 // @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
 // @Router       /api/k8s/service/detail [get]
 func (s *serviceController) GetServiceDetail(ctx *gin.Context) {
-	params := &kubernetes.ServiceNameNS{}
+	params := &kubeDto.ServiceNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))

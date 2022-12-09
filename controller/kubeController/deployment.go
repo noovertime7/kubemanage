@@ -2,10 +2,10 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	_ "k8s.io/api/apps/v1"
 
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
@@ -27,7 +27,7 @@ type deployment struct{}
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "新增成功}"
 // @Router       /api/k8s/deployment/create [post]
 func (d *deployment) CreateDeployment(ctx *gin.Context) {
-	params := &kubernetes.DeployCreateInput{}
+	params := &kubeDto.DeployCreateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -54,7 +54,7 @@ func (d *deployment) CreateDeployment(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/deployment/del [delete]
 func (d *deployment) DeleteDeployment(ctx *gin.Context) {
-	params := &kubernetes.DeploymentNameNS{}
+	params := &kubeDto.DeploymentNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -82,7 +82,7 @@ func (d *deployment) DeleteDeployment(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
 // @Router       /api/k8s/deployment/update [put]
 func (d *deployment) UpdateDeployment(ctx *gin.Context) {
-	params := &kubernetes.UpdateDeployInput{}
+	params := &kubeDto.UpdateDeployInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -111,7 +111,7 @@ func (d *deployment) UpdateDeployment(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/deployment/list [get]
 func (d *deployment) GetDeploymentList(ctx *gin.Context) {
-	params := &kubernetes.DeployListInput{}
+	params := &kubeDto.DeployListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -139,7 +139,7 @@ func (d *deployment) GetDeploymentList(ctx *gin.Context) {
 // @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
 // @Router       /api/k8s/deployment/detail [get]
 func (d *deployment) GetDeploymentDetail(ctx *gin.Context) {
-	params := &kubernetes.DeploymentNameNS{}
+	params := &kubeDto.DeploymentNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -187,7 +187,7 @@ func (d *deployment) GetDeploymentNumPreNS(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": 重启Deployment成功}"
 // @Router       /api/k8s/deployment/restart [put]
 func (d *deployment) RestartDeployment(ctx *gin.Context) {
-	params := &kubernetes.DeploymentNameNS{}
+	params := &kubeDto.DeploymentNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -215,7 +215,7 @@ func (d *deployment) RestartDeployment(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": num}"
 // @Router       /api/k8s/deployment/scale [get]
 func (d *deployment) ScaleDeployment(ctx *gin.Context) {
-	params := &kubernetes.DeployScaleInput{}
+	params := &kubeDto.DeployScaleInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))

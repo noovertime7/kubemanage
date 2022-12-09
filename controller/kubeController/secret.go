@@ -2,8 +2,8 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
@@ -27,7 +27,7 @@ type secret struct{}
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/Secret/del [delete]
 func (s *secret) DeleteSecret(ctx *gin.Context) {
-	params := &kubernetes.SecretNameNS{}
+	params := &kubeDto.SecretNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -55,7 +55,7 @@ func (s *secret) DeleteSecret(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
 // @Router       /api/k8s/secret/update [put]
 func (s *secret) UpdateSecret(ctx *gin.Context) {
-	params := &kubernetes.SecretUpdateInput{}
+	params := &kubeDto.SecretUpdateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -84,7 +84,7 @@ func (s *secret) UpdateSecret(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/Secret/list [get]
 func (s *secret) GetSecretList(ctx *gin.Context) {
-	params := &kubernetes.SecretListInput{}
+	params := &kubeDto.SecretListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -112,7 +112,7 @@ func (s *secret) GetSecretList(ctx *gin.Context) {
 // @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
 // @Router       /api/k8s/Secret/detail [get]
 func (s *secret) GetSecretDetail(ctx *gin.Context) {
-	params := &kubernetes.SecretNameNS{}
+	params := &kubeDto.SecretNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))

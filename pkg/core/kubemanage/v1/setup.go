@@ -12,6 +12,6 @@ var Log Logger
 
 // Setup 完成核心应用接口的设置
 func Setup(o *options.Options) {
-	Log = logger.NewErrorLoger()
+	Log = logger.New()
 	CoreV1 = New(config.SysConfig, o.Factory)
 }

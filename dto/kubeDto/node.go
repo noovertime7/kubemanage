@@ -1,4 +1,4 @@
-package kubernetes
+package kubeDto
 
 import (
 	"github.com/gin-gonic/gin"

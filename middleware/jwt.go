@@ -9,6 +9,10 @@ import (
 // JWTAuth jwt认证函数
 func JWTAuth() gin.HandlerFunc {
 	return func(context *gin.Context) {
+		if AlwaysAllowPath.Has(context.Request.URL.Path) {
+			return
+		}
+
 		if len(context.Request.URL.String()) == 15 && context.Request.URL.String()[0:15] == "/api/user/login" {
 			context.Next()
 			return

@@ -2,7 +2,7 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 	"github.com/noovertime7/kubemanage/middleware"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
@@ -26,7 +26,7 @@ type daemonSet struct{}
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/daemonset/del [delete]
 func (s *daemonSet) DeleteDaemonSet(ctx *gin.Context) {
-	params := &kubernetes.DaemonSetNameNS{}
+	params := &kubeDto.DaemonSetNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -54,7 +54,7 @@ func (s *daemonSet) DeleteDaemonSet(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
 // @Router       /api/k8s/daemonset/update [put]
 func (s *daemonSet) UpdateDaemonSet(ctx *gin.Context) {
-	params := &kubernetes.DaemonSetUpdateInput{}
+	params := &kubeDto.DaemonSetUpdateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -83,7 +83,7 @@ func (s *daemonSet) UpdateDaemonSet(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/daemonset/list [get]
 func (s *daemonSet) GetDaemonSetList(ctx *gin.Context) {
-	params := &kubernetes.DaemonSetListInput{}
+	params := &kubeDto.DaemonSetListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -111,7 +111,7 @@ func (s *daemonSet) GetDaemonSetList(ctx *gin.Context) {
 // @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
 // @Router       /api/k8s/daemonset/detail [get]
 func (s *daemonSet) GetDaemonSetDetail(ctx *gin.Context) {
-	params := &kubernetes.DaemonSetNameNS{}
+	params := &kubeDto.DaemonSetNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))

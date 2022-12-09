@@ -2,7 +2,7 @@ package kube
 
 import (
 	"flag"
-	"github.com/wonderivan/logger"
+	"github.com/noovertime7/kubemanage/pkg/logger"
 	"os"
 	"path/filepath"
 
@@ -14,6 +14,7 @@ import (
 var K8s k8s
 
 type k8s struct {
+	Config    *rest.Config
 	ClientSet *kubernetes.Clientset
 }
 
@@ -42,8 +43,10 @@ func (k *k8s) Init() error {
 	if err != nil {
 		return err
 	}
-	logger.Info("获取clientSet成功")
+	log := logger.New()
+	log.Info("获取k8s clientSet 成功")
 	k.ClientSet = clientSet
+	k.Config = config
 	return nil
 }
 
