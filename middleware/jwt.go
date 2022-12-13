@@ -13,9 +13,16 @@ func JWTAuth() gin.HandlerFunc {
 			context.Next()
 			return
 		}
-		// 处理验证逻辑
+
+		//1、http请求从header中获取token
+		//2、webservice请求从Sec-WebSocket-Protocol获取token
 		token := context.Request.Header.Get("token")
-		if token == "" {
+		if len(token) == 0 {
+			token = context.Request.Header.Get("Sec-WebSocket-Protocol")
+		}
+
+		// 处理验证逻辑
+		if len(token) == 0 {
 			ResponseError(context, 11000, errors.New("请求未携带token,无权限访问"))
 			context.Abort()
 			return

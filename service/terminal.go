@@ -9,7 +9,6 @@ import (
 	"github.com/wonderivan/logger"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes/scheme"
-	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/remotecommand"
 	"net/http"
 	"time"
@@ -26,14 +25,15 @@ type TerminalMessage struct {
 }
 
 // 初始化一个websocket.Upgrader类型的对象，用于http协议升级为websocket协议
-var upgrader = func() websocket.Upgrader {
-	upgrader := websocket.Upgrader{}
+var upgrader = func(r *http.Request) *websocket.Upgrader {
+	upgrader := &websocket.Upgrader{}
 	upgrader.HandshakeTimeout = time.Second * 2
 	upgrader.CheckOrigin = func(r *http.Request) bool {
 		return true
 	}
+	upgrader.Subprotocols = []string{r.Header.Get("Sec-Websocket-Protocol")}
 	return upgrader
-}()
+}
 
 // TerminalSession 定义TerminalSession结构体，实现PtyHandler接口 //wsConn是websocket连接 //sizeChan用来定义终端输入和输出的宽和高 //doneChan用于标记退出终端
 type TerminalSession struct {
@@ -50,21 +50,11 @@ type terminal struct{}
 
 // WsHandler 定义websocket的handler方法
 func (t *terminal) WsHandler(w http.ResponseWriter, r *http.Request) {
-	// 加载k8s配置
-	conf, err := clientcmd.BuildConfigFromFlags("", "C:\\Users\\18495\\.kube\\config")
-	if err != nil {
-		logger.Error("初始化kubernetes配置失败,错误信息," + err.Error())
-	}
-	// 解析form入参，获取namespace、podName、containerName参数
-	// 如果解析失败
-	if err := r.ParseForm(); err != nil {
-		logger.Error("解析参数失败,错误信息," + err.Error())
-		return
-	}
 	// 如果解析成功
-	namespace := r.Form.Get("namespace")
-	podName := r.Form.Get("pod_name")
-	containerName := r.Form.Get("container_name")
+	data := r.URL.Query()
+	namespace := data.Get("namespace")
+	podName := data.Get("pod_name")
+	containerName := data.Get("container_name")
 	logger.Info("exec pod: %s, container: %s, namespace: %s\n", podName, containerName, namespace)
 
 	// new一个TerminalSession类型的pty实例
@@ -101,7 +91,7 @@ func (t *terminal) WsHandler(w http.ResponseWriter, r *http.Request) {
 	logger.Info("exec post request url: ", req)
 
 	// remotecommand 主要实现了http 转 SPDY 添加X-Stream-Protocol-Version相关header 并发送请求
-	executor, err := remotecommand.NewSPDYExecutor(conf, "POST", req.URL())
+	executor, err := remotecommand.NewSPDYExecutor(kube.K8s.Config, "POST", req.URL())
 	if err != nil {
 		logger.Error("建立SPDY连接失败," + err.Error())
 		return
@@ -125,7 +115,7 @@ func (t *terminal) WsHandler(w http.ResponseWriter, r *http.Request) {
 
 // NewTerminalSession 该方法用于升级http协议至websocket，并new一个TerminalSession类型的对象返回
 func NewTerminalSession(w http.ResponseWriter, r *http.Request, responseHeader http.Header) (*TerminalSession, error) {
-	conn, err := upgrader.Upgrade(w, r, responseHeader)
+	conn, err := upgrader(r).Upgrade(w, r, responseHeader)
 	if err != nil {
 		return nil, err
 	}

@@ -15,6 +15,7 @@ var K8s k8s
 
 type k8s struct {
 	ClientSet *kubernetes.Clientset
+	Config    *rest.Config
 }
 
 func (k *k8s) Init() error {
@@ -38,12 +39,14 @@ func (k *k8s) Init() error {
 	}
 
 	// 创建 clientSet
+	config.Insecure = true
 	clientSet, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		return err
 	}
 	logger.Info("获取clientSet成功")
 	k.ClientSet = clientSet
+	k.Config = config
 	return nil
 }
 

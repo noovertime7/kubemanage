@@ -5,6 +5,7 @@ import (
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
+	"github.com/noovertime7/kubemanage/service"
 	"github.com/wonderivan/logger"
 	_ "k8s.io/api/core/v1"
 )
@@ -21,6 +22,8 @@ func PodRegister(router *gin.RouterGroup) {
 	router.GET("/container", Pod.GetPodContainer)
 	router.GET("/log", Pod.GetPodLog)
 	router.GET("/numnp", Pod.GetPodNumPreNp)
+	router.GET("/webshell", Pod.podWebshell)
+
 }
 
 // GetPods 获取pod，支持分页过滤排序
@@ -208,4 +211,8 @@ func (p *pod) GetPodNumPreNp(ctx *gin.Context) {
 		return
 	}
 	middleware.ResponseSuccess(ctx, data)
+}
+
+func (p *pod) podWebshell(ctx *gin.Context) {
+	service.Terminal.WsHandler(ctx.Writer, ctx.Request)
 }
