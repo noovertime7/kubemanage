@@ -2,8 +2,8 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
@@ -27,7 +27,7 @@ type statefulSet struct{}
 // @Success       200  {object}  middleware.Response "{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/statefulset/del [delete]
 func (s *statefulSet) DeleteStatefulSet(ctx *gin.Context) {
-	params := &kubernetes.StatefulSetNameNS{}
+	params := &kubeDto.StatefulSetNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -55,7 +55,7 @@ func (s *statefulSet) DeleteStatefulSet(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
 // @Router       /api/k8s/statefulset/update [put]
 func (s *statefulSet) UpdateStatefulSet(ctx *gin.Context) {
-	params := &kubernetes.StatefulSetUpdateInput{}
+	params := &kubeDto.StatefulSetUpdateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -84,7 +84,7 @@ func (s *statefulSet) UpdateStatefulSet(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/statefulset/list [get]
 func (s *statefulSet) GetStatefulSetList(ctx *gin.Context) {
-	params := &kubernetes.StatefulSetListInput{}
+	params := &kubeDto.StatefulSetListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -112,7 +112,7 @@ func (s *statefulSet) GetStatefulSetList(ctx *gin.Context) {
 // @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
 // @Router       /api/k8s/statefulset/detail [get]
 func (s *statefulSet) GetStatefulSetDetail(ctx *gin.Context) {
-	params := &kubernetes.StatefulSetNameNS{}
+	params := &kubeDto.StatefulSetNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))

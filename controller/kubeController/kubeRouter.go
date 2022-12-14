@@ -31,6 +31,7 @@ func (k *kubeRouter) initRoutes(ginEngine *gin.RouterGroup) {
 		k8sRoute.GET("/pod/container", Pod.GetPodContainer)
 		k8sRoute.GET("/pod/log", Pod.GetPodLog)
 		k8sRoute.GET("/pod/numnp", Pod.GetPodNumPreNp)
+		k8sRoute.GET("/pod/webshell", Pod.WebShell)
 	}
 	{
 		k8sRoute.DELETE("/daemonset/del", DaemonSet.DeleteDaemonSet)

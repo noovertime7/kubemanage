@@ -12,7 +12,7 @@ import (
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 )
 
 var Deployment deployment
@@ -96,7 +96,7 @@ func (d *deployment) ScaleDeployment(deployName, namespace string, scaleNum int)
 }
 
 // CreateDeployment 新增deployment,接收deployCreate的对象
-func (d *deployment) CreateDeployment(data *kubernetes.DeployCreateInput) error {
+func (d *deployment) CreateDeployment(data *kubeDto.DeployCreateInput) error {
 	//初始化appsV1.deployment类型的对象
 	deployment := &appsV1.Deployment{
 		ObjectMeta: metaV1.ObjectMeta{

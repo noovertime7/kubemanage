@@ -2,7 +2,7 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 	"github.com/noovertime7/kubemanage/middleware"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
@@ -27,7 +27,7 @@ type node struct{}
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.NameSpaceResp}"
 // @Router       /api/k8s/node/list [get]
 func (n *node) GetNodeList(ctx *gin.Context) {
-	params := &kubernetes.NodeListInput{}
+	params := &kubeDto.NodeListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -54,7 +54,7 @@ func (n *node) GetNodeList(ctx *gin.Context) {
 // @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":data }"
 // @Router       /api/k8s/node/detail [get]
 func (n *node) GetNodeDetail(ctx *gin.Context) {
-	params := &kubernetes.NodeNameInput{}
+	params := &kubeDto.NodeNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))

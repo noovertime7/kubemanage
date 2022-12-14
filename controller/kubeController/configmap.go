@@ -2,8 +2,8 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
@@ -27,7 +27,7 @@ type configmap struct{}
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/configmap/del [delete]
 func (s *configmap) DeleteConfigmap(ctx *gin.Context) {
-	params := &kubernetes.ConfigmapNameNS{}
+	params := &kubeDto.ConfigmapNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -55,7 +55,7 @@ func (s *configmap) DeleteConfigmap(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "更新成功}"
 // @Router       /api/k8s/configmap/update [put]
 func (s *configmap) UpdateConfigmap(ctx *gin.Context) {
-	params := &kubernetes.ConfigmapUpdateInput{}
+	params := &kubeDto.ConfigmapUpdateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -84,7 +84,7 @@ func (s *configmap) UpdateConfigmap(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": }"
 // @Router       /api/k8s/configmap/list [get]
 func (s *configmap) GetConfigmapList(ctx *gin.Context) {
-	params := &kubernetes.ConfigmapListInput{}
+	params := &kubeDto.ConfigmapListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -112,7 +112,7 @@ func (s *configmap) GetConfigmapList(ctx *gin.Context) {
 // @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":v1.Deployment }"
 // @Router       /api/k8s/configmap/detail [get]
 func (s *configmap) GetConfigmapDetail(ctx *gin.Context) {
-	params := &kubernetes.ConfigmapNameNS{}
+	params := &kubeDto.ConfigmapNameNS{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))

@@ -2,7 +2,7 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 	"github.com/noovertime7/kubemanage/middleware"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
@@ -25,7 +25,7 @@ type namespace struct{}
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "创建成功}"
 // @Router       /api/k8s/namespace/create [put]
 func (n *namespace) CreateNameSpace(ctx *gin.Context) {
-	params := &kubernetes.NameSpaceNameInput{}
+	params := &kubeDto.NameSpaceNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -51,7 +51,7 @@ func (n *namespace) CreateNameSpace(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/namespace/del [delete]
 func (n *namespace) DeleteNameSpace(ctx *gin.Context) {
-	params := &kubernetes.NameSpaceNameInput{}
+	params := &kubeDto.NameSpaceNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -79,7 +79,7 @@ func (n *namespace) DeleteNameSpace(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.NameSpaceResp}"
 // @Router       /api/k8s/namespace/list [get]
 func (n *namespace) GetNameSpaceList(ctx *gin.Context) {
-	params := &kubernetes.NameSpaceListInput{}
+	params := &kubeDto.NameSpaceListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -106,7 +106,7 @@ func (n *namespace) GetNameSpaceList(ctx *gin.Context) {
 // @Success      200        {object}  middleware.Response"{"code": 200, msg="","data":data }"
 // @Router       /api/k8s/namespace/detail [get]
 func (n *namespace) GetNameSpaceDetail(ctx *gin.Context) {
-	params := &kubernetes.NameSpaceNameInput{}
+	params := &kubeDto.NameSpaceNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))

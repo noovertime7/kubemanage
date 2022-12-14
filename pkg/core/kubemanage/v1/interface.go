@@ -13,6 +13,14 @@ type CoreService interface {
 	CasbinServiceGetter
 	AuthorityGetter
 	OperationServiceGetter
+	CloudGetter
+}
+
+func New(cfg *config.Config, factory dao.ShareDaoFactory) CoreService {
+	return &KubeManage{
+		Cfg:     cfg,
+		Factory: factory,
+	}
 }
 
 type Logger interface {
@@ -48,9 +56,6 @@ func (c *KubeManage) Operation() OperationService {
 	return NewOperationService(c)
 }
 
-func New(cfg *config.Config, factory dao.ShareDaoFactory) CoreService {
-	return &KubeManage{
-		Cfg:     cfg,
-		Factory: factory,
-	}
+func (c *KubeManage) Cloud() CloudInterface {
+	return newCloud(c)
 }

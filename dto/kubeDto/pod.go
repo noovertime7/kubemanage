@@ -1,7 +1,8 @@
-package kubernetes
+package kubeDto
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/noovertime7/kubemanage/pkg"
 )
 
@@ -10,6 +11,17 @@ type PodListInput struct {
 	NameSpace  string `json:"namespace" form:"namespace" validate:"" comment:"命名空间"`
 	Limit      int    `json:"limit" form:"limit" validate:"" comment:"分页限制"`
 	Page       int    `json:"page" form:"page" validate:"" comment:"页码"`
+}
+
+// WebShellOptions ws API 参数定义
+type WebShellOptions struct {
+	Namespace string `form:"namespace"`
+	Pod       string `form:"pod_name"`
+	Container string `form:"container_name"`
+}
+
+func (params *WebShellOptions) BindingValidParams(c *gin.Context) error {
+	return pkg.DefaultGetValidParams(c, params)
 }
 
 func (params *PodListInput) BindingValidParams(c *gin.Context) error {

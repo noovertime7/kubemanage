@@ -7,6 +7,12 @@ const (
 	TranslatorKey = "TranslatorKey"
 )
 
+const (
+	LoginURL    = "/api/user/login"
+	LogoutURL   = "/api/user/logout"
+	WebShellURL = "/api/k8s/pod/webshell"
+)
+
 var (
 	AdminDefaultAuth      uint = 111
 	AdminDefaultAuthStr        = strconv.Itoa(int(AdminDefaultAuth))

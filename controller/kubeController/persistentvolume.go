@@ -2,8 +2,8 @@ package kubeController
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/dto/kubeDto"
 
-	"github.com/noovertime7/kubemanage/dto/kubernetes"
 	"github.com/noovertime7/kubemanage/middleware"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
@@ -26,7 +26,7 @@ type persistentVolume struct{}
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": "删除成功}"
 // @Router       /api/k8s/spersistentvolume/del [delete]
 func (n *persistentVolume) DeletePersistentVolume(ctx *gin.Context) {
-	params := &kubernetes.PersistentVolumeNameInput{}
+	params := &kubeDto.PersistentVolumeNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -54,7 +54,7 @@ func (n *persistentVolume) DeletePersistentVolume(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": service.PersistentVolumeResp}"
 // @Router       /api/k8s/persistentvolume/list [get]
 func (n *persistentVolume) GetPersistentVolumeList(ctx *gin.Context) {
-	params := &kubernetes.PersistentVolumeListInput{}
+	params := &kubeDto.PersistentVolumeListInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
@@ -81,7 +81,7 @@ func (n *persistentVolume) GetPersistentVolumeList(ctx *gin.Context) {
 // @Success       200  {object}  middleware.Response"{"code": 200, msg="","data": *coreV1.PersistentVolume}"
 // @Router       /api/k8s/persistentvolume/detail [get]
 func (n *persistentVolume) GetPersistentVolumeDetail(ctx *gin.Context) {
-	params := &kubernetes.PersistentVolumeNameInput{}
+	params := &kubeDto.PersistentVolumeNameInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))

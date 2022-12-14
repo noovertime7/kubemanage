@@ -7,10 +7,10 @@ import (
 	"github.com/casbin/casbin/v2"
 	"github.com/casbin/casbin/v2/model"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
+	"github.com/pkg/errors"
+
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dto"
-	"github.com/pkg/errors"
-	"github.com/wonderivan/logger"
 )
 
 type CasbinServiceGetter interface {
@@ -110,7 +110,6 @@ func (c *casbinService) Casbin() *casbin.CachedEnforcer {
 		`
 		m, err := model.NewModelFromString(text)
 		if err != nil {
-			logger.Error("字符串加载模型失败!", err)
 			return
 		}
 		cachedEnforcer, _ = casbin.NewCachedEnforcer(m, a)

@@ -29,6 +29,9 @@ func init() {
 
 func OperationRecord() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		if AlwaysAllowPath.Has(c.Request.URL.Path) {
+			return
+		}
 		var (
 			err    error
 			userId int
