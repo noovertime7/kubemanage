@@ -2,6 +2,7 @@ package logger
 
 import (
 	"os"
+	"time"
 
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
@@ -26,7 +27,10 @@ func InitLogger() (err error) {
 	if cfg.Level == "debug" {
 		// 进入开发模式，日志输出到终端
 		config := zap.NewDevelopmentEncoderConfig()
+		// 设置日志颜色
 		config.EncodeLevel = zapcore.LowercaseColorLevelEncoder
+		// 设置自定义时间格式
+		config.EncodeTime = getCustomTimeEncoder
 		consoleEncoder := zapcore.NewConsoleEncoder(config)
 		core = zapcore.NewTee(
 			zapcore.NewCore(encoder, writeSyncer, l),
@@ -61,4 +65,9 @@ func getLogWriter(filename string, maxSize, maxBackup, maxAge int) zapcore.Write
 		MaxAge:     maxAge,
 	}
 	return zapcore.AddSync(lumberJackLogger)
+}
+
+// CustomTimeEncoder 自定义日志输出时间格式
+func getCustomTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+	enc.AppendString("[kubemanage] " + t.Format("2006/01/02 - 15:04:05.000"))
 }
