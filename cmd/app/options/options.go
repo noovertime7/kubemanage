@@ -38,7 +38,7 @@ func NewOptions() (*Options, error) {
 }
 
 func (o *Options) BindFlags(cmd *cobra.Command) {
-	cmd.Flags().StringVar(&o.ConfigFile, "KubeManageConfigFile", "", "The location of the kubemanage configuration file")
+	cmd.Flags().StringVar(&o.ConfigFile, "configFile", "", "The location of the kubemanage configuration file")
 }
 
 // Complete completes all the required options
@@ -46,7 +46,7 @@ func (o *Options) Complete() error {
 	// 配置文件优先级: 默认配置，环境变量，命令行
 	if len(o.ConfigFile) == 0 {
 		// Try to read config file path from env.
-		if cfgFile := os.Getenv("KubeManageConfigFile"); cfgFile != "" {
+		if cfgFile := os.Getenv("KUBEMANAGE-CONFIG"); cfgFile != "" {
 			o.ConfigFile = cfgFile
 		} else {
 			o.ConfigFile = defaultConfigFile
