@@ -1,13 +1,15 @@
-package v1
+package sys
 
 import (
 	"context"
+	"strconv"
+
+	"github.com/pkg/errors"
+	"gorm.io/gorm"
+
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/dto"
-	"github.com/pkg/errors"
-	"gorm.io/gorm"
-	"strconv"
 )
 
 type MenuGetter interface {
@@ -21,12 +23,11 @@ type MenuService interface {
 }
 
 type menuService struct {
-	app     *KubeManage
 	factory dao.ShareDaoFactory
 }
 
-func NewMenuService(app *KubeManage) *menuService {
-	return &menuService{app: app, factory: app.Factory}
+func NewMenuService(factory dao.ShareDaoFactory) *menuService {
+	return &menuService{factory: factory}
 }
 
 func (m *menuService) GetMenu(ctx context.Context, authorityId uint) ([]model.SysMenu, error) {
@@ -102,5 +103,5 @@ func (m *menuService) AddBaseMenu(ctx context.Context, in *dto.AddSysMenusInput)
 // AddMenuAuthority 为角色增加menu树
 func (m *menuService) AddMenuAuthority(ctx context.Context, menus []model.SysBaseMenu, authorityId uint) error {
 	auth := &model.SysAuthority{AuthorityId: authorityId, SysBaseMenus: menus}
-	return CoreV1.Authority().SetMenuAuthority(ctx, auth)
+	return m.factory.Authority().SetMenuAuthority(ctx, auth)
 }

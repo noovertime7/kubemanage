@@ -2,12 +2,12 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"strconv"
 
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg"
-	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/noovertime7/kubemanage/pkg/utils"
 )
@@ -29,7 +29,7 @@ func (u *userController) Login(ctx *gin.Context) {
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
-	token, err := v1.CoreV1.User().Login(ctx, params)
+	token, err := v1.CoreV1.System().User().Login(ctx, params)
 	if err != nil {
 		v1.Log.ErrorWithCode(globalError.LoginErr, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.LoginErr, err))
@@ -53,7 +53,7 @@ func (u *userController) LoginOut(ctx *gin.Context) {
 		v1.Log.Error(globalError.ServerError)
 	}
 	cla, _ := claims.(*pkg.CustomClaims)
-	if err := v1.CoreV1.User().LoginOut(ctx, cla.ID); err != nil {
+	if err := v1.CoreV1.System().User().LoginOut(ctx, cla.ID); err != nil {
 		v1.Log.ErrorWithCode(globalError.LogoutErr, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
@@ -75,7 +75,7 @@ func (u *userController) GetUserInfo(ctx *gin.Context) {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		return
 	}
-	userInfo, err := v1.CoreV1.User().GetUserInfo(ctx, clalms.ID, clalms.AuthorityId)
+	userInfo, err := v1.CoreV1.System().User().GetUserInfo(ctx, clalms.ID, clalms.AuthorityId)
 	if err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.LogoutErr, err))
@@ -104,7 +104,7 @@ func (u *userController) SetUserAuthority(ctx *gin.Context) {
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
-	if err := v1.CoreV1.User().SetUserAuth(ctx, uid, params.AuthorityId); err != nil {
+	if err := v1.CoreV1.System().User().SetUserAuth(ctx, uid, params.AuthorityId); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
@@ -137,7 +137,7 @@ func (u *userController) DeleteUser(ctx *gin.Context) {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 	}
-	if err := v1.CoreV1.User().DeleteUser(ctx, uid); err != nil {
+	if err := v1.CoreV1.System().User().DeleteUser(ctx, uid); err != nil {
 		v1.Log.ErrorWithCode(globalError.DeleteError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
 		return
@@ -165,7 +165,7 @@ func (u *userController) ChangePassword(ctx *gin.Context) {
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
-	if err := v1.CoreV1.User().ChangePassword(ctx, uid, params); err != nil {
+	if err := v1.CoreV1.System().User().ChangePassword(ctx, uid, params); err != nil {
 		v1.Log.ErrorWithCode(globalError.ServerError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ServerError, err))
 		return
@@ -186,7 +186,7 @@ func (u *userController) ResetPassword(ctx *gin.Context) {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 	}
-	if err := v1.CoreV1.User().ResetPassword(ctx, uid); err != nil {
+	if err := v1.CoreV1.System().User().ResetPassword(ctx, uid); err != nil {
 		v1.Log.ErrorWithCode(globalError.ServerError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ServerError, err))
 		return

@@ -3,7 +3,7 @@ package kubeController
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto/kubeDto"
-	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	_ "k8s.io/api/apps/v1"
 
 	"github.com/noovertime7/kubemanage/middleware"

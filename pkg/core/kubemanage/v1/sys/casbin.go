@@ -1,4 +1,4 @@
-package v1
+package sys
 
 import (
 	"strconv"
@@ -25,12 +25,11 @@ type CasbinService interface {
 }
 
 type casbinService struct {
-	app     *KubeManage
 	factory dao.ShareDaoFactory
 }
 
-func NewCasbinService(app *KubeManage) *casbinService {
-	return &casbinService{app: app, factory: app.Factory}
+func NewCasbinService(factory dao.ShareDaoFactory) *casbinService {
+	return &casbinService{factory: factory}
 }
 
 func (c *casbinService) UpdateCasbin(AuthorityID uint, casbinInfos []dto.CasbinInfo) error {

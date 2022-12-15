@@ -1,7 +1,8 @@
-package v1
+package sys
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/dto"
@@ -19,12 +20,11 @@ type OperationService interface {
 }
 
 type operationService struct {
-	app     *KubeManage
 	factory dao.ShareDaoFactory
 }
 
-func NewOperationService(app *KubeManage) *operationService {
-	return &operationService{app: app, factory: app.Factory}
+func NewOperationService(factory dao.ShareDaoFactory) *operationService {
+	return &operationService{factory: factory}
 }
 
 func (o *operationService) CreateOperationRecord(ctx *gin.Context, record *model.SysOperationRecord) error {

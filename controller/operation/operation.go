@@ -2,10 +2,10 @@ package operation
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/noovertime7/kubemanage/pkg/utils"
 )
@@ -26,7 +26,7 @@ func (o *operationController) GetOperationRecordList(ctx *gin.Context) {
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
-	data, err := v1.CoreV1.Operation().GetPageList(ctx, params)
+	data, err := v1.CoreV1.System().Operation().GetPageList(ctx, params)
 	if err != nil {
 		v1.Log.ErrorWithErr("查询失败", err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
@@ -50,7 +50,7 @@ func (o *operationController) DeleteOperationRecord(ctx *gin.Context) {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 	}
-	if err := v1.CoreV1.Operation().DeleteRecord(ctx, recordId); err != nil {
+	if err := v1.CoreV1.System().Operation().DeleteRecord(ctx, recordId); err != nil {
 		v1.Log.ErrorWithCode(globalError.DeleteError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
 	}
@@ -73,7 +73,7 @@ func (o *operationController) DeleteOperationRecords(ctx *gin.Context) {
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
-	if err := v1.CoreV1.Operation().DeleteRecords(ctx, params.Ids); err != nil {
+	if err := v1.CoreV1.System().Operation().DeleteRecords(ctx, params.Ids); err != nil {
 		v1.Log.ErrorWithErr("批量删除失败", err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
 		return

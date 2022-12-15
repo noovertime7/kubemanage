@@ -1,8 +1,9 @@
-package v1
+package sys
 
 import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
+
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/dto"
@@ -25,12 +26,17 @@ type UserService interface {
 }
 
 type userService struct {
-	app     *KubeManage
+	Menu    MenuService
+	Casbin  CasbinService
 	factory dao.ShareDaoFactory
 }
 
-func NewUserService(app *KubeManage) *userService {
-	return &userService{app: app, factory: app.Factory}
+func NewUserService(factory dao.ShareDaoFactory) *userService {
+	return &userService{
+		factory: factory,
+		Menu:    NewMenuService(factory),
+		Casbin:  NewCasbinService(factory),
+	}
 }
 
 var _ UserService = &userService{}
@@ -68,12 +74,12 @@ func (u *userService) GetUserInfo(ctx *gin.Context, uid int, aid uint) (*dto.Use
 	if err != nil {
 		return nil, err
 	}
-	menus, err := CoreV1.Menu().GetMenu(ctx, aid)
+	menus, err := u.Menu.GetMenu(ctx, aid)
 	if err != nil {
 		return nil, err
 	}
 	var outRules []string
-	rules := CoreV1.CasbinService().GetPolicyPathByAuthorityId(aid)
+	rules := u.Casbin.GetPolicyPathByAuthorityId(aid)
 	for _, rule := range rules {
 		item := rule.Path + "," + rule.Method
 		outRules = append(outRules, item)

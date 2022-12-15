@@ -19,7 +19,7 @@ func Binding(filePath string) error {
 	}
 	v.WatchConfig()
 	v.OnConfigChange(func(in fsnotify.Event) {
-		fmt.Println("config file changed,system config reload")
+		fmt.Println("config file changed,sys config reload")
 		if err := viper.Unmarshal(&SysConfig); err != nil {
 			fmt.Printf("config file changed,viper.Unmarshal failed, err:%v\n", err)
 		}

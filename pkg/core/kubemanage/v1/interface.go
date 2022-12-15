@@ -8,12 +8,8 @@ import (
 
 type CoreService interface {
 	WorkFlowServiceGetter
-	UserServiceGetter
-	MenuGetter
-	CasbinServiceGetter
-	AuthorityGetter
-	OperationServiceGetter
 	CloudGetter
+	SystemGetter
 }
 
 func New(cfg *config.Config, factory dao.ShareDaoFactory) CoreService {
@@ -36,26 +32,10 @@ func (c *KubeManage) WorkFlow() WorkFlowService {
 	return NewWorkFlow(c)
 }
 
-func (c *KubeManage) User() UserService {
-	return NewUserService(c)
-}
-
-func (c *KubeManage) Menu() MenuService {
-	return NewMenuService(c)
-}
-
-func (c *KubeManage) CasbinService() CasbinService {
-	return NewCasbinService(c)
-}
-
-func (c *KubeManage) Authority() Authority {
-	return NewAuthority(c)
-}
-
-func (c *KubeManage) Operation() OperationService {
-	return NewOperationService(c)
-}
-
 func (c *KubeManage) Cloud() CloudInterface {
-	return newCloud(c)
+	return NewCloud(c)
+}
+
+func (c *KubeManage) System() SystemInterface {
+	return NewSystem(c)
 }
