@@ -3,6 +3,7 @@ package middleware
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"io"
 	"net/http"
 	"net/url"
@@ -14,7 +15,6 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/noovertime7/kubemanage/dao/model"
-	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/logger"
 	"github.com/noovertime7/kubemanage/pkg/utils"
 )
@@ -109,7 +109,7 @@ func OperationRecord() gin.HandlerFunc {
 		//	defer respPool.Put(newBody[:0])
 		//}
 
-		if err := v1.CoreV1.Operation().CreateOperationRecord(c, &record); err != nil {
+		if err := v1.CoreV1.System().Operation().CreateOperationRecord(c, &record); err != nil {
 			logger.LG.Error("create operation record error:", zap.Error(err))
 		}
 	}

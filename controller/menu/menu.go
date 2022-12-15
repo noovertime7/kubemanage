@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/noovertime7/kubemanage/pkg/utils"
 )
@@ -24,7 +24,7 @@ func (m *menuController) GetMenus(ctx *gin.Context) {
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
-	menus, err := v1.CoreV1.Menu().GetMenu(ctx, aid)
+	menus, err := v1.CoreV1.System().Menu().GetMenu(ctx, aid)
 	if err != nil {
 		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
@@ -48,7 +48,7 @@ func (m *menuController) AddBaseMenu(ctx *gin.Context) {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 	}
-	if err := v1.CoreV1.Menu().AddBaseMenu(ctx, params); err != nil {
+	if err := v1.CoreV1.System().Menu().AddBaseMenu(ctx, params); err != nil {
 		v1.Log.ErrorWithCode(globalError.CreateError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.CreateError, err))
 		return
@@ -71,7 +71,7 @@ func (m *menuController) AddMenuAuthority(ctx *gin.Context) {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 	}
-	if err := v1.CoreV1.Menu().AddMenuAuthority(ctx, params.Menus, params.AuthorityId); err != nil {
+	if err := v1.CoreV1.System().Menu().AddMenuAuthority(ctx, params.Menus, params.AuthorityId); err != nil {
 		v1.Log.ErrorWithCode(globalError.ServerError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ServerError, err))
 	}

@@ -23,7 +23,7 @@ func (c *cloud) Pods(cloud string) kube.PodInterface {
 	return kube.NewPods(nil, "", c.factory)
 }
 
-func newCloud(c *KubeManage) CloudInterface {
+func NewCloud(c *KubeManage) CloudInterface {
 	return &cloud{
 		app:     c,
 		factory: c.Factory,

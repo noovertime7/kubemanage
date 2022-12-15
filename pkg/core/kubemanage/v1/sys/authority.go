@@ -1,7 +1,8 @@
-package v1
+package sys
 
 import (
 	"context"
+
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
 )
@@ -15,12 +16,11 @@ type Authority interface {
 }
 
 type authority struct {
-	app     *KubeManage
 	factory dao.ShareDaoFactory
 }
 
-func NewAuthority(app *KubeManage) *authority {
-	return &authority{app: app, factory: app.Factory}
+func NewAuthority(factory dao.ShareDaoFactory) *authority {
+	return &authority{factory: factory}
 }
 
 func (a *authority) SetMenuAuthority(ctx context.Context, auth *model.SysAuthority) error {

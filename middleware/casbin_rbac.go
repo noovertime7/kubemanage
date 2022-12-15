@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/noovertime7/kubemanage/pkg/utils"
 	"strconv"
@@ -26,7 +26,7 @@ func CasbinHandler() gin.HandlerFunc {
 		act := c.Request.Method
 		// 获取用户的角色
 		sub := strconv.Itoa(int(waitUse.AuthorityId))
-		e := v1.CoreV1.CasbinService().Casbin() // 判断策略中是否存在
+		e := v1.CoreV1.System().CasbinService().Casbin() // 判断策略中是否存在
 		success, _ := e.Enforce(sub, obj, act)
 		if success {
 			c.Next()
