@@ -11,6 +11,7 @@ type AddSysMenusInput struct {
 	ParentId string `json:"parentId" comment:"父菜单ID" validate:"required"` // 父菜单ID
 	Name     string `json:"name"  comment:"路由name" validate:"required"`   // 路由name
 	Path     string `json:"path" comment:"路由path" validate:"required"`    // 路由path
+	Disabled bool   `json:"disabled" comment:"是否禁用" validate:"required"`  // 是否在列表隐藏
 	Hidden   bool   `json:"hidden" comment:"是否在列表隐藏" validate:"required"` // 是否在列表隐藏
 	Sort     int    `json:"sort" comment:"排序标记" validate:"required"`      // 排序标记
 	model.Meta
