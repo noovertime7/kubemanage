@@ -90,6 +90,9 @@ swag init   --pd  -d ./cmd,docs
 首页
 ![首页](./img/dashboard.jpg?raw=true)
 
+操作审计(v3版本)
+![](./img/operation.png)
+
 工作流
 ![工作流](./img/wordflow.jpg?raw=true)
 
