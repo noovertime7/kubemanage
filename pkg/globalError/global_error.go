@@ -31,7 +31,7 @@ const (
 
 // 3、定义errorCode对应的文本信息
 var codeTag = map[int]string{
-	AuthErr: "无权限",
+	AuthErr: "权限不足，请联系管理员",
 
 	ServerError:        "Internal Server Error",
 	ParamBindError:     "参数信息有误",

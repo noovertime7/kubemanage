@@ -33,17 +33,15 @@ func (i *MenuAuthority) InitData(ctx context.Context, db *gorm.DB) error {
 	if err != nil || ok {
 		return err
 	}
-	// admin
-	if err = db.Model(&adminRole).Association("SysBaseMenus").Replace(SysBaseMenuEntities[:6]); err != nil {
-		return err
-	}
-	if err = db.Model(&adminRole).Association("SysBaseMenus").Append(SysBaseMenuEntities[6:]); err != nil {
+	// admin 拥有全部菜单权限
+	if err = db.Model(&adminRole).Association("SysBaseMenus").Append(SysBaseMenuEntities); err != nil {
 		return err
 	}
 
-	// userRole
-	menu8881 := SysBaseMenuEntities[:6]
-	menu8881 = append(menu8881, SysBaseMenuEntities[6])
+	// userRole cmdb菜单
+	menu8881 := SysBaseMenuEntities[5:7]
+	menu8881 = append(menu8881, SysBaseMenuEntities[0])
+	menu8881 = append(menu8881, SysBaseMenuEntities[1])
 	if err = db.Model(&userRole).Association("SysBaseMenus").Replace(menu8881); err != nil {
 		return err
 	}
@@ -60,7 +58,7 @@ func (i *MenuAuthority) InitData(ctx context.Context, db *gorm.DB) error {
 
 func (i *MenuAuthority) IsInitData(ctx context.Context, db *gorm.DB) (bool, error) {
 	auth := &SysAuthority{}
-	if err := db.Model(auth).Where("authority_id = ?", pkg.AdminDefaultAuth).Preload("SysBaseMenus").Find(auth).Error; err != nil {
+	if err := db.WithContext(ctx).Model(auth).Where("authority_id = ?", pkg.AdminDefaultAuth).Preload("SysBaseMenus").Find(auth).Error; err != nil {
 		return false, err
 	}
 	return len(auth.SysBaseMenus) > 0, nil

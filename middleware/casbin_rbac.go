@@ -1,11 +1,14 @@
 package middleware
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
+
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
 	"github.com/noovertime7/kubemanage/pkg/utils"
-	"strconv"
 )
 
 // CasbinHandler 拦截器
@@ -31,7 +34,7 @@ func CasbinHandler() gin.HandlerFunc {
 		if success {
 			c.Next()
 		} else {
-			ResponseError(c, globalError.NewGlobalError(globalError.AuthErr, err))
+			ResponseError(c, globalError.NewGlobalError(globalError.AuthErr, fmt.Errorf("角色ID %d 请求 %s %s 无权限", waitUse.AuthorityId, act, obj)))
 			c.Abort()
 			return
 		}
