@@ -74,7 +74,7 @@ func (u *userService) GetUserInfo(ctx *gin.Context, uid int, aid uint) (*dto.Use
 	if err != nil {
 		return nil, err
 	}
-	menus, err := u.Menu.GetMenu(ctx, aid)
+	menus, err := u.Menu.GetMenuByAuthorityID(ctx, aid)
 	if err != nil {
 		return nil, err
 	}

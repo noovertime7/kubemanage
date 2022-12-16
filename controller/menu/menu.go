@@ -1,6 +1,7 @@
 package menu
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
@@ -9,28 +10,45 @@ import (
 	"github.com/noovertime7/kubemanage/pkg/utils"
 )
 
-// GetMenus
+// GetMenusByAuthID
 // @Tags      AuthorityMenu
 // @Summary   获取用户动态路由
 // @Security  ApiKeyAuth
 // @Produce   application/json
 // @Param     data  body      dto.Empty                                                  true  "空"
-// @Success   200   {object}  middleware.Response{data=dto.SysMenusResponse,msg=string}  "获取用户动态路由,返回包括系统菜单详情列表"
-// @Router    /api/menu/get_menus [get]
-func (m *menuController) GetMenus(ctx *gin.Context) {
-	aid, err := utils.GetUserAuthorityId(ctx)
-	if err != nil {
-		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
-		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
-		return
+// @Success   200   {object}  middleware.Response{data=dto.SysBaseMenusResponse,msg=string}  "获取用户动态路由,返回包括系统菜单详情列表"
+// @Router    /api/menu/:authID/getMenuByAuthID [get]
+func (m *menuController) GetMenusByAuthID(ctx *gin.Context) {
+	authID, err := utils.ParseUint(ctx.Param("authID"))
+	if err != nil || authID == 0 {
+		v1.Log.ErrorWithCode(globalError.ParamBindError, fmt.Errorf("authID empty"))
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, fmt.Errorf("authID empty")))
 	}
-	menus, err := v1.CoreV1.System().Menu().GetMenu(ctx, aid)
+	menus, err := v1.CoreV1.System().Menu().GetMenuByAuthorityID(ctx, authID)
 	if err != nil {
 		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, &dto.SysMenusResponse{Menus: menus})
+}
+
+// GetBaseMenus
+// @Tags      AuthorityMenu
+// @Summary   获取用户动态路由
+// @Security  ApiKeyAuth
+// @Produce   application/json
+// @Param     data  body      dto.Empty                                                  true  "空"
+// @Success   200   {object}  middleware.Response{data=dto.SysBaseMenusResponse,msg=string}  "获取系统菜单详情列表"
+// @Router    /api/menu/getBaseMenuTree [get]
+func (m *menuController) GetBaseMenus(ctx *gin.Context) {
+	menus, err := v1.CoreV1.System().Menu().GetBassMenu(ctx)
+	if err != nil {
+		v1.Log.ErrorWithCode(globalError.GetError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
+		return
+	}
+	middleware.ResponseSuccess(ctx, menus)
 }
 
 // AddBaseMenu

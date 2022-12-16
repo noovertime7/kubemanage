@@ -13,7 +13,8 @@ func (m *menuController) initRoutes(ginEngine *gin.RouterGroup) {
 	menuRoute := ginEngine.Group("/menu")
 	menu := &menuController{}
 	{
-		menuRoute.GET("/get_menus", menu.GetMenus)
+		menuRoute.GET("/:authID/getMenuByAuthID", menu.GetMenusByAuthID)
+		menuRoute.GET("/getBaseMenuTree", menu.GetBaseMenus)
 		menuRoute.POST("/add_base_menu", menu.AddBaseMenu)
 		menuRoute.POST("/add_menu_authority", menu.AddMenuAuthority)
 	}

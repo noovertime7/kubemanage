@@ -9,7 +9,7 @@ import (
 type BaseMenu interface {
 	Find(ctx context.Context, in *model.SysBaseMenu) (*model.SysBaseMenu, error)
 	FindIn(ctx context.Context, in []string) ([]*model.SysBaseMenu, error)
-	FindList(ctx context.Context, in *model.SysBaseMenu) ([]*model.SysBaseMenu, error)
+	FindList(ctx context.Context, in *model.SysBaseMenu) ([]model.SysBaseMenu, error)
 	Save(ctx context.Context, in *model.SysBaseMenu) error
 	Updates(ctx context.Context, in *model.SysBaseMenu) error
 }
@@ -33,9 +33,9 @@ func (b baseMenu) FindIn(ctx context.Context, in []string) ([]*model.SysBaseMenu
 	return out, b.db.WithContext(ctx).Where("id in (?)", in).Order("sort").Find(&out).Error
 }
 
-func (b baseMenu) FindList(ctx context.Context, in *model.SysBaseMenu) ([]*model.SysBaseMenu, error) {
-	var out []*model.SysBaseMenu
-	return out, b.db.WithContext(ctx).Where(in).Find(&out).Error
+func (b baseMenu) FindList(ctx context.Context, in *model.SysBaseMenu) ([]model.SysBaseMenu, error) {
+	var out []model.SysBaseMenu
+	return out, b.db.WithContext(ctx).Order("sort").Where(in).Find(&out).Error
 }
 
 func (b baseMenu) Save(ctx context.Context, in *model.SysBaseMenu) error {
