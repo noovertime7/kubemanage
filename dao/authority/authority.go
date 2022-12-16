@@ -3,6 +3,7 @@ package authority
 import (
 	"context"
 	"github.com/noovertime7/kubemanage/dao/model"
+	"github.com/noovertime7/kubemanage/dto"
 	"gorm.io/gorm"
 )
 
@@ -13,6 +14,7 @@ type Authority interface {
 	Updates(ctx context.Context, authInfo *model.SysAuthority) error
 
 	SetMenuAuthority(ctx context.Context, authInfo *model.SysAuthority) error
+	PageList(ctx context.Context, params dto.PageInfo) ([]model.SysAuthority, int64, error)
 }
 
 var _ Authority = &authority{}
@@ -33,6 +35,26 @@ func (a *authority) Find(ctx context.Context, authInfo *model.SysAuthority) (*mo
 func (a *authority) FindList(ctx context.Context, authInfo *model.SysAuthority) ([]*model.SysAuthority, error) {
 	var out []*model.SysAuthority
 	return out, a.db.WithContext(ctx).Where(&authInfo).Find(&out).Error
+}
+
+func (a *authority) PageList(ctx context.Context, params dto.PageInfo) ([]model.SysAuthority, int64, error) {
+	var total int64 = 0
+	limit := params.PageSize
+	offset := params.PageSize * (params.Page - 1)
+	query := a.db.WithContext(ctx)
+	var list []model.SysAuthority
+	// 如果有条件搜索 下方会自动创建搜索语句
+	if params.Keyword != "" {
+		query = query.Where("authority_name = ?", params.Keyword)
+	}
+	if err := query.Find(&list).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if err := query.Order("authority_id desc").Limit(limit).Offset(offset).Find(&list).Error; err != nil {
+		return nil, 0, err
+	}
+	return list, total, nil
 }
 
 func (a *authority) Save(ctx context.Context, authInfo *model.SysAuthority) error {

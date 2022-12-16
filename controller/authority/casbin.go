@@ -16,8 +16,8 @@ import (
 // @Produce   application/json
 // @Param     data  body      dto.CasbinInReceive                                          true  "权限id, 权限模型列表"
 // @Success   200   {object}  middleware.Response{data=dto.CasbinInfo,msg=string}  "获取权限列表,返回包括casbin详情列表"
-// @Router    /casbin/getPolicyPathByAuthorityId [post]
-func (c *casbinController) GetPolicyPathByAuthorityId(ctx *gin.Context) {
+// @Router    /api/v1/authority/getPolicyPathByAuthorityId [post]
+func (a *authorityController) GetPolicyPathByAuthorityId(ctx *gin.Context) {
 	rule := &dto.CasbinInReceive{}
 	if err := rule.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)

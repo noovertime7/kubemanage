@@ -23,3 +23,7 @@ type IdsReq struct {
 func (a *IdsReq) BindingValidParams(ctx *gin.Context) error {
 	return pkg.DefaultGetValidParams(ctx, a)
 }
+
+func (a *PageInfo) BindingValidParams(ctx *gin.Context) error {
+	return pkg.DefaultGetValidParams(ctx, a)
+}
