@@ -28,14 +28,14 @@ type casbinService struct {
 	factory dao.ShareDaoFactory
 }
 
-func NewCasbinService(factory dao.ShareDaoFactory) *casbinService {
+func NewCasbinService(factory dao.ShareDaoFactory) CasbinService {
 	return &casbinService{factory: factory}
 }
 
 func (c *casbinService) UpdateCasbin(AuthorityID uint, casbinInfos []dto.CasbinInfo) error {
 	authorityId := strconv.Itoa(int(AuthorityID))
 	c.ClearCasbin(0, authorityId)
-	rules := [][]string{}
+	var rules [][]string
 	for _, v := range casbinInfos {
 		rules = append(rules, []string{authorityId, v.Path, v.Method})
 	}

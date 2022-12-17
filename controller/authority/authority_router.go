@@ -13,9 +13,9 @@ func NewCasbinRouter(ginEngine *gin.RouterGroup) {
 
 func (a *authorityController) initRoutes(ginEngine *gin.RouterGroup) {
 	casRoute := ginEngine.Group("/authority")
-	cas := &authorityController{}
 	{
-		casRoute.GET("/getPolicyPathByAuthorityId", cas.GetPolicyPathByAuthorityId)
-		casRoute.GET("/getAuthorityList", cas.GetAuthorityList)
+		casRoute.GET("/getPolicyPathByAuthorityId", a.GetPolicyPathByAuthorityId)
+		casRoute.POST("/updateCasbinByAuthority", a.UpdateCasbinByAuthorityId)
+		casRoute.GET("/getAuthorityList", a.GetAuthorityList)
 	}
 }

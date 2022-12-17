@@ -153,6 +153,9 @@ func buildCasbinRule(apis []SysApi) []adapter.CasbinRule {
 }
 
 var SysApis = []SysApi{
+	// api接口
+	{Path: "/api/sysApi/getAPiList", Description: "获取系统API列表", ApiGroup: "系统", Method: "GET"},
+
 	// 用户相关接口
 	{Path: "/api/user/login", Description: "用户登录", ApiGroup: "用户", Method: "POST"},
 	{Path: "/api/user/loginout", Description: "用户退出", ApiGroup: "用户", Method: "GET"},
@@ -174,6 +177,7 @@ var SysApis = []SysApi{
 	{Path: "/api/menu/add_menu_authority", Description: "添加角色", ApiGroup: "菜单", Method: "POST"},
 	// 权限RBAC接口
 	{Path: "/api/authority/getPolicyPathByAuthorityId", Description: "获取角色api权限", ApiGroup: "权限", Method: "GET"},
+	{Path: "/api/authority/updateCasbinByAuthority", Description: "更改角色api权限", ApiGroup: "用户", Method: "POST"},
 	{Path: "/api/authority/getAuthorityList", Description: "获取角色列表", ApiGroup: "权限", Method: "GET"},
 	// K8S相关接口
 	{Path: "/api/k8s/deployment/create", Description: "创建deployment", ApiGroup: "Kubernetes", Method: "POST"},
