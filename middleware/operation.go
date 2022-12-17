@@ -32,6 +32,10 @@ func OperationRecord() gin.HandlerFunc {
 		if AlwaysAllowPath.Has(c.Request.URL.Path) {
 			return
 		}
+		// GET 请求不记录
+		if c.Request.Method == http.MethodGet {
+			return
+		}
 		var (
 			err    error
 			userId int

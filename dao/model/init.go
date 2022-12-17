@@ -155,7 +155,6 @@ func buildCasbinRule(apis []SysApi) []adapter.CasbinRule {
 var SysApis = []SysApi{
 	// api接口
 	{Path: "/api/sysApi/getAPiList", Description: "获取系统API列表", ApiGroup: "系统", Method: "GET"},
-
 	// 用户相关接口
 	{Path: "/api/user/login", Description: "用户登录", ApiGroup: "用户", Method: "POST"},
 	{Path: "/api/user/loginout", Description: "用户退出", ApiGroup: "用户", Method: "GET"},

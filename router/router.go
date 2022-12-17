@@ -1,8 +1,6 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
-
 	"github.com/noovertime7/kubemanage/cmd/app/options"
 	"github.com/noovertime7/kubemanage/controller/api"
 	"github.com/noovertime7/kubemanage/controller/authority"
@@ -22,14 +20,6 @@ func InstallRouters(opt *options.Options) {
 		api.NewApiRouter(apiGroup)
 		operation.NewOperationRouter(apiGroup)
 		user.NewUserRouter(apiGroup)
-	}
-	installOperationRouters(apiGroup)
-}
-
-func installOperationRouters(apiGroup *gin.RouterGroup) {
-	// 需要操作记录
-	apiGroup.Use(middleware.OperationRecord())
-	{
 		other.NewSwaggarRoute(apiGroup)
 		kubeController.NewKubeRouter(apiGroup)
 		menu.NewMenuRouter(apiGroup)
