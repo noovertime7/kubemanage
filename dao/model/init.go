@@ -13,6 +13,7 @@ const (
 	MenuAuthorityOrder
 	SysBaseMenuOrder
 	SysAuthorityOrder
+	SysApisInitOrder
 	CasbinInitOrder
 	OperatorationOrder
 	WorkFlowOrder
@@ -120,16 +121,120 @@ var (
 	}
 )
 
-var CasbinApi = []adapter.CasbinRule{
-	{Ptype: "p", V0: pkg.UserDefaultAuthStr, V1: "/api/user/login", V2: "POST"},
-	{Ptype: "p", V0: pkg.UserDefaultAuthStr, V1: "/api/user/loginout", V2: "GET"},
-	{Ptype: "p", V0: pkg.UserDefaultAuthStr, V1: "/api/menu/get_menus", V2: "GET"},
-	{Ptype: "p", V0: pkg.UserDefaultAuthStr, V1: "/api/user/getinfo", V2: "GET"},
-	{Ptype: "p", V0: pkg.UserDefaultAuthStr, V1: "/api/user/:id/change_pwd", V2: "POST"},
+var CasbinApi = buildCasbinRule(SysApis)
 
-	{Ptype: "p", V0: pkg.UserSubDefaultAuthStr, V1: "/api/user/login", V2: "POST"},
-	{Ptype: "p", V0: pkg.UserSubDefaultAuthStr, V1: "/api/user/loginout", V2: "GET"},
-	{Ptype: "p", V0: pkg.UserSubDefaultAuthStr, V1: "/api/menu/get_menus", V2: "GET"},
-	{Ptype: "p", V0: pkg.UserSubDefaultAuthStr, V1: "/api/user/getinfo", V2: "GET"},
-	{Ptype: "p", V0: pkg.UserSubDefaultAuthStr, V1: "/api/user/:id/change_pwd", V2: "POST"},
+// buildCasbinRule 构建角色casbin api
+func buildCasbinRule(apis []SysApi) []adapter.CasbinRule {
+	var out []adapter.CasbinRule
+	// 管理员角色添加所有api
+	for _, api := range apis {
+		rule := adapter.CasbinRule{
+			Ptype: "p",
+			V0:    pkg.AdminDefaultAuthStr,
+			V1:    api.Path,
+			V2:    api.Method,
+		}
+		out = append(out, rule)
+	}
+	otherRule := []adapter.CasbinRule{
+		// admin添加所有接口
+		{Ptype: "p", V0: pkg.UserDefaultAuthStr, V1: "/api/user/login", V2: "POST"},
+		{Ptype: "p", V0: pkg.UserDefaultAuthStr, V1: "/api/user/loginout", V2: "GET"},
+		{Ptype: "p", V0: pkg.UserDefaultAuthStr, V1: "/api/user/getinfo", V2: "GET"},
+		{Ptype: "p", V0: pkg.UserDefaultAuthStr, V1: "/api/user/:id/change_pwd", V2: "POST"},
+
+		{Ptype: "p", V0: pkg.UserSubDefaultAuthStr, V1: "/api/user/login", V2: "POST"},
+		{Ptype: "p", V0: pkg.UserSubDefaultAuthStr, V1: "/api/user/loginout", V2: "GET"},
+		{Ptype: "p", V0: pkg.UserSubDefaultAuthStr, V1: "/api/user/getinfo", V2: "GET"},
+		{Ptype: "p", V0: pkg.UserSubDefaultAuthStr, V1: "/api/user/:id/change_pwd", V2: "POST"},
+	}
+	allRules := append(append(out, otherRule...))
+	return allRules
+}
+
+var SysApis = []SysApi{
+	// 用户相关接口
+	{Path: "/api/user/login", Description: "用户登录", ApiGroup: "用户", Method: "POST"},
+	{Path: "/api/user/loginout", Description: "用户退出", ApiGroup: "用户", Method: "GET"},
+	{Path: "/api/user/getinfo", Description: "获取用户信息", ApiGroup: "用户", Method: "GET"},
+	{Path: "/api/user/:id/set_auth", Description: "设置用户权限", ApiGroup: "用户", Method: "PUT"},
+	{Path: "/api/user/:id/delete_user", Description: "删除用户", ApiGroup: "用户", Method: "DELETE"},
+	{Path: "/api/user/:id/change_pwd", Description: "修改密码", ApiGroup: "用户", Method: "POST"},
+	{Path: "/api/user/:id/reset_pwd", Description: "重置密码", ApiGroup: "用户", Method: "PUT"},
+	// 操作审计接口
+	{Path: "/api/operation/get_operations", Description: "查询操作记录列表", ApiGroup: "操作审计", Method: "GET"},
+	{Path: "/api/operation/:id/delete_operation", Description: "删除单条记录", ApiGroup: "操作审计", Method: "DELETE"},
+	{Path: "/api/operation/delete_operations", Description: "批量删除记录", ApiGroup: "操作审计", Method: "POST"},
+	// Other
+	{Path: "/api/swagger/*any", Description: "swagger文档", ApiGroup: "Other", Method: "GET"},
+	// 菜单接口
+	{Path: "/api/menu/:authID/getMenuByAuthID", Description: "根据角色获取菜单", ApiGroup: "菜单", Method: "GET"},
+	{Path: "/api/menu/getBaseMenuTree", Description: "获取菜单总树", ApiGroup: "菜单", Method: "GET"},
+	{Path: "/api/menu/add_base_menu", Description: "添加菜单", ApiGroup: "菜单", Method: "POST"},
+	{Path: "/api/menu/add_menu_authority", Description: "添加角色", ApiGroup: "菜单", Method: "POST"},
+	// 权限RBAC接口
+	{Path: "/api/authority/getPolicyPathByAuthorityId", Description: "获取角色api权限", ApiGroup: "权限", Method: "GET"},
+	{Path: "/api/authority/getAuthorityList", Description: "获取角色列表", ApiGroup: "权限", Method: "GET"},
+	// K8S相关接口
+	{Path: "/api/k8s/deployment/create", Description: "创建deployment", ApiGroup: "Kubernetes", Method: "POST"},
+	{Path: "/api/k8s/deployment/del", Description: "删除deployment", ApiGroup: "Kubernetes", Method: "DELETE"},
+	{Path: "/api/k8s/deployment/update", Description: "更新deployment", ApiGroup: "Kubernetes", Method: "PUT"},
+	{Path: "/api/k8s/deployment/list", Description: "查询deployment列表", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/deployment/detail", Description: "查询deployment详情", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/deployment/restart", Description: "重启deployment", ApiGroup: "Kubernetes", Method: "PUT"},
+	{Path: "/api/k8s/deployment/scale", Description: "deployment扩缩容", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/deployment/numnp", Description: "查询deployment数量信息", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/pod/list", Description: "查询pod列表", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/pod/detail", Description: "查询pod详情", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/pod/del", Description: "删除pod", ApiGroup: "Kubernetes", Method: "DELETE"},
+	{Path: "/api/k8s/pod/update", Description: "更新pod", ApiGroup: "Kubernetes", Method: "PUT"},
+	{Path: "/api/k8s/pod/container", Description: "获取Pod内容器名", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/pod/log", Description: "获取容器日志", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/pod/numnp", Description: "查询pod数量信息", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/pod/webshell", Description: "web终端", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/daemonset/del", Description: "删除daemonset", ApiGroup: "Kubernetes", Method: "DELETE"},
+	{Path: "/api/k8s/daemonset/update", Description: "更新daemonset", ApiGroup: "Kubernetes", Method: "PUT"},
+	{Path: "/api/k8s/daemonset/list", Description: "查询daemonset列表", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/daemonset/detail", Description: "查询daemonset详情", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/statefulset/del", Description: "删除statefulset", ApiGroup: "Kubernetes", Method: "DELETE"},
+	{Path: "/api/k8s/statefulset/update", Description: "更新statefulset", ApiGroup: "Kubernetes", Method: "PUT"},
+	{Path: "/api/k8s/statefulset/list", Description: "查询statefulset列表", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/statefulset/detail", Description: "查询statefulset详情", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/node/list", Description: "查询node列表", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/node/detail", Description: "查询node详情", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/namespace/create", Description: "创建namespace", ApiGroup: "Kubernetes", Method: "PUT"},
+	{Path: "/api/k8s/namespace/del", Description: "删除namespace", ApiGroup: "Kubernetes", Method: "DELETE"},
+	{Path: "/api/k8s/namespace/list", Description: "查询namespace列表", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/namespace/detail", Description: "查询namespace详情", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/persistentvolume/del", Description: "删除persistentvolume", ApiGroup: "Kubernetes", Method: "DELETE"},
+	{Path: "/api/k8s/persistentvolume/list", Description: "查询persistentvolume列表", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/persistentvolume/detail", Description: "查询persistentvolume详情", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/service/create", Description: "创建service", ApiGroup: "Kubernetes", Method: "POST"},
+	{Path: "/api/k8s/service/del", Description: "删除service", ApiGroup: "Kubernetes", Method: "DELETE"},
+	{Path: "/api/k8s/service/update", Description: "更新service", ApiGroup: "Kubernetes", Method: "PUT"},
+	{Path: "/api/k8s/service/list", Description: "查询service列表", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/service/detail", Description: "查询service详情", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/service/numnp", Description: "查询service数量信息", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/ingress/create", Description: "创建ingress", ApiGroup: "Kubernetes", Method: "PUT"},
+	{Path: "/api/k8s/ingress/del", Description: "删除ingress", ApiGroup: "Kubernetes", Method: "DELETE"},
+	{Path: "/api/k8s/ingress/update", Description: "更新ingress", ApiGroup: "Kubernetes", Method: "PUT"},
+	{Path: "/api/k8s/ingress/list", Description: "查询ingress列表", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/ingress/detail", Description: "查询ingress详情", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/ingress/numnp", Description: "查询ingress数量信息", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/configmap/del", Description: "删除configmap", ApiGroup: "Kubernetes", Method: "DELETE"},
+	{Path: "/api/k8s/configmap/update", Description: "更新configmap", ApiGroup: "Kubernetes", Method: "PUT"},
+	{Path: "/api/k8s/configmap/list", Description: "查询configmap列表", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/configmap/detail", Description: "查询configmap详情", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/persistentvolumeclaim/del", Description: "删除persistentvolumeclaim", ApiGroup: "Kubernetes", Method: "DELETE"},
+	{Path: "/api/k8s/persistentvolumeclaim/update", Description: "更新persistentvolumeclaim", ApiGroup: "Kubernetes", Method: "PUT"},
+	{Path: "/api/k8s/persistentvolumeclaim/list", Description: "查询persistentvolumeclaim列表", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/persistentvolumeclaim/detail", Description: "查询persistentvolumeclaim详情", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/secret/del", Description: "删除secret", ApiGroup: "Kubernetes", Method: "DELETE"},
+	{Path: "/api/k8s/secret/update", Description: "更新secret", ApiGroup: "Kubernetes", Method: "PUT"},
+	{Path: "/api/k8s/secret/list", Description: "查询secret列表", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/secret/detail", Description: "查询secret详情", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/workflow/create", Description: "创建workflow", ApiGroup: "Kubernetes", Method: "POST"},
+	{Path: "/api/k8s/workflow/del", Description: "删除workflow", ApiGroup: "Kubernetes", Method: "DELETE"},
+	{Path: "/api/k8s/workflow/list", Description: "查询workflow列表", ApiGroup: "Kubernetes", Method: "GET"},
+	{Path: "/api/k8s/workflow/id", Description: "查看workflow", ApiGroup: "Kubernetes", Method: "GET"},
 }

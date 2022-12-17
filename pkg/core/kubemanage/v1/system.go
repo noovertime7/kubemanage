@@ -16,9 +16,14 @@ type SystemInterface interface {
 	sys.CasbinServiceGetter
 	sys.AuthorityGetter
 	sys.OperationServiceGetter
+	sys.APIServiceGetter
 }
 
 var _ SystemInterface = &system{}
+
+func NewSystem(app *KubeManage) SystemInterface {
+	return &system{app: app, factory: app.Factory}
+}
 
 type system struct {
 	app     *KubeManage
@@ -45,6 +50,6 @@ func (s *system) Operation() sys.OperationService {
 	return sys.NewOperationService(s.factory)
 }
 
-func NewSystem(app *KubeManage) SystemInterface {
-	return &system{app: app, factory: app.Factory}
+func (s *system) Api() sys.APIService {
+	return sys.NewApiService(s.factory)
 }
