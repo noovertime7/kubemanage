@@ -94,6 +94,7 @@ var (
 		{MenuLevel: 0, Hidden: false, Disabled: false, ParentId: "5", Path: "authority", Name: "角色管理", Sort: 1, Meta: Meta{Title: "角色管理"}},
 		{MenuLevel: 0, Hidden: false, Disabled: false, ParentId: "5", Path: "user", Name: "用户管理", Sort: 2, Meta: Meta{Title: "用户管理"}},
 		{MenuLevel: 0, Hidden: false, Disabled: false, ParentId: "5", Path: "operation", Name: "操作历史", Sort: 3, Meta: Meta{Title: "操作历史"}},
+		{MenuLevel: 0, Hidden: false, Disabled: false, ParentId: "5", Path: "state", Name: "服务器状态", Sort: 4, Meta: Meta{Title: "服务器状态"}},
 	}
 )
 
@@ -155,6 +156,7 @@ func buildCasbinRule(apis []SysApi) []adapter.CasbinRule {
 var SysApis = []SysApi{
 	// api接口
 	{Path: "/api/sysApi/getAPiList", Description: "获取系统API列表", ApiGroup: "系统", Method: "GET"},
+	{Path: "/api/system/state", Description: "获取系统信息", ApiGroup: "系统", Method: "GET"},
 	// 用户相关接口
 	{Path: "/api/user/login", Description: "用户登录", ApiGroup: "用户", Method: "POST"},
 	{Path: "/api/user/loginout", Description: "用户退出", ApiGroup: "用户", Method: "GET"},

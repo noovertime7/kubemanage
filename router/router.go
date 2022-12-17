@@ -8,6 +8,7 @@ import (
 	"github.com/noovertime7/kubemanage/controller/menu"
 	"github.com/noovertime7/kubemanage/controller/operation"
 	"github.com/noovertime7/kubemanage/controller/other"
+	"github.com/noovertime7/kubemanage/controller/system"
 	"github.com/noovertime7/kubemanage/controller/user"
 	"github.com/noovertime7/kubemanage/middleware"
 )
@@ -24,5 +25,6 @@ func InstallRouters(opt *options.Options) {
 		kubeController.NewKubeRouter(apiGroup)
 		menu.NewMenuRouter(apiGroup)
 		authority.NewCasbinRouter(apiGroup)
+		system.NewSystemController(apiGroup)
 	}
 }
