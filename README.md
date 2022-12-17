@@ -17,7 +17,11 @@
 
 > kubemanage是一个简单易用的K8S管理平台，前端使用vue3，后端使用gin+gorm,对于初学k8s开发的同学来说，是一个很方便练手的项目，也可以作为企业二次开发的模板
 
+技术栈选型当下最主流框架，后端使用Gin+GORM，前端使用vite+pinia+VUE3(v3版本)开发，前后端分离开发模式，使用client-go与K8S交互，使用Casbin与动态路由实现RBAC的权限体系
+
 前端项目地址 https://github.com/noovertime7/kubemanage-web
+
+V3版本前端项目地址(开发中) https://gitee.com/noovertime/kubemanage-web.git
 ## 开始部署
 ### 初始化数据库
 需要手动创建数据库，数据表与数据会通过`DBInitializer`自动初始化
@@ -38,9 +42,9 @@ npm run serve
 ```
 后端
 
-注意：请确保用户名/./kube  文件夹下存在k8s的kubeconfig文件，后面会改成使用crd，容器部署
+注意：请确保用户名/./kube  文件夹下存在k8s的kubeconfig文件，后面重构为多集群注册模式，容器部署,前端使用V3版本，后端请切换到V3分支
 
-开始前请设置配置文件环境变量 KubeManageConfigFile="配置文件位置"，配置文件优先级: 默认配置 < 环境变量< 命令行
+开始前请设置配置文件环境变量`KUBEMANAGE-CONFIG`，或通过命令行参数`configFile`指定，配置文件优先级: 默认配置 < 环境变量< 命令行
 
 ```
 git clone https://github.com/noovertime7/kubemanage.git
@@ -81,7 +85,7 @@ go run cmd/main.go
 PS: 请使用最新版本的swag工具，建议拉取最新代码后自行编译，否则会`swag init`初始化失败
 
 ```shell
-swag init   --pd  -d ./cmd,docs
+swag init --pd -d ./cmd,docs
 ```
 
 成功生成后访问 `http://127.0.0.1:6180/swagger/index.html`
@@ -92,6 +96,10 @@ swag init   --pd  -d ./cmd,docs
 
 操作审计(v3版本)
 ![](./img/operation.png)
+
+接口与菜单的RBAC控制(v3版本)
+![](./img/rbac/api_rbac.png)
+![](./img/rbac/menu_rbac.png)
 
 工作流
 ![工作流](./img/wordflow.jpg?raw=true)
