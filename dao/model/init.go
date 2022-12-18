@@ -3,14 +3,14 @@ package model
 import (
 	"database/sql"
 	adapter "github.com/casbin/gorm-adapter/v3"
-	"github.com/satori/go.uuid"
-
 	"github.com/noovertime7/kubemanage/pkg"
+	"github.com/satori/go.uuid"
 )
 
-// 初始化顺序
+// 初始化顺序 顺序不能乱
 const (
-	SysUserOrder = iota
+	DepartmentOrder = iota
+	SysUserOrder
 	MenuAuthorityOrder
 	SysBaseMenuOrder
 	SysAuthorityOrder
@@ -22,7 +22,7 @@ const (
 
 // SysUserEntities 用户初始化数据
 var (
-	SysUserEntities = []*SysUser{
+	SysUserEntities = []SysUser{
 		{
 			UUID:        uuid.NewV4(),
 			UserName:    "admin",
@@ -122,6 +122,14 @@ var (
 		},
 	}
 )
+
+// DepartmentInitData 部门初始化数据
+var DepartmentInitData = []Department{
+	{ParentId: 0, DeptName: "Kubemanage", Sort: 1, Leader: "", Status: 1},
+
+	{ParentId: 1, DeptName: "研发部", Sort: 1, Leader: "", Status: 1, Users: SysUserEntities[:2]},
+	{ParentId: 1, DeptName: "运维部", Sort: 2, Leader: "", Status: 1, Users: []SysUser{SysUserEntities[2]}},
+}
 
 var CasbinApi = buildCasbinRule(SysApis)
 
