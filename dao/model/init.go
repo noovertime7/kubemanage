@@ -3,8 +3,9 @@ package model
 import (
 	"database/sql"
 	adapter "github.com/casbin/gorm-adapter/v3"
+	"github.com/satori/go.uuid"
+
 	"github.com/noovertime7/kubemanage/pkg"
-	uuid "github.com/satori/go.uuid"
 )
 
 // 初始化顺序
@@ -124,6 +125,26 @@ var (
 
 var CasbinApi = buildCasbinRule(SysApis)
 
+type BasicCasbinInfo struct {
+	Path   string `form:"path"  json:"path"`      // 路径
+	Method string ` form:"method"  json:"method"` // 方法
+}
+
+var BasicApiRule = []BasicCasbinInfo{
+	{Path: "/api/user/login", Method: "POST"},
+	{Path: "/api/user/loginout", Method: "GET"},
+	{Path: "/api/user/getinfo", Method: "GET"},
+	{Path: "/api/user/:id/change_pwd", Method: "POST"},
+}
+
+func (b BasicCasbinInfo) GetPATH() string {
+	return b.Path
+}
+
+func (b BasicCasbinInfo) GetMethod() string {
+	return b.Method
+}
+
 // buildCasbinRule 构建角色casbin api
 func buildCasbinRule(apis []SysApi) []adapter.CasbinRule {
 	var out []adapter.CasbinRule
@@ -178,8 +199,12 @@ var SysApis = []SysApi{
 	{Path: "/api/menu/add_menu_authority", Description: "添加角色", ApiGroup: "菜单", Method: "POST"},
 	// 权限RBAC接口
 	{Path: "/api/authority/getPolicyPathByAuthorityId", Description: "获取角色api权限", ApiGroup: "权限", Method: "GET"},
-	{Path: "/api/authority/updateCasbinByAuthority", Description: "更改角色api权限", ApiGroup: "用户", Method: "POST"},
+	{Path: "/api/authority/updateCasbinByAuthority", Description: "更改角色api权限", ApiGroup: "权限", Method: "POST"},
 	{Path: "/api/authority/getAuthorityList", Description: "获取角色列表", ApiGroup: "权限", Method: "GET"},
+	{Path: "/api/authority/:authID/delAuthority", Description: "删除角色", ApiGroup: "权限", Method: "DELETE"},
+	{Path: "/api/authority/createAuthority", Description: "创建角色", ApiGroup: "权限", Method: "POST"},
+	{Path: "/api/authority/updateAuthority", Description: "修改角色", ApiGroup: "权限", Method: "PUT"},
+
 	// K8S相关接口
 	{Path: "/api/k8s/deployment/create", Description: "创建deployment", ApiGroup: "Kubernetes", Method: "POST"},
 	{Path: "/api/k8s/deployment/del", Description: "删除deployment", ApiGroup: "Kubernetes", Method: "DELETE"},

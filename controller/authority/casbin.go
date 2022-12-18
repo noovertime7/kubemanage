@@ -6,11 +6,12 @@ import (
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/sys"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
 )
 
 // GetPolicyPathByAuthorityId
-// @Tags      Casbin
+// @Tags      Authority
 // @Summary   获取权限列表
 // @Security  ApiKeyAuth
 // @accept    application/json
@@ -29,7 +30,7 @@ func (a *authorityController) GetPolicyPathByAuthorityId(ctx *gin.Context) {
 }
 
 // UpdateCasbinByAuthorityId
-// @Tags      Casbin
+// @Tags      Authority
 // @Summary   通过角色更新接口权限
 // @Security  ApiKeyAuth
 // @accept    application/json
@@ -44,10 +45,18 @@ func (a *authorityController) UpdateCasbinByAuthorityId(ctx *gin.Context) {
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
-	if err := v1.CoreV1.System().CasbinService().UpdateCasbin(params.AuthorityId, params.CasbinInfo); err != nil {
+	if err := v1.CoreV1.System().CasbinService().UpdateCasbin(params.AuthorityId, convertToCasbinRules(params.CasbinInfo)); err != nil {
 		v1.Log.ErrorWithCode(globalError.UpdateError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.UpdateError, err))
 		return
 	}
 	middleware.ResponseSuccess(ctx, "")
+}
+
+func convertToCasbinRules(info []dto.CasbinInfo) []sys.CasbinRule {
+	out := make([]sys.CasbinRule, len(info))
+	for i := range info {
+		out[i] = info[i]
+	}
+	return out
 }
