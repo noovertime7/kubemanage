@@ -5,6 +5,7 @@ import (
 
 	"github.com/noovertime7/kubemanage/dao/api"
 	"github.com/noovertime7/kubemanage/dao/authority"
+	"github.com/noovertime7/kubemanage/dao/dept"
 	"github.com/noovertime7/kubemanage/dao/menu"
 	"github.com/noovertime7/kubemanage/dao/operation"
 	"github.com/noovertime7/kubemanage/dao/user"
@@ -15,6 +16,7 @@ import (
 type ShareDaoFactory interface {
 	GetDB() *gorm.DB
 	WorkFlow() workflow.WorkFlowInterface
+	Department() dept.Department
 	User() user.User
 	Api() api.APi
 	Authority() authority.Authority
@@ -39,6 +41,10 @@ func (s *shareDaoFactory) GetDB() *gorm.DB {
 
 func (s *shareDaoFactory) WorkFlow() workflow.WorkFlowInterface {
 	return workflow.NewWorkFlow(s.db)
+}
+
+func (s *shareDaoFactory) Department() dept.Department {
+	return dept.NewDepartment(s.db)
 }
 
 func (s *shareDaoFactory) User() user.User {
