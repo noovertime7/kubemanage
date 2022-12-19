@@ -4,12 +4,13 @@ import (
 	"database/sql"
 	adapter "github.com/casbin/gorm-adapter/v3"
 	"github.com/noovertime7/kubemanage/pkg"
-	uuid "github.com/satori/go.uuid"
+	"github.com/satori/go.uuid"
 )
 
-// 初始化顺序
+// 初始化顺序 顺序不能乱
 const (
-	SysUserOrder = iota
+	DepartmentOrder = iota
+	SysUserOrder
 	MenuAuthorityOrder
 	SysBaseMenuOrder
 	SysAuthorityOrder
@@ -21,7 +22,7 @@ const (
 
 // SysUserEntities 用户初始化数据
 var (
-	SysUserEntities = []*SysUser{
+	SysUserEntities = []SysUser{
 		{
 			UUID:        uuid.NewV4(),
 			UserName:    "admin",
@@ -94,6 +95,7 @@ var (
 		{MenuLevel: 0, Hidden: false, Disabled: false, ParentId: "5", Path: "authority", Name: "角色管理", Sort: 1, Meta: Meta{Title: "角色管理"}},
 		{MenuLevel: 0, Hidden: false, Disabled: false, ParentId: "5", Path: "user", Name: "用户管理", Sort: 2, Meta: Meta{Title: "用户管理"}},
 		{MenuLevel: 0, Hidden: false, Disabled: false, ParentId: "5", Path: "operation", Name: "操作历史", Sort: 3, Meta: Meta{Title: "操作历史"}},
+		{MenuLevel: 0, Hidden: false, Disabled: false, ParentId: "5", Path: "state", Name: "服务器状态", Sort: 4, Meta: Meta{Title: "服务器状态"}},
 	}
 )
 
@@ -121,7 +123,35 @@ var (
 	}
 )
 
+// DepartmentInitData 部门初始化数据
+var DepartmentInitData = []Department{
+	{ParentId: 0, DeptName: "Kubemanage", Sort: 1, Leader: "", Status: 1},
+
+	{ParentId: 1, DeptName: "研发部", Sort: 1, Leader: "", Status: 1, Users: SysUserEntities[:2]},
+	{ParentId: 1, DeptName: "运维部", Sort: 2, Leader: "", Status: 1, Users: []SysUser{SysUserEntities[2]}},
+}
+
 var CasbinApi = buildCasbinRule(SysApis)
+
+type BasicCasbinInfo struct {
+	Path   string `form:"path"  json:"path"`      // 路径
+	Method string ` form:"method"  json:"method"` // 方法
+}
+
+var BasicApiRule = []BasicCasbinInfo{
+	{Path: "/api/user/login", Method: "POST"},
+	{Path: "/api/user/loginout", Method: "GET"},
+	{Path: "/api/user/getinfo", Method: "GET"},
+	{Path: "/api/user/:id/change_pwd", Method: "POST"},
+}
+
+func (b BasicCasbinInfo) GetPATH() string {
+	return b.Path
+}
+
+func (b BasicCasbinInfo) GetMethod() string {
+	return b.Method
+}
 
 // buildCasbinRule 构建角色casbin api
 func buildCasbinRule(apis []SysApi) []adapter.CasbinRule {
@@ -155,7 +185,7 @@ func buildCasbinRule(apis []SysApi) []adapter.CasbinRule {
 var SysApis = []SysApi{
 	// api接口
 	{Path: "/api/sysApi/getAPiList", Description: "获取系统API列表", ApiGroup: "系统", Method: "GET"},
-
+	{Path: "/api/system/state", Description: "获取系统信息", ApiGroup: "系统", Method: "GET"},
 	// 用户相关接口
 	{Path: "/api/user/login", Description: "用户登录", ApiGroup: "用户", Method: "POST"},
 	{Path: "/api/user/loginout", Description: "用户退出", ApiGroup: "用户", Method: "GET"},
@@ -177,8 +207,12 @@ var SysApis = []SysApi{
 	{Path: "/api/menu/add_menu_authority", Description: "添加角色", ApiGroup: "菜单", Method: "POST"},
 	// 权限RBAC接口
 	{Path: "/api/authority/getPolicyPathByAuthorityId", Description: "获取角色api权限", ApiGroup: "权限", Method: "GET"},
-	{Path: "/api/authority/updateCasbinByAuthority", Description: "更改角色api权限", ApiGroup: "用户", Method: "POST"},
+	{Path: "/api/authority/updateCasbinByAuthority", Description: "更改角色api权限", ApiGroup: "权限", Method: "POST"},
 	{Path: "/api/authority/getAuthorityList", Description: "获取角色列表", ApiGroup: "权限", Method: "GET"},
+	{Path: "/api/authority/:authID/delAuthority", Description: "删除角色", ApiGroup: "权限", Method: "DELETE"},
+	{Path: "/api/authority/createAuthority", Description: "创建角色", ApiGroup: "权限", Method: "POST"},
+	{Path: "/api/authority/updateAuthority", Description: "修改角色", ApiGroup: "权限", Method: "PUT"},
+
 	// K8S相关接口
 	{Path: "/api/k8s/deployment/create", Description: "创建deployment", ApiGroup: "Kubernetes", Method: "POST"},
 	{Path: "/api/k8s/deployment/del", Description: "删除deployment", ApiGroup: "Kubernetes", Method: "DELETE"},

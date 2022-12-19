@@ -2,8 +2,10 @@ package model
 
 import (
 	"context"
-	"github.com/noovertime7/kubemanage/pkg"
+
 	"gorm.io/gorm"
+
+	"github.com/noovertime7/kubemanage/pkg"
 )
 
 func init() {

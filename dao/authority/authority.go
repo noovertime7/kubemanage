@@ -9,11 +9,15 @@ import (
 
 type Authority interface {
 	Find(ctx context.Context, authInfo *model.SysAuthority) (*model.SysAuthority, error)
+	FindAllInfo(ctx context.Context, authInfo *model.SysAuthority) (*model.SysAuthority, error)
 	FindList(ctx context.Context, authInfo *model.SysAuthority) ([]*model.SysAuthority, error)
 	Save(ctx context.Context, authInfo *model.SysAuthority) error
 	Updates(ctx context.Context, authInfo *model.SysAuthority) error
+	Delete(ctx context.Context, authInfo *model.SysAuthority) error
 
 	SetMenuAuthority(ctx context.Context, authInfo *model.SysAuthority) error
+	//DeleteAuthorityMenu 解除权限与菜单的绑定关系
+	DeleteAuthorityMenu(ctx context.Context, authInfo *model.SysAuthority, menus []model.SysBaseMenu) error
 	PageList(ctx context.Context, params dto.PageInfo) ([]model.SysAuthority, int64, error)
 }
 
@@ -23,13 +27,18 @@ type authority struct {
 	db *gorm.DB
 }
 
-func NewAuthority(db *gorm.DB) *authority {
+func NewAuthority(db *gorm.DB) Authority {
 	return &authority{db: db}
 }
 
 func (a *authority) Find(ctx context.Context, authInfo *model.SysAuthority) (*model.SysAuthority, error) {
 	var out *model.SysAuthority
-	return out, a.db.WithContext(ctx).Where(authInfo).Find(out).Error
+	return out, a.db.WithContext(ctx).Where(authInfo).Find(&out).Error
+}
+
+func (a *authority) FindAllInfo(ctx context.Context, authInfo *model.SysAuthority) (*model.SysAuthority, error) {
+	var out *model.SysAuthority
+	return out, a.db.WithContext(ctx).Preload("Users").Preload("SysBaseMenus").Where(authInfo).Find(&out).Error
 }
 
 func (a *authority) FindList(ctx context.Context, authInfo *model.SysAuthority) ([]*model.SysAuthority, error) {
@@ -51,14 +60,22 @@ func (a *authority) PageList(ctx context.Context, params dto.PageInfo) ([]model.
 		return nil, 0, err
 	}
 
-	if err := query.Order("authority_id desc").Limit(limit).Offset(offset).Find(&list).Error; err != nil {
+	if err := query.Order("created_at").Limit(limit).Offset(offset).Find(&list).Error; err != nil {
 		return nil, 0, err
 	}
 	return list, total, nil
 }
 
 func (a *authority) Save(ctx context.Context, authInfo *model.SysAuthority) error {
-	return a.db.WithContext(ctx).Create(authInfo).Error
+	return a.db.WithContext(ctx).Create(&authInfo).Error
+}
+
+func (a *authority) Delete(ctx context.Context, authInfo *model.SysAuthority) error {
+	return a.db.WithContext(ctx).Unscoped().Delete(authInfo).Error
+}
+
+func (a *authority) DeleteAuthorityMenu(ctx context.Context, authInfo *model.SysAuthority, menus []model.SysBaseMenu) error {
+	return a.db.WithContext(ctx).Model(authInfo).Association("SysBaseMenus").Delete(menus)
 }
 
 func (a *authority) Updates(ctx context.Context, authInfo *model.SysAuthority) error {

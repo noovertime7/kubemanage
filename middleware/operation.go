@@ -3,7 +3,6 @@ package middleware
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"io"
 	"net/http"
 	"net/url"
@@ -15,6 +14,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/noovertime7/kubemanage/dao/model"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/logger"
 	"github.com/noovertime7/kubemanage/pkg/utils"
 )
@@ -30,6 +30,10 @@ func init() {
 func OperationRecord() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if AlwaysAllowPath.Has(c.Request.URL.Path) {
+			return
+		}
+		// GET 请求不记录
+		if c.Request.Method == http.MethodGet {
 			return
 		}
 		var (

@@ -1,11 +1,11 @@
 package sys
 
 import (
+	"github.com/casbin/casbin/v2/model"
 	"strconv"
 	"sync"
 
 	"github.com/casbin/casbin/v2"
-	"github.com/casbin/casbin/v2/model"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
 	"github.com/pkg/errors"
 
@@ -18,10 +18,18 @@ type CasbinServiceGetter interface {
 }
 
 type CasbinService interface {
-	UpdateCasbin(AuthorityID uint, casbinInfos []dto.CasbinInfo) error
+	AddCasbin(AuthorityID uint, casbinInfos []CasbinRule) error
+	UpdateCasbin(AuthorityID uint, casbinInfos []CasbinRule) error
+	RemoveCasbinByAuthority(AuthorityID uint) bool
 	UpdateCasbinApi(oldPath string, newPath string, oldMethod string, newMethod string) error
 	GetPolicyPathByAuthorityId(AuthorityID uint) (pathMaps []dto.CasbinInfo)
 	Casbin() *casbin.CachedEnforcer
+}
+
+// CasbinRule 基础接口权限
+type CasbinRule interface {
+	GetPATH() string
+	GetMethod() string
 }
 
 type casbinService struct {
@@ -32,12 +40,21 @@ func NewCasbinService(factory dao.ShareDaoFactory) CasbinService {
 	return &casbinService{factory: factory}
 }
 
-func (c *casbinService) UpdateCasbin(AuthorityID uint, casbinInfos []dto.CasbinInfo) error {
+func (c *casbinService) AddCasbin(AuthorityID uint, casbinInfos []CasbinRule) error {
+	return c.UpdateCasbin(AuthorityID, casbinInfos)
+}
+
+func (c *casbinService) RemoveCasbinByAuthority(AuthorityID uint) bool {
 	authorityId := strconv.Itoa(int(AuthorityID))
-	c.ClearCasbin(0, authorityId)
+	return c.ClearCasbin(0, authorityId)
+}
+
+func (c *casbinService) UpdateCasbin(AuthorityID uint, casbinInfos []CasbinRule) error {
+	// 更新 先删除再添加
+	c.RemoveCasbinByAuthority(AuthorityID)
 	var rules [][]string
 	for _, v := range casbinInfos {
-		rules = append(rules, []string{authorityId, v.Path, v.Method})
+		rules = append(rules, []string{strconv.Itoa(int(AuthorityID)), v.GetPATH(), v.GetMethod()})
 	}
 	e := c.Casbin()
 	success, _ := e.AddPolicies(rules)
@@ -105,7 +122,7 @@ func (c *casbinService) Casbin() *casbin.CachedEnforcer {
 		e = some(where (p.eft == allow))
 		
 		[matchers]
-		m = g(r.sub, p.sub)  && keyMatch2(r.obj, p.obj) && regexMatch(r.act, p.act) || r.sub == "111"
+		m = g(r.sub, p.sub)  && keyMatch2(r.obj, p.obj) && regexMatch(r.act, p.act) 
 		`
 		m, err := model.NewModelFromString(text)
 		if err != nil {
