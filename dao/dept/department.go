@@ -8,6 +8,8 @@ import (
 
 type Department interface {
 	Find(ctx context.Context, in *model.Department) (*model.Department, error)
+	FindList(ctx context.Context, in *model.Department) ([]model.Department, error)
+	FindListWithUsers(ctx context.Context, in *model.Department) (model.Department, error)
 	Save(ctx context.Context, in *model.Department) error
 	Updates(ctx context.Context, in *model.Department) error
 }
@@ -25,6 +27,16 @@ func NewDepartment(db *gorm.DB) Department {
 func (d department) Find(ctx context.Context, in *model.Department) (*model.Department, error) {
 	out := &model.Department{}
 	return out, d.db.WithContext(ctx).Where(in).Find(&out).Error
+}
+
+func (d department) FindList(ctx context.Context, in *model.Department) ([]model.Department, error) {
+	var out []model.Department
+	return out, d.db.WithContext(ctx).Order("sort").Where(in).Find(&out).Error
+}
+
+func (d department) FindListWithUsers(ctx context.Context, in *model.Department) (model.Department, error) {
+	var out model.Department
+	return out, d.db.WithContext(ctx).Preload("SysUsers.Authorities").Order("sort").Where(in).Find(&out).Error
 }
 
 func (d department) Save(ctx context.Context, in *model.Department) error {

@@ -2,9 +2,11 @@ package user
 
 import (
 	"context"
-	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
+
+	"github.com/noovertime7/kubemanage/dao/model"
+	"github.com/noovertime7/kubemanage/runtime"
 )
 
 type User interface {
@@ -12,6 +14,7 @@ type User interface {
 	Save(ctx context.Context, userInfo *model.SysUser) error
 	Updates(ctx context.Context, userInfo *model.SysUser) error
 	Delete(ctx context.Context, userInfo *model.SysUser) error
+	PageList(ctx context.Context, did uint, params runtime.Pager) ([]model.SysUser, int64, error)
 }
 
 var _ User = &user{}
@@ -22,6 +25,28 @@ type user struct {
 
 func NewUser(db *gorm.DB) *user {
 	return &user{db: db}
+}
+
+func (u *user) PageList(ctx context.Context, did uint, params runtime.Pager) ([]model.SysUser, int64, error) {
+	var total int64 = 0
+	limit := params.GetPageSize()
+	offset := limit * (params.GetPage() - 1)
+	query := u.db.WithContext(ctx)
+	var list []model.SysUser
+	query = query.Where("department_id = ? ", did)
+	// 如果有条件搜索 下方会自动创建搜索语句
+	if params.IsFitter() {
+		params.Do(query)
+	}
+
+	if err := query.Find(&list).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if err := query.Preload("Authorities").Order("created_at").Limit(limit).Offset(offset).Find(&list).Error; err != nil {
+		return nil, 0, err
+	}
+	return list, total, nil
 }
 
 func (u *user) Find(ctx context.Context, userInfo *model.SysUser) (*model.SysUser, error) {

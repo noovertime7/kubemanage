@@ -18,6 +18,7 @@ type SystemInterface interface {
 	sys.OperationServiceGetter
 	sys.APIServiceGetter
 	sys.SystemServiceGetter
+	sys.DepartmentServiceGetter
 }
 
 var _ SystemInterface = &system{}
@@ -57,4 +58,8 @@ func (s *system) Api() sys.APIService {
 
 func (s *system) SystemService() sys.SystemService {
 	return sys.NewSystemService()
+}
+
+func (s *system) Department() sys.DepartmentService {
+	return sys.NewDepartmentService(s.factory)
 }

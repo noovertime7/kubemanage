@@ -2,6 +2,7 @@ package dto
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/noovertime7/kubemanage/pkg"
 )
 
@@ -13,6 +14,22 @@ type PageInfo struct {
 	Page     int    `json:"page" form:"page"`         // 页码
 	PageSize int    `json:"pageSize" form:"pageSize"` // 每页大小
 	Keyword  string `json:"keyword" form:"keyword"`   //关键字
+}
+
+func (a PageInfo) GetPage() int {
+	return a.Page
+}
+
+func (a PageInfo) GetPageSize() int {
+	return a.PageSize
+}
+
+func (a PageInfo) IsFitter() bool {
+	return a.Keyword != ""
+}
+
+func (a PageInfo) GetFitter() string {
+	return a.Keyword
 }
 
 type IdsReq struct {

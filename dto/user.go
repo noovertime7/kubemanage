@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/pkg"
+	"gorm.io/gorm"
 )
 
 type AdminLoginInput struct {
@@ -33,6 +34,52 @@ type ChangeUserPwdInput struct {
 // BindingValidParams 绑定并校验参数
 func (a *ChangeUserPwdInput) BindingValidParams(ctx *gin.Context) error {
 	return pkg.DefaultGetValidParams(ctx, a)
+}
+
+type PageUsers struct {
+	Total    int64           `json:"total"`
+	Page     int             `json:"page" form:"page"`         // 页码
+	PageSize int             `json:"pageSize" form:"pageSize"` // 每页大小
+	List     []model.SysUser `json:"list"`
+}
+
+type PageUsersIn struct {
+	Page     int    `json:"page" form:"page"`         // 页码
+	PageSize int    `json:"pageSize" form:"pageSize"` // 每页大小
+	UserName string `json:"userName"`
+	Phone    string `json:"phone"`
+	Status   int    `json:"status"`
+}
+
+func (p PageUsersIn) GetPage() int {
+	return p.Page
+}
+
+func (p PageUsersIn) GetPageSize() int {
+	return p.PageSize
+}
+
+func (p PageUsersIn) IsFitter() bool {
+	if p.UserName != "" || p.Phone != "" || p.Status != 0 {
+		return true
+	}
+	return false
+}
+
+func (p PageUsersIn) Do(tx *gorm.DB) {
+	if p.UserName != "" {
+		tx.Where("user_name = ? ", p.UserName)
+	}
+	if p.Phone != "" {
+		tx.Where("phone = ? ", p.Phone)
+	}
+	if p.Status != 0 {
+		tx.Where("status = ? ", p.Status)
+	}
+}
+
+func (p *PageUsersIn) BindingValidParams(ctx *gin.Context) error {
+	return pkg.DefaultGetValidParams(ctx, p)
 }
 
 // BindingValidParams 绑定并校验参数

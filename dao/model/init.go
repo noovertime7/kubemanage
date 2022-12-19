@@ -126,10 +126,10 @@ var (
 // DepartmentInitData 部门初始化数据
 var DepartmentInitData = []Department{
 	// 顶层部门
-	{ParentId: 0, DeptName: "Kubemanage", Sort: 1, Leader: "", Status: 1},
+	{ParentId: "0", DeptName: "Kubemanage", Sort: 1, Leader: "", Status: 1},
 	// 子部门
-	{ParentId: 1, DeptName: "研发部", Sort: 1, Leader: "", Status: 1},
-	{ParentId: 1, DeptName: "运维部", Sort: 2, Leader: "", Status: 1},
+	{ParentId: "1", DeptName: "研发部", Sort: 1, Leader: "", Status: 1},
+	{ParentId: "1", DeptName: "运维部", Sort: 2, Leader: "", Status: 1},
 }
 
 var CasbinApi = buildCasbinRule(SysApis)
@@ -195,6 +195,9 @@ var SysApis = []SysApi{
 	{Path: "/api/user/:id/delete_user", Description: "删除用户", ApiGroup: "用户", Method: "DELETE"},
 	{Path: "/api/user/:id/change_pwd", Description: "修改密码", ApiGroup: "用户", Method: "POST"},
 	{Path: "/api/user/:id/reset_pwd", Description: "重置密码", ApiGroup: "用户", Method: "PUT"},
+	{Path: "/api/user/deptTree", Description: "获取部门组织树", ApiGroup: "用户", Method: "GET"},
+	{Path: "/api/user/:id/deptUsers", Description: "获取部门用户树", ApiGroup: "用户", Method: "GET"},
+	{Path: "/api/user/:id/getPage", Description: "获取部门用户列表", ApiGroup: "用户", Method: "POST"},
 	// 操作审计接口
 	{Path: "/api/operation/get_operations", Description: "查询操作记录列表", ApiGroup: "操作审计", Method: "GET"},
 	{Path: "/api/operation/:id/delete_operation", Description: "删除单条记录", ApiGroup: "操作审计", Method: "DELETE"},

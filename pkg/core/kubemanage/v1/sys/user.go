@@ -23,6 +23,8 @@ type UserService interface {
 	DeleteUser(ctx *gin.Context, uid int) error
 	ChangePassword(ctx *gin.Context, uid int, info *dto.ChangeUserPwdInput) error
 	ResetPassword(ctx *gin.Context, uid int) error
+
+	PageList(ctx *gin.Context, did uint, info dto.PageUsersIn) (dto.PageUsers, error)
 }
 
 type userService struct {
@@ -127,4 +129,17 @@ func (u *userService) ResetPassword(ctx *gin.Context, uid int) error {
 	}
 	user := &model.SysUser{ID: uid, Password: newPwd}
 	return u.factory.User().Updates(ctx, user)
+}
+
+func (u *userService) PageList(ctx *gin.Context, did uint, info dto.PageUsersIn) (dto.PageUsers, error) {
+	users, total, err := u.factory.User().PageList(ctx, did, info)
+	if err != nil {
+		return dto.PageUsers{}, err
+	}
+	return dto.PageUsers{
+		Total:    total,
+		Page:     info.Page,
+		PageSize: info.PageSize,
+		List:     users,
+	}, nil
 }

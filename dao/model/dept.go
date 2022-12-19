@@ -12,8 +12,8 @@ func init() {
 // TODO 是否删除多余字段
 
 type Department struct {
-	DeptId   int          `json:"deptId" gorm:"primaryKey;autoIncrement;"` //部门编码
-	ParentId int          `json:"parentId" gorm:""`                        //上级部门
+	DeptId   uint         `json:"deptId" gorm:"primaryKey;autoIncrement;"` //部门编码
+	ParentId string       `json:"parentId" gorm:"size:10"`                 //上级部门
 	DeptName string       `json:"deptName"  gorm:"size:128;"`              //部门名称
 	Sort     int          `json:"sort" gorm:"size:4;"`                     //排序
 	Leader   string       `json:"leader" gorm:"size:128;"`                 //负责人

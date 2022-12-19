@@ -185,6 +185,7 @@ func (u *userController) ResetPassword(ctx *gin.Context) {
 	if err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
+		return
 	}
 	if err := v1.CoreV1.System().User().ResetPassword(ctx, uid); err != nil {
 		v1.Log.ErrorWithCode(globalError.ServerError, err)
@@ -192,4 +193,25 @@ func (u *userController) ResetPassword(ctx *gin.Context) {
 		return
 	}
 	middleware.ResponseSuccess(ctx, "操作成功")
+}
+
+func (u *userController) PageUsers(ctx *gin.Context) {
+	did, err := utils.ParseUint(ctx.Param("id"))
+	if err != nil {
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
+	}
+	params := &dto.PageUsersIn{}
+	if err := params.BindingValidParams(ctx); err != nil {
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
+		return
+	}
+	data, err := v1.CoreV1.System().User().PageList(ctx, did, *params)
+	if err != nil {
+		v1.Log.ErrorWithCode(globalError.GetError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
+		return
+	}
+	middleware.ResponseSuccess(ctx, data)
 }
