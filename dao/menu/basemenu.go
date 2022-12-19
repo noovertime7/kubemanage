@@ -2,8 +2,10 @@ package menu
 
 import (
 	"context"
-	"github.com/noovertime7/kubemanage/dao/model"
+
 	"gorm.io/gorm"
+
+	"github.com/noovertime7/kubemanage/dao/model"
 )
 
 type BaseMenu interface {

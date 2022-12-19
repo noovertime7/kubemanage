@@ -33,7 +33,7 @@ type userService struct {
 	factory dao.ShareDaoFactory
 }
 
-func NewUserService(factory dao.ShareDaoFactory) *userService {
+func NewUserService(factory dao.ShareDaoFactory) UserService {
 	return &userService{
 		factory: factory,
 		Menu:    NewMenuService(factory),
@@ -136,10 +136,30 @@ func (u *userService) PageList(ctx *gin.Context, did uint, info dto.PageUsersIn)
 	if err != nil {
 		return dto.PageUsers{}, err
 	}
+	var out []dto.PageUserItem
+	for _, user := range users {
+		dept, err := u.factory.Department().Find(ctx, &model.Department{DeptId: user.DepartmentID})
+		if err != nil {
+			return dto.PageUsers{}, err
+		}
+		outItem := dto.PageUserItem{
+			ID:             user.ID,
+			DepartmentID:   user.DepartmentID,
+			DepartmentName: dept.DeptName,
+			UserName:       user.UserName,
+			NickName:       user.NickName,
+			Authorities:    user.Authorities,
+			Phone:          user.Phone,
+			Email:          user.Email,
+			Enable:         user.Enable,
+			Status:         user.Status.Int64,
+		}
+		out = append(out, outItem)
+	}
 	return dto.PageUsers{
 		Total:    total,
 		Page:     info.Page,
 		PageSize: info.PageSize,
-		List:     users,
+		List:     out,
 	}, nil
 }

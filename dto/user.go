@@ -37,10 +37,23 @@ func (a *ChangeUserPwdInput) BindingValidParams(ctx *gin.Context) error {
 }
 
 type PageUsers struct {
-	Total    int64           `json:"total"`
-	Page     int             `json:"page" form:"page"`         // 页码
-	PageSize int             `json:"pageSize" form:"pageSize"` // 每页大小
-	List     []model.SysUser `json:"list"`
+	Total    int64          `json:"total"`
+	Page     int            `json:"page" form:"page"`         // 页码
+	PageSize int            `json:"pageSize" form:"pageSize"` // 每页大小
+	List     []PageUserItem `json:"list"`
+}
+
+type PageUserItem struct {
+	ID             int                  `json:"id"`
+	DepartmentID   uint                 `json:"departmentId" `
+	DepartmentName string               `json:"departmentName"`
+	UserName       string               `json:"userName"`  // 用户登录名 	// 用户登录密码
+	NickName       string               `json:"nickName" ` // 用户昵称
+	Authorities    []model.SysAuthority `json:"authorities"`
+	Phone          string               `json:"phone" `  // 用户手机号
+	Email          string               `json:"email"`   // 用户邮箱
+	Enable         int                  `json:"enable" ` //用户是否被冻结 1正常 2冻结
+	Status         int64                `json:"status"`
 }
 
 type PageUsersIn struct {

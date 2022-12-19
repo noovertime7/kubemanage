@@ -10,7 +10,7 @@ import (
 type SysUser struct {
 	ID           int            `gorm:"column:id;primary_key;AUTO_INCREMENT;not null" json:"id"`
 	UUID         uuid.UUID      `json:"uuid" gorm:"index;comment:用户UUID"` // 用户UUID
-	DepartmentID int            `json:"DeptId" gorm:"index;comment:部门ID"`
+	DepartmentID uint           `json:"DeptId" gorm:"index;comment:部门ID"`
 	UserName     string         `json:"userName" gorm:"index;comment:用户登录名"`                                               // 用户登录名
 	Password     string         `json:"-"  gorm:"comment:用户登录密码"`                                                          // 用户登录密码
 	NickName     string         `json:"nickName" gorm:"default:系统用户;comment:用户昵称"`                                         // 用户昵称
