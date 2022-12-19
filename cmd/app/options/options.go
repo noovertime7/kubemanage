@@ -68,8 +68,14 @@ func (o *Options) Complete() error {
 }
 
 func (o *Options) InitDB() error {
-	initDbService := source.NewInitDBService(o.DB)
-	return initDbService.InitDB()
+	txDB := o.DB.Begin()
+	initDbService := source.NewInitDBService(txDB)
+	if err := initDbService.InitDB(); err != nil {
+		txDB.Rollback()
+		return err
+	}
+	txDB.Commit()
+	return nil
 }
 
 func (o *Options) register() error {

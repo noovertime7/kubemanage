@@ -9,11 +9,11 @@ import (
 
 // 初始化顺序 顺序不能乱
 const (
-	DepartmentOrder = iota
-	SysUserOrder
+	SysUserOrder = iota
+	DepartmentOrder
+	SysAuthorityOrder
 	MenuAuthorityOrder
 	SysBaseMenuOrder
-	SysAuthorityOrder
 	SysApisInitOrder
 	CasbinInitOrder
 	OperatorationOrder
@@ -125,10 +125,11 @@ var (
 
 // DepartmentInitData 部门初始化数据
 var DepartmentInitData = []Department{
+	// 顶层部门
 	{ParentId: 0, DeptName: "Kubemanage", Sort: 1, Leader: "", Status: 1},
-
-	{ParentId: 1, DeptName: "研发部", Sort: 1, Leader: "", Status: 1, Users: SysUserEntities[:2]},
-	{ParentId: 1, DeptName: "运维部", Sort: 2, Leader: "", Status: 1, Users: []SysUser{SysUserEntities[2]}},
+	// 子部门
+	{ParentId: 1, DeptName: "研发部", Sort: 1, Leader: "", Status: 1},
+	{ParentId: 1, DeptName: "运维部", Sort: 2, Leader: "", Status: 1},
 }
 
 var CasbinApi = buildCasbinRule(SysApis)

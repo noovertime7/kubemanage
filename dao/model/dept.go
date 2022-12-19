@@ -19,7 +19,7 @@ type Department struct {
 	Leader   string       `json:"leader" gorm:"size:128;"`                 //负责人
 	Status   int          `json:"status" gorm:"size:4;"`                   //状态
 	Children []Department `json:"children" gorm:"-"`
-	Users    []SysUser    `json:"users" gorm:"foreignKey:DeptId;references:DeptId"`
+	SysUsers []SysUser    `json:"users"`
 	CommonModel
 }
 
@@ -28,7 +28,28 @@ func (d *Department) MigrateTable(ctx context.Context, db *gorm.DB) error {
 }
 
 func (d *Department) InitData(ctx context.Context, db *gorm.DB) error {
-	return db.WithContext(ctx).Create(DepartmentInitData).Error
+	var (
+		ok        bool
+		err       error
+		adminUser = SysUserEntities[0]
+		user      = SysUserEntities[1]
+	)
+	ok, err = d.IsInitData(ctx, db)
+	if err != nil || ok {
+		return err
+	}
+	if err = db.WithContext(ctx).Create(DepartmentInitData).Error; err != nil {
+		return err
+	}
+	// 更改用户所属部门
+	if err = db.Exec("update sys_users set department_id = ? where user_name = ?", 1, adminUser.UserName).Error; err != nil {
+		return err
+	}
+	if err = db.Exec("update sys_users set department_id = ? where user_name = ?", 2, user.UserName).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (d *Department) IsInitData(ctx context.Context, db *gorm.DB) (bool, error) {
