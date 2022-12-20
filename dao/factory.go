@@ -79,15 +79,21 @@ type Transactioner interface {
 	Rollback()
 }
 
+// 存放之前的db实例，一定要传递引用，否则开启事务后，oldTx会被修改掉
+var oldTx gorm.DB
+
 func (s *shareDaoFactory) Begin(opts ...*sql.TxOptions) {
+	oldTx = *s.db
 	tx := s.db.Begin(opts...)
 	*s.db = *tx
 }
 
 func (s *shareDaoFactory) Commit() {
 	s.db.Commit()
+	*s.db = oldTx
 }
 
 func (s *shareDaoFactory) Rollback() {
 	s.db.Rollback()
+	*s.db = oldTx
 }
