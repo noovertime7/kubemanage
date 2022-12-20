@@ -67,6 +67,20 @@ func (u *userService) Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (st
 		return "", errors.New("密码错误,请重新输入")
 	}
 
+	// 登录成功 修改登录状态
+	user.Status = sql.NullInt64{
+		Int64: 1,
+		Valid: true,
+	}
+
+	u.factory.Begin()
+	defer u.factory.Commit()
+
+	if err := u.factory.User().Updates(ctx, user); err != nil {
+		u.factory.Rollback()
+		return "", err
+	}
+
 	token, err := pkg.JWTToken.GenerateToken(pkg.BaseClaims{
 		UUID:        user.UUID,
 		ID:          user.ID,
@@ -75,13 +89,14 @@ func (u *userService) Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (st
 		AuthorityId: user.AuthorityId,
 	})
 	if err != nil {
+		u.factory.Rollback()
 		return "", err
 	}
 	return token, nil
 }
 
 func (u *userService) LoginOut(ctx *gin.Context, uid int) error {
-	user := &model.SysUser{ID: uid, Status: sql.NullInt64{Int64: 0, Valid: true}}
+	user := &model.SysUser{ID: uid, Status: sql.NullInt64{Int64: 2, Valid: true}}
 	return u.factory.User().Updates(ctx, user)
 }
 

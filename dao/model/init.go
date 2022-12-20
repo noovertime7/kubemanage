@@ -51,7 +51,7 @@ var (
 			Phone:       "12345678901",
 			Email:       "test@qq.com",
 			Enable:      1,
-			Status:      sql.NullInt64{Int64: 0, Valid: true},
+			Status:      sql.NullInt64{Int64: 2, Valid: true},
 		},
 		{
 			UUID:        uuid.NewV4(),
@@ -66,7 +66,7 @@ var (
 			Phone:       "12345678901",
 			Email:       "test@qq.com",
 			Enable:      1,
-			Status:      sql.NullInt64{Int64: 0, Valid: true},
+			Status:      sql.NullInt64{Int64: 2, Valid: true},
 		},
 	}
 )
