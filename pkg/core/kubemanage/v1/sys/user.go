@@ -5,12 +5,13 @@ import (
 
 	"database/sql"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
+	"github.com/satori/go.uuid"
 
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/pkg"
-	"github.com/pkg/errors"
 )
 
 const (
@@ -28,6 +29,7 @@ type UserService interface {
 	Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (string, error)
 	LoginOut(ctx *gin.Context, uid int) error
 	GetUserInfo(ctx *gin.Context, uid int, aid uint) (*dto.UserInfoOut, error)
+	RegisterUser(ctx *gin.Context, userInfo dto.RegisterUserInput) error
 	SetUserAuth(ctx *gin.Context, uid int, aid uint) error
 	LockUser(ctx *gin.Context, uid int, action string) error
 	DeleteUser(ctx *gin.Context, uid int) error
@@ -205,4 +207,50 @@ func (u *userService) PageList(ctx *gin.Context, did uint, info dto.PageUsersIn)
 		PageSize: info.PageSize,
 		List:     out,
 	}, nil
+}
+
+func (u *userService) RegisterUser(ctx *gin.Context, userInfo dto.RegisterUserInput) error {
+	// 查询用户名是否存在
+	tempUser, err := u.factory.User().Find(ctx, &model.SysUser{UserName: userInfo.UserName})
+	if err != nil {
+		return err
+	}
+	if tempUser.ID != 0 {
+		return fmt.Errorf("%s已注册", userInfo.UserName)
+	}
+	// 添加用户
+	u.factory.Begin()
+	defer u.factory.Commit()
+	// TODO 需要选择部门
+	user := &model.SysUser{
+		UUID:         uuid.NewV4(),
+		DepartmentID: 1,
+		UserName:     userInfo.UserName,
+		Password:     userInfo.Password,
+		NickName:     userInfo.NickName,
+		SideMode:     "dark",
+		Avatar:       "https://qmplusimg.henrongyi.top/gva_header.jpg",
+		BaseColor:    "#fff",
+		ActiveColor:  "#1890ff",
+		AuthorityId:  userInfo.AuthorityId,
+		Phone:        userInfo.Phone,
+		Email:        userInfo.Email,
+		Enable:       userInfo.Enable,
+		Status:       sql.NullInt64{Int64: 2, Valid: true},
+	}
+	if err := u.factory.User().Save(ctx, user); err != nil {
+		u.factory.Rollback()
+		return err
+	}
+	// 设置用户权限
+	var auths []model.SysAuthority
+	for _, aid := range userInfo.Authorities {
+		auth := model.SysAuthority{AuthorityId: aid}
+		auths = append(auths, auth)
+	}
+	if err := u.factory.User().ReplaceAuthorities(ctx, user, auths); err != nil {
+		u.factory.Rollback()
+		return err
+	}
+	return nil
 }

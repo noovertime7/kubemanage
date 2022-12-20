@@ -2,9 +2,10 @@ package dto
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/pkg"
-	"gorm.io/gorm"
 )
 
 type AdminLoginInput struct {
@@ -14,6 +15,22 @@ type AdminLoginInput struct {
 
 type AdminLoginOut struct {
 	Token string `form:"token" json:"token" comment:"token"  example:"token"`
+}
+
+type RegisterUserInput struct {
+	UserName    string `json:"userName" validate:"required" comment:"用户名"`       // 用户登录名
+	Password    string `json:"password"  validate:"required" comment:"密码"`       // 用户登录密码
+	NickName    string `json:"nickName" validate:"required" comment:"昵称"`        // 用户昵称 	// 活跃颜色
+	AuthorityId uint   `json:"authorityId" validate:"required" comment:"用户权限ID"` // 用户角色ID
+	Authorities []uint `json:"authorityIds"`
+	Phone       string `json:"phone" `  // 用户手机号
+	Email       string `json:"email"  ` // 用户邮箱
+	Enable      int    `json:"enable" ` //用户是否被冻结 1正常 2冻结
+}
+
+// BindingValidParams 绑定并校验参数
+func (a *RegisterUserInput) BindingValidParams(ctx *gin.Context) error {
+	return pkg.DefaultGetValidParams(ctx, a)
 }
 
 type UserInfoOut struct {

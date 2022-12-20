@@ -12,6 +12,21 @@ import (
 	"github.com/noovertime7/kubemanage/pkg/utils"
 )
 
+func (u *userController) RegisterUser(ctx *gin.Context) {
+	params := dto.RegisterUserInput{}
+	if err := params.BindingValidParams(ctx); err != nil {
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
+		return
+	}
+	if err := v1.CoreV1.System().User().RegisterUser(ctx, params); err != nil {
+		v1.Log.ErrorWithCode(globalError.CreateError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.CreateError, err))
+		return
+	}
+	middleware.ResponseSuccess(ctx, "")
+}
+
 // Login godoc
 // @Summary 管理员登录
 // @Description 管理员登录

@@ -13,6 +13,7 @@ func (u *userController) initRoutes(ginEngine *gin.RouterGroup) {
 	userRoute := ginEngine.Group("/user")
 	user := &userController{}
 	{
+		userRoute.POST("/register", user.RegisterUser)
 		userRoute.POST("/login", user.Login)
 		userRoute.GET("/loginout", user.LoginOut)
 		userRoute.GET("/getinfo", user.GetUserInfo)

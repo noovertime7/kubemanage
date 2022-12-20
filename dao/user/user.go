@@ -15,6 +15,7 @@ type User interface {
 	Updates(ctx context.Context, userInfo *model.SysUser) error
 	Delete(ctx context.Context, userInfo *model.SysUser) error
 	PageList(ctx context.Context, did uint, params runtime.Pager) ([]model.SysUser, int64, error)
+	ReplaceAuthorities(ctx context.Context, userInfo *model.SysUser, auths []model.SysAuthority) error
 }
 
 var _ User = &user{}
@@ -62,6 +63,11 @@ func (u *user) Find(ctx context.Context, userInfo *model.SysUser) (*model.SysUse
 
 func (u *user) Save(ctx context.Context, userInfo *model.SysUser) error {
 	return u.db.WithContext(ctx).Save(userInfo).Error
+}
+
+// ReplaceAuthorities 给用户增加权限
+func (u *user) ReplaceAuthorities(ctx context.Context, userInfo *model.SysUser, auths []model.SysAuthority) error {
+	return u.db.WithContext(ctx).Model(&userInfo).Association("Authorities").Replace(&auths)
 }
 
 func (u *user) Updates(ctx context.Context, userInfo *model.SysUser) error {
