@@ -195,6 +195,29 @@ func (u *userController) ResetPassword(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, "操作成功")
 }
 
+// LockUser
+// @Tags      SysUser
+// @Summary   锁定用户
+// @Security  ApiKeyAuth
+// @Produce  application/json
+// @Success   200   {object}  middleware.Response{msg=string}  "锁定用户"
+// @Router    /api/user/{id}/{action}/lockUser [put]
+func (u *userController) LockUser(ctx *gin.Context) {
+	uid, err := utils.ParseInt(ctx.Param("id"))
+	if err != nil {
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
+		return
+	}
+	action := ctx.Param("action")
+	if err := v1.CoreV1.System().User().LockUser(ctx, uid, action); err != nil {
+		v1.Log.ErrorWithCode(globalError.ServerError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ServerError, err))
+		return
+	}
+	middleware.ResponseSuccess(ctx, "操作成功")
+}
+
 func (u *userController) PageUsers(ctx *gin.Context) {
 	did, err := utils.ParseUint(ctx.Param("id"))
 	if err != nil {

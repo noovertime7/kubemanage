@@ -1,6 +1,8 @@
 package sys
 
 import (
+	"fmt"
+
 	"database/sql"
 	"github.com/gin-gonic/gin"
 
@@ -9,6 +11,13 @@ import (
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/pkg"
 	"github.com/pkg/errors"
+)
+
+const (
+	activeUserID = 1
+	lockUserID   = 2
+	lockAction   = "lock"
+	unlockAction = "unlock"
 )
 
 type UserServiceGetter interface {
@@ -20,6 +29,7 @@ type UserService interface {
 	LoginOut(ctx *gin.Context, uid int) error
 	GetUserInfo(ctx *gin.Context, uid int, aid uint) (*dto.UserInfoOut, error)
 	SetUserAuth(ctx *gin.Context, uid int, aid uint) error
+	LockUser(ctx *gin.Context, uid int, action string) error
 	DeleteUser(ctx *gin.Context, uid int) error
 	ChangePassword(ctx *gin.Context, uid int, info *dto.ChangeUserPwdInput) error
 	ResetPassword(ctx *gin.Context, uid int) error
@@ -47,6 +57,10 @@ func (u *userService) Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (st
 	user, err := u.factory.User().Find(ctx, &model.SysUser{UserName: userInfo.UserName})
 	if err != nil {
 		return "", err
+	}
+
+	if user.Enable == lockUserID {
+		return "", errors.New("用户已被锁定")
 	}
 
 	if !pkg.CheckPassword(userInfo.Password, user.Password) {
@@ -101,6 +115,20 @@ func (u *userService) SetUserAuth(ctx *gin.Context, uid int, aid uint) error {
 func (u *userService) DeleteUser(ctx *gin.Context, uid int) error {
 	user := &model.SysUser{ID: uid}
 	return u.factory.User().Delete(ctx, user)
+}
+
+// LockUser 锁定或解锁定用户
+func (u *userService) LockUser(ctx *gin.Context, uid int, action string) error {
+	switch action {
+	case lockAction:
+		user := &model.SysUser{ID: uid, Enable: lockUserID}
+		return u.factory.User().Updates(ctx, user)
+	case unlockAction:
+		user := &model.SysUser{ID: uid, Enable: activeUserID}
+		return u.factory.User().Updates(ctx, user)
+	default:
+		return fmt.Errorf("expect action %s or %s ,but got %s ", lockAction, unlockAction, action)
+	}
 }
 
 func (u *userService) ChangePassword(ctx *gin.Context, uid int, info *dto.ChangeUserPwdInput) error {
