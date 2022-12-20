@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"database/sql"
 	"gorm.io/gorm"
 
 	"github.com/noovertime7/kubemanage/dao/api"
@@ -23,6 +24,7 @@ type ShareDaoFactory interface {
 	AuthorityMenu() authority.AuthorityMenu
 	BaseMenu() menu.BaseMenu
 	Opera() operation.Operation
+	Transactioner
 }
 
 func NewShareDaoFactory(db *gorm.DB) ShareDaoFactory {
@@ -69,4 +71,23 @@ func (s *shareDaoFactory) BaseMenu() menu.BaseMenu {
 
 func (s *shareDaoFactory) Opera() operation.Operation {
 	return operation.NewOperation(s.db)
+}
+
+type Transactioner interface {
+	Begin(opts ...*sql.TxOptions)
+	Commit()
+	Rollback()
+}
+
+func (s *shareDaoFactory) Begin(opts ...*sql.TxOptions) {
+	tx := s.db.Begin(opts...)
+	*s.db = *tx
+}
+
+func (s *shareDaoFactory) Commit() {
+	s.db.Commit()
+}
+
+func (s *shareDaoFactory) Rollback() {
+	s.db.Rollback()
 }
