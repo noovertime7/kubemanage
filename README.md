@@ -101,7 +101,10 @@ swag init --pd -d ./cmd,docs
 ![](./img/rbac/api_rbac.png)
 ![](./img/rbac/menu_rbac.png)
 
-服务状态
+用户管理(v3版本)
+![](./img/user.png)
+
+服务状态(v3版本)
 ![](./img/system_state.png)
 
 工作流
