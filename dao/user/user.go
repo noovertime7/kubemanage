@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"github.com/pkg/errors"
 	"gorm.io/gorm"
 
 	"github.com/noovertime7/kubemanage/dao/model"
@@ -15,7 +14,10 @@ type User interface {
 	Updates(ctx context.Context, userInfo *model.SysUser) error
 	Delete(ctx context.Context, userInfo *model.SysUser) error
 	PageList(ctx context.Context, did uint, params runtime.Pager) ([]model.SysUser, int64, error)
+	// ReplaceAuthorities  绑定用户与角色
 	ReplaceAuthorities(ctx context.Context, userInfo *model.SysUser, auths []model.SysAuthority) error
+	// RemoveAuthorities  移除用户与角色
+	RemoveAuthorities(ctx context.Context, userInfo *model.SysUser, auths []model.SysAuthority) error
 }
 
 var _ User = &user{}
@@ -70,10 +72,11 @@ func (u *user) ReplaceAuthorities(ctx context.Context, userInfo *model.SysUser, 
 	return u.db.WithContext(ctx).Model(&userInfo).Association("Authorities").Replace(&auths)
 }
 
+func (u *user) RemoveAuthorities(ctx context.Context, userInfo *model.SysUser, auths []model.SysAuthority) error {
+	return u.db.WithContext(ctx).Model(&userInfo).Association("Authorities").Delete(&auths)
+}
+
 func (u *user) Updates(ctx context.Context, userInfo *model.SysUser) error {
-	if userInfo.ID == 0 {
-		return errors.New("id not set")
-	}
 	return u.db.WithContext(ctx).Updates(userInfo).Error
 }
 

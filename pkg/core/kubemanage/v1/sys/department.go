@@ -2,6 +2,8 @@ package sys
 
 import (
 	"context"
+	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/dto"
 	"strconv"
 
 	"github.com/noovertime7/kubemanage/dao"
@@ -15,6 +17,7 @@ type DepartmentServiceGetter interface {
 type DepartmentService interface {
 	GetDepartmentTree(ctx context.Context) ([]model.Department, error)
 	GetDeptUsers(ctx context.Context, did uint) ([]model.SysUser, error)
+	PageList(ctx *gin.Context, info dto.PageListDeptInput) (dto.PageListDeptOut, error)
 }
 
 type departmentService struct {
@@ -23,6 +26,17 @@ type departmentService struct {
 
 func NewDepartmentService(factory dao.ShareDaoFactory) DepartmentService {
 	return &departmentService{factory: factory}
+}
+
+func (d *departmentService) PageList(ctx *gin.Context, info dto.PageListDeptInput) (dto.PageListDeptOut, error) {
+	list, total, err := d.factory.Department().PageList(ctx, &info)
+	if err != nil {
+		return dto.PageListDeptOut{}, err
+	}
+	return dto.PageListDeptOut{
+		Total: total,
+		List:  list,
+	}, err
 }
 
 func (d *departmentService) GetDeptUsers(ctx context.Context, did uint) ([]model.SysUser, error) {

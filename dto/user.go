@@ -17,19 +17,20 @@ type AdminLoginOut struct {
 	Token string `form:"token" json:"token" comment:"token"  example:"token"`
 }
 
-type RegisterUserInput struct {
-	UserName    string `json:"userName" validate:"required" comment:"用户名"`       // 用户登录名
-	Password    string `json:"password"  validate:"required" comment:"密码"`       // 用户登录密码
-	NickName    string `json:"nickName" validate:"required" comment:"昵称"`        // 用户昵称 	// 活跃颜色
-	AuthorityId uint   `json:"authorityId" validate:"required" comment:"用户权限ID"` // 用户角色ID
-	Authorities []uint `json:"authorityIds"`
-	Phone       string `json:"phone" `  // 用户手机号
-	Email       string `json:"email"  ` // 用户邮箱
-	Enable      int    `json:"enable" ` //用户是否被冻结 1正常 2冻结
+type UserInfoInput struct {
+	UserName     string `json:"userName" validate:"required" comment:"用户名"` // 用户登录名
+	Password     string `json:"password"  validate:"" comment:"密码"`         // 用户登录密码
+	NickName     string `json:"nickName" validate:"required" comment:"昵称"`  // 用户昵称 	// 活跃颜色
+	DepartmentID uint   `json:"departmentId"  validate:"required"  comment:"部门ID"`
+	AuthorityId  uint   `json:"authorityId" validate:"required" comment:"用户权限ID"` // 用户角色ID
+	Authorities  []uint `json:"authorityIds"`
+	Phone        string `json:"phone" `  // 用户手机号
+	Email        string `json:"email"  ` // 用户邮箱
+	Enable       int    `json:"enable" ` //用户是否被冻结 1正常 2冻结
 }
 
 // BindingValidParams 绑定并校验参数
-func (a *RegisterUserInput) BindingValidParams(ctx *gin.Context) error {
+func (a *UserInfoInput) BindingValidParams(ctx *gin.Context) error {
 	return pkg.DefaultGetValidParams(ctx, a)
 }
 
@@ -39,8 +40,8 @@ type UserInfoOut struct {
 	RuleNames []string        `json:"ruleNames"`
 }
 
-type SetUserAuth struct {
-	AuthorityId uint `json:"authorityId"` // 角色ID
+type SetUserAuthoritiesInput struct {
+	Authorities []uint `json:"authorityIds"`
 }
 
 type ChangeUserPwdInput struct {
@@ -113,7 +114,7 @@ func (p *PageUsersIn) BindingValidParams(ctx *gin.Context) error {
 }
 
 // BindingValidParams 绑定并校验参数
-func (a *SetUserAuth) BindingValidParams(ctx *gin.Context) error {
+func (a *SetUserAuthoritiesInput) BindingValidParams(ctx *gin.Context) error {
 	return pkg.DefaultGetValidParams(ctx, a)
 }
 

@@ -29,8 +29,9 @@ type UserService interface {
 	Login(ctx *gin.Context, userInfo *dto.AdminLoginInput) (string, error)
 	LoginOut(ctx *gin.Context, uid int) error
 	GetUserInfo(ctx *gin.Context, uid int, aid uint) (*dto.UserInfoOut, error)
-	RegisterUser(ctx *gin.Context, userInfo dto.RegisterUserInput) error
-	SetUserAuth(ctx *gin.Context, uid int, aid uint) error
+	RegisterUser(ctx *gin.Context, userInfo dto.UserInfoInput) error
+	SetUserAuth(ctx *gin.Context, uid int, auths []uint) error
+	UpdateUser(ctx *gin.Context, userInfo dto.UserInfoInput) error
 	LockUser(ctx *gin.Context, uid int, action string) error
 	DeleteUser(ctx *gin.Context, uid int) error
 	ChangePassword(ctx *gin.Context, uid int, info *dto.ChangeUserPwdInput) error
@@ -124,14 +125,32 @@ func (u *userService) GetUserInfo(ctx *gin.Context, uid int, aid uint) (*dto.Use
 	}, nil
 }
 
-func (u *userService) SetUserAuth(ctx *gin.Context, uid int, aid uint) error {
-	user := &model.SysUser{ID: uid, AuthorityId: aid}
-	return u.factory.User().Updates(ctx, user)
+// SetUserAuth 绑定用户角色
+func (u *userService) SetUserAuth(ctx *gin.Context, uid int, auths []uint) error {
+	var authorities []model.SysAuthority
+	for _, aid := range auths {
+		auth := model.SysAuthority{AuthorityId: aid}
+		authorities = append(authorities, auth)
+	}
+	user := &model.SysUser{ID: uid}
+	return u.factory.User().ReplaceAuthorities(ctx, user, authorities)
 }
 
 func (u *userService) DeleteUser(ctx *gin.Context, uid int) error {
-	user := &model.SysUser{ID: uid}
-	return u.factory.User().Delete(ctx, user)
+	userInfo := &model.SysUser{ID: uid}
+	user, err := u.factory.User().Find(ctx, userInfo)
+	if err != nil {
+		return err
+	}
+	// 清理角色菜单绑定关系
+	if err := u.factory.User().RemoveAuthorities(ctx, user, user.Authorities); err != nil {
+		return err
+	}
+
+	if err := u.factory.User().Delete(ctx, userInfo); err != nil {
+		return err
+	}
+	return nil
 }
 
 // LockUser 锁定或解锁定用户
@@ -194,8 +213,8 @@ func (u *userService) PageList(ctx *gin.Context, did uint, info dto.PageUsersIn)
 			UserName:       user.UserName,
 			NickName:       user.NickName,
 			Authorities:    user.Authorities,
-			Phone:          user.Phone,
-			Email:          user.Email,
+			Phone:          user.Phone.String,
+			Email:          user.Email.String,
 			Enable:         user.Enable,
 			Status:         user.Status.Int64,
 		}
@@ -209,7 +228,7 @@ func (u *userService) PageList(ctx *gin.Context, did uint, info dto.PageUsersIn)
 	}, nil
 }
 
-func (u *userService) RegisterUser(ctx *gin.Context, userInfo dto.RegisterUserInput) error {
+func (u *userService) RegisterUser(ctx *gin.Context, userInfo dto.UserInfoInput) error {
 	// 查询用户名是否存在
 	tempUser, err := u.factory.User().Find(ctx, &model.SysUser{UserName: userInfo.UserName})
 	if err != nil {
@@ -219,27 +238,27 @@ func (u *userService) RegisterUser(ctx *gin.Context, userInfo dto.RegisterUserIn
 		return fmt.Errorf("%s已注册", userInfo.UserName)
 	}
 	// 添加用户
-	u.factory.Begin()
-	defer u.factory.Commit()
-	// TODO 需要选择部门
+	encryptPwd, err := pkg.GenSaltPassword(userInfo.Password)
+	if err != nil {
+		return err
+	}
 	user := &model.SysUser{
 		UUID:         uuid.NewV4(),
-		DepartmentID: 1,
+		DepartmentID: userInfo.DepartmentID,
 		UserName:     userInfo.UserName,
-		Password:     userInfo.Password,
+		Password:     encryptPwd,
 		NickName:     userInfo.NickName,
 		SideMode:     "dark",
 		Avatar:       "https://qmplusimg.henrongyi.top/gva_header.jpg",
 		BaseColor:    "#fff",
 		ActiveColor:  "#1890ff",
 		AuthorityId:  userInfo.AuthorityId,
-		Phone:        userInfo.Phone,
-		Email:        userInfo.Email,
+		Phone:        sql.NullString{String: userInfo.Phone, Valid: true},
+		Email:        sql.NullString{String: userInfo.Email, Valid: true},
 		Enable:       userInfo.Enable,
 		Status:       sql.NullInt64{Int64: 2, Valid: true},
 	}
 	if err := u.factory.User().Save(ctx, user); err != nil {
-		u.factory.Rollback()
 		return err
 	}
 	// 设置用户权限
@@ -248,9 +267,32 @@ func (u *userService) RegisterUser(ctx *gin.Context, userInfo dto.RegisterUserIn
 		auth := model.SysAuthority{AuthorityId: aid}
 		auths = append(auths, auth)
 	}
-	if err := u.factory.User().ReplaceAuthorities(ctx, user, auths); err != nil {
-		u.factory.Rollback()
+	return u.factory.User().ReplaceAuthorities(ctx, user, auths)
+}
+
+// UpdateUser 更新用户信息
+func (u *userService) UpdateUser(ctx *gin.Context, userInfo dto.UserInfoInput) error {
+	// 查询用户名是否存在
+	tempUser, err := u.factory.User().Find(ctx, &model.SysUser{UserName: userInfo.UserName})
+	if err != nil {
 		return err
 	}
-	return nil
+	user := &model.SysUser{
+		ID:           tempUser.ID,
+		DepartmentID: userInfo.DepartmentID,
+		NickName:     userInfo.NickName,
+		Phone:        sql.NullString{String: userInfo.Phone, Valid: true},
+		Email:        sql.NullString{String: userInfo.Email, Valid: true},
+		Enable:       userInfo.Enable,
+	}
+	if err := u.factory.User().Updates(ctx, user); err != nil {
+		return err
+	}
+	// 设置用户权限
+	var auths []model.SysAuthority
+	for _, aid := range userInfo.Authorities {
+		auth := model.SysAuthority{AuthorityId: aid}
+		auths = append(auths, auth)
+	}
+	return u.factory.User().ReplaceAuthorities(ctx, user, auths)
 }
