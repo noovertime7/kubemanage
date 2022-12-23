@@ -34,6 +34,7 @@ type UserService interface {
 	UpdateUser(ctx *gin.Context, userInfo dto.UserInfoInput) error
 	LockUser(ctx *gin.Context, uid int, action string) error
 	DeleteUser(ctx *gin.Context, uid int) error
+	DeleteUsers(ctx *gin.Context, uids []int) error
 	ChangePassword(ctx *gin.Context, uid int, info *dto.ChangeUserPwdInput) error
 	ResetPassword(ctx *gin.Context, uid int) error
 
@@ -149,6 +150,15 @@ func (u *userService) DeleteUser(ctx *gin.Context, uid int) error {
 
 	if err := u.factory.User().Delete(ctx, userInfo); err != nil {
 		return err
+	}
+	return nil
+}
+
+func (u *userService) DeleteUsers(ctx *gin.Context, uids []int) error {
+	for _, uid := range uids {
+		if err := u.DeleteUser(ctx, uid); err != nil {
+			return err
+		}
 	}
 	return nil
 }

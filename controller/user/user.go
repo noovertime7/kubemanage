@@ -170,6 +170,30 @@ func (u *userController) DeleteUser(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, "操作成功")
 }
 
+// DeleteUsers
+// @Tags      SysUser
+// @Summary   删除用户
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param polygon body dto.IdsReq true "body"
+// @Success   200   {object}  middleware.Response{msg=string}  "删除用户"
+// @Router    /api/user/delete_users [post]
+func (u *userController) DeleteUsers(ctx *gin.Context) {
+	params := &dto.IdsReq{}
+	if err := params.BindingValidParams(ctx); err != nil {
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
+		return
+	}
+	if err := v1.CoreV1.System().User().DeleteUsers(ctx, params.Ids); err != nil {
+		v1.Log.ErrorWithCode(globalError.DeleteError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
+		return
+	}
+	middleware.ResponseSuccess(ctx, "操作成功")
+}
+
 // ChangePassword
 // @Tags      SysUser
 // @Summary   用户修改密码

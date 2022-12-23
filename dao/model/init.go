@@ -195,6 +195,7 @@ var SysApis = []SysApi{
 	{Path: "/api/user/getinfo", Description: "获取用户信息", ApiGroup: "用户", Method: "GET"},
 	{Path: "/api/user/:id/set_auth", Description: "设置用户权限", ApiGroup: "用户", Method: "POST"},
 	{Path: "/api/user/:id/delete_user", Description: "删除用户", ApiGroup: "用户", Method: "DELETE"},
+	{Path: "/api/user/delete_users", Description: "批量删除用户", ApiGroup: "用户", Method: "POST"},
 	{Path: "/api/user/:id/change_pwd", Description: "修改密码", ApiGroup: "用户", Method: "POST"},
 	{Path: "/api/user/:id/reset_pwd", Description: "重置密码", ApiGroup: "用户", Method: "PUT"},
 	{Path: "/api/user/:id/:action/lockUser", Description: "更改用户锁定状态", ApiGroup: "用户", Method: "PUT"},
