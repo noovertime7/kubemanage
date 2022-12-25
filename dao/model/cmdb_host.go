@@ -10,15 +10,16 @@ func init() {
 }
 
 type cmdbHost struct {
-	Id           uint `gorm:"column:id;primary_key;AUTO_INCREMENT;not null" json:"id"`
-	Address      string
-	Port         string
-	HostUserName string
-	HostPassword string
-	PrivateKey   string
-	SecretID     uint
-	Status       uint
-	AuthProxys   []cmdbAuthProxy `json:"authProxys" gorm:"many2many:cmdb_proxy_host;"`
+	Id              uint `gorm:"column:id;primary_key;AUTO_INCREMENT;not null" json:"id"`
+	Address         string
+	Port            string
+	HostUserName    string
+	HostPassword    string
+	PrivateKey      string
+	SecretID        uint
+	Status          uint
+	CmdbHostGroupID uint
+	AuthProxys      []cmdbAuthProxy `json:"authProxys" gorm:"many2many:cmdb_proxy_host;"`
 	CommonModel
 }
 

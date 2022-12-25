@@ -288,3 +288,9 @@ var SysApis = []SysApi{
 	{Path: "/api/k8s/workflow/list", Description: "查询workflow列表", ApiGroup: "Kubernetes", Method: "GET"},
 	{Path: "/api/k8s/workflow/id", Description: "查看workflow", ApiGroup: "Kubernetes", Method: "GET"},
 }
+
+// CMDBHostGroupInitData 初始化主机组
+var CMDBHostGroupInitData = []cmdbHostGroup{
+	{ParentId: "0", GroupName: "Default", Sort: 1},
+	{ParentId: "1", GroupName: "DefaultSub", Sort: 1},
+}
