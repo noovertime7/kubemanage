@@ -13,10 +13,6 @@ func JWTAuth() gin.HandlerFunc {
 			return
 		}
 
-		if len(context.Request.URL.String()) == 15 && context.Request.URL.String()[0:15] == "/api/user/login" {
-			context.Next()
-			return
-		}
 		// 处理验证逻辑
 		claims, err := utils.GetClaims(context)
 		if err != nil {

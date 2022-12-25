@@ -2,9 +2,10 @@ package pkg
 
 import (
 	"errors"
-	jwt "github.com/dgrijalva/jwt-go"
-	uuid "github.com/satori/go.uuid"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/satori/go.uuid"
 )
 
 var JWTToken jwtToken
