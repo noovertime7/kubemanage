@@ -18,6 +18,7 @@ const (
 	CasbinInitOrder
 	OperatorationOrder
 	WorkFlowOrder
+	CMDBInitOrder
 )
 
 // SysUserEntities 用户初始化数据
