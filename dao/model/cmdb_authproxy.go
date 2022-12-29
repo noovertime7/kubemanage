@@ -9,34 +9,36 @@ import (
 )
 
 func init() {
-	RegisterInitializer(CMDBInitOrder, &cmdbAuthProxy{})
+	RegisterInitializer(CMDBInitOrder, &CMDBAuthProxy{})
 }
 
-type cmdbAuthProxy struct {
-	Id        uint `gorm:"column:id;primary_key;AUTO_INCREMENT;not null" json:"id"`
-	UserUUID  uuid.UUID
-	Hosts     []cmdbHost `json:"hosts" gorm:"many2many:cmdb_proxy_host;"`
-	StartTime time.Time
-	EndTime   time.Time
+type CMDBAuthProxy struct {
+	Id         uint      `gorm:"column:id;primary_key;AUTO_INCREMENT;not null" json:"id"`
+	InstanceID int64     `json:"instanceID" gorm:"index;column:instanceID;comment:唯一id"`
+	UserUUID   uuid.UUID `json:"userUUID" gorm:"column:userUUID;comment:用户UUID"`
+	UserName   string    `json:"userName" gorm:"column:userName;comment:用户名"`
+	StartTime  time.Time `json:"startTime" gorm:"column:startTime;comment:开始时间"`
+	EndTime    time.Time `json:"endTime" gorm:"column:endTime;comment:截止时间"`
+	Hosts      []CMDBHost
 	CommonModel
 }
 
-func (c *cmdbAuthProxy) TableName() string {
+func (c *CMDBAuthProxy) TableName() string {
 	return "cmdb_auth_proxy"
 }
 
-func (c *cmdbAuthProxy) MigrateTable(ctx context.Context, db *gorm.DB) error {
+func (c *CMDBAuthProxy) MigrateTable(ctx context.Context, db *gorm.DB) error {
 	return db.WithContext(ctx).AutoMigrate(&c)
 }
 
-func (c *cmdbAuthProxy) InitData(ctx context.Context, db *gorm.DB) error {
+func (c *CMDBAuthProxy) InitData(ctx context.Context, db *gorm.DB) error {
 	return nil
 }
 
-func (c *cmdbAuthProxy) IsInitData(ctx context.Context, db *gorm.DB) (bool, error) {
+func (c *CMDBAuthProxy) IsInitData(ctx context.Context, db *gorm.DB) (bool, error) {
 	return false, nil
 }
 
-func (c *cmdbAuthProxy) TableCreated(ctx context.Context, db *gorm.DB) bool {
+func (c *CMDBAuthProxy) TableCreated(ctx context.Context, db *gorm.DB) bool {
 	return db.WithContext(ctx).Migrator().HasTable(&c)
 }

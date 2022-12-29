@@ -4,6 +4,7 @@ import (
 	"github.com/noovertime7/kubemanage/cmd/app/options"
 	"github.com/noovertime7/kubemanage/controller/api"
 	"github.com/noovertime7/kubemanage/controller/authority"
+	"github.com/noovertime7/kubemanage/controller/cmdb"
 	"github.com/noovertime7/kubemanage/controller/kubeController"
 	"github.com/noovertime7/kubemanage/controller/menu"
 	"github.com/noovertime7/kubemanage/controller/operation"
@@ -16,7 +17,6 @@ import (
 func InstallRouters(opt *options.Options) {
 	apiGroup := opt.GinEngine.Group("/api")
 	middleware.InstallMiddlewares(apiGroup)
-	//安装不需要操作记录路由
 	{
 		api.NewApiRouter(apiGroup)
 		operation.NewOperationRouter(apiGroup)
@@ -26,5 +26,9 @@ func InstallRouters(opt *options.Options) {
 		menu.NewMenuRouter(apiGroup)
 		authority.NewCasbinRouter(apiGroup)
 		system.NewSystemController(apiGroup)
+	}
+	{
+		// cmdb相关
+		cmdb.NewCMDBRouter(apiGroup)
 	}
 }

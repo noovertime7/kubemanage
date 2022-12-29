@@ -10,6 +10,7 @@ type CoreService interface {
 	WorkFlowServiceGetter
 	CloudGetter
 	SystemGetter
+	CMDBGetter
 }
 
 func New(cfg *config.Config, factory dao.ShareDaoFactory) CoreService {
@@ -38,4 +39,8 @@ func (c *KubeManage) Cloud() CloudInterface {
 
 func (c *KubeManage) System() SystemInterface {
 	return NewSystem(c)
+}
+
+func (c *KubeManage) CMDB() CMDBService {
+	return NewCMDBService(c.Factory)
 }

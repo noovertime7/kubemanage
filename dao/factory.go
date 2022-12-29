@@ -6,6 +6,7 @@ import (
 
 	"github.com/noovertime7/kubemanage/dao/api"
 	"github.com/noovertime7/kubemanage/dao/authority"
+	"github.com/noovertime7/kubemanage/dao/cmdb"
 	"github.com/noovertime7/kubemanage/dao/dept"
 	"github.com/noovertime7/kubemanage/dao/menu"
 	"github.com/noovertime7/kubemanage/dao/operation"
@@ -24,6 +25,7 @@ type ShareDaoFactory interface {
 	AuthorityMenu() authority.AuthorityMenu
 	BaseMenu() menu.BaseMenu
 	Opera() operation.Operation
+	CMDB() cmdb.CMDBFactory
 	Transactioner
 }
 
@@ -71,6 +73,10 @@ func (s *shareDaoFactory) BaseMenu() menu.BaseMenu {
 
 func (s *shareDaoFactory) Opera() operation.Operation {
 	return operation.NewOperation(s.db)
+}
+
+func (s *shareDaoFactory) CMDB() cmdb.CMDBFactory {
+	return cmdb.NewCMDBFactory(s.db)
 }
 
 type Transactioner interface {
