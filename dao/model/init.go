@@ -2,9 +2,12 @@ package model
 
 import (
 	"database/sql"
+
 	adapter "github.com/casbin/gorm-adapter/v3"
-	"github.com/noovertime7/kubemanage/pkg"
 	"github.com/satori/go.uuid"
+
+	"github.com/noovertime7/kubemanage/pkg"
+	"github.com/noovertime7/kubemanage/pkg/utils"
 )
 
 // 初始化顺序 顺序不能乱
@@ -225,6 +228,8 @@ var SysApis = []SysApi{
 	{Path: "/api/authority/createAuthority", Description: "创建角色", ApiGroup: "权限", Method: "POST"},
 	{Path: "/api/authority/updateAuthority", Description: "修改角色", ApiGroup: "权限", Method: "PUT"},
 
+	// CMDB相关接口
+	{Path: "/api/cmdb/getHostGroupTree", Description: "获取主机组树", ApiGroup: "资产管理", Method: "GET"},
 	// K8S相关接口
 	{Path: "/api/k8s/deployment/create", Description: "创建deployment", ApiGroup: "Kubernetes", Method: "POST"},
 	{Path: "/api/k8s/deployment/del", Description: "删除deployment", ApiGroup: "Kubernetes", Method: "DELETE"},
@@ -290,7 +295,10 @@ var SysApis = []SysApi{
 }
 
 // CMDBHostGroupInitData 初始化主机组
-var CMDBHostGroupInitData = []cmdbHostGroup{
-	{ParentId: "0", GroupName: "Default", Sort: 1},
-	{ParentId: "1", GroupName: "DefaultSub", Sort: 1},
+var CMDBHostGroupInitData = []CMDBHostGroup{
+	{ParentId: "0", InstanceID: utils.GetSnowflakeID(), GroupName: "Kubemanage", Sort: 1},
+
+	{ParentId: "1", InstanceID: utils.GetSnowflakeID(), GroupName: "研发环境", Sort: 1},
+	{ParentId: "1", InstanceID: utils.GetSnowflakeID(), GroupName: "测试环境", Sort: 2},
+	{ParentId: "1", InstanceID: utils.GetSnowflakeID(), GroupName: "生产环境", Sort: 3},
 }
