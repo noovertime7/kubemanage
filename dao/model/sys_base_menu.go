@@ -8,7 +8,7 @@ import (
 
 type SysBaseMenu struct {
 	ID            int                                        `gorm:"column:id;primary_key;AUTO_INCREMENT;not null" json:"id"`
-	MenuLevel     uint                                       `json:"-"`
+	MenuLevel     uint                                       `json:"menuLevel"`
 	ParentId      string                                     `json:"parentId" gorm:"comment:父菜单ID"`    // 父菜单ID
 	Path          string                                     `json:"path" gorm:"comment:路由path"`       // 路由path
 	Name          string                                     `json:"name" gorm:"comment:路由name"`       // 路由name
