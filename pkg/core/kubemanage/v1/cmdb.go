@@ -11,6 +11,7 @@ type CMDBGetter interface {
 
 type CMDBService interface {
 	HostGroup() cmdb.HostGroupService
+	Host() cmdb.HostService
 }
 
 type cmdbService struct {
@@ -19,6 +20,10 @@ type cmdbService struct {
 
 func (c *cmdbService) HostGroup() cmdb.HostGroupService {
 	return cmdb.NewHostGroupService(c.factory)
+}
+
+func (c *cmdbService) Host() cmdb.HostService {
+	return cmdb.NewHostService(c.factory)
 }
 
 func NewCMDBService(factory dao.ShareDaoFactory) CMDBService {
