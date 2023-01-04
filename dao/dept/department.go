@@ -54,7 +54,7 @@ func (d *department) PageList(ctx context.Context, params runtime.Pager) ([]mode
 	var total int64 = 0
 	limit := params.GetPageSize()
 	offset := limit * (params.GetPage() - 1)
-	query := d.db.WithContext(ctx)
+	query := d.db.WithContext(ctx).Where("")
 	var list []model.Department
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if params.IsFitter() {
