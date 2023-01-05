@@ -13,7 +13,7 @@ type HostI interface {
 	Save(ctx context.Context, search *model.CMDBHost) error
 	Updates(ctx context.Context, search *model.CMDBHost) error
 	Find(ctx context.Context, search model.CMDBHost) (model.CMDBHost, error)
-	FindList(ctx context.Context, search model.CMDBHost) ([]*model.CMDBHost, error)
+	FindList(ctx context.Context, search model.CMDBHost) ([]model.CMDBHost, error)
 	Delete(ctx context.Context, search model.CMDBHost, isDelete bool) error
 
 	PageList(ctx context.Context, params runtime.Pager) ([]model.CMDBHost, int64, error)
@@ -42,8 +42,8 @@ func (h *host) Find(ctx context.Context, search model.CMDBHost) (model.CMDBHost,
 	return out, h.db.WithContext(ctx).Where(&search).Find(&out).Error
 }
 
-func (h *host) FindList(ctx context.Context, search model.CMDBHost) ([]*model.CMDBHost, error) {
-	var out []*model.CMDBHost
+func (h *host) FindList(ctx context.Context, search model.CMDBHost) ([]model.CMDBHost, error) {
+	var out []model.CMDBHost
 	return out, h.db.WithContext(ctx).Where(&search).Find(&out).Error
 }
 
@@ -69,7 +69,7 @@ func (h *host) PageList(ctx context.Context, params runtime.Pager) ([]model.CMDB
 		return nil, 0, err
 	}
 
-	if err := query.Order("sort").Limit(limit).Offset(offset).Find(&list).Error; err != nil {
+	if err := query.Order("id desc").Limit(limit).Offset(offset).Find(&list).Error; err != nil {
 		return nil, 0, err
 	}
 
