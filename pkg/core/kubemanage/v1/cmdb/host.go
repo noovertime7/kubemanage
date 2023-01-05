@@ -3,27 +3,30 @@ package cmdb
 import (
 	"context"
 	"fmt"
-	"github.com/noovertime7/kubemanage/pkg/utils"
 
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/dto"
+	"github.com/noovertime7/kubemanage/pkg/utils"
 	"github.com/noovertime7/kubemanage/runtime"
+	"github.com/noovertime7/kubemanage/runtime/queue"
 )
 
 type HostService interface {
 	CreateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error
 	UpdateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error
 	PageHost(ctx context.Context, pager runtime.Pager) (dto.PageCMDBHostOut, error)
-	DeleteHost(ctx context.Context, instanceID int64) error
-	DeleteHosts(ctx context.Context, instanceIDs []int) error
+	DeleteHost(ctx context.Context, instanceID string) error
+	DeleteHosts(ctx context.Context, instanceIDs []string) error
+	StartHostCheck()
 }
 
-func NewHostService(factory dao.ShareDaoFactory) HostService {
-	return &hostService{factory: factory}
+func NewHostService(factory dao.ShareDaoFactory, q queue.Queue) HostService {
+	return &hostService{factory: factory, queue: q}
 }
 
 type hostService struct {
+	queue   queue.Queue
 	factory dao.ShareDaoFactory
 }
 
@@ -74,15 +77,35 @@ func (h *hostService) PageHost(ctx context.Context, pager runtime.Pager) (dto.Pa
 	return dto.PageCMDBHostOut{Total: total, List: list}, nil
 }
 
-func (h *hostService) DeleteHost(ctx context.Context, instanceID int64) error {
+func (h *hostService) DeleteHost(ctx context.Context, instanceID string) error {
 	return h.factory.CMDB().Host().Delete(ctx, model.CMDBHost{InstanceID: instanceID}, false)
 }
 
-func (h *hostService) DeleteHosts(ctx context.Context, instanceIDs []int) error {
+func (h *hostService) DeleteHosts(ctx context.Context, instanceIDs []string) error {
 	for _, ins := range instanceIDs {
-		if err := h.DeleteHost(ctx, int64(ins)); err != nil {
+		if err := h.DeleteHost(ctx, ins); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func (h *hostService) GetHostList(ctx context.Context, search model.CMDBHost) ([]model.CMDBHost, error) {
+	data, err := h.factory.CMDB().Host().FindList(ctx, search)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+// StartHostCheck 从数据库中不断查询放到queue中 提供给queue检测
+func (h *hostService) StartHostCheck() {
+	// TODO 考虑是否处理error
+	hosts, _ := h.GetHostList(context.TODO(), model.CMDBHost{})
+	for _, host := range hosts {
+		if h.queue.IsClosed() {
+			return
+		}
+		h.queue.Push(&queue.Event{Type: "AddHOST", Data: host})
+	}
 }
