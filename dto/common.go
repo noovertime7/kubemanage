@@ -32,6 +32,10 @@ func (a PageInfo) GetFitter() string {
 	return a.Keyword
 }
 
+func (a *PageInfo) BindingValidParams(ctx *gin.Context) error {
+	return pkg.DefaultGetValidParams(ctx, a)
+}
+
 type IdsReq struct {
 	Ids []int `json:"ids" form:"ids"`
 }
@@ -41,6 +45,10 @@ func (a *IdsReq) BindingValidParams(ctx *gin.Context) error {
 	return pkg.DefaultGetValidParams(ctx, a)
 }
 
-func (a *PageInfo) BindingValidParams(ctx *gin.Context) error {
+type InstancesReq struct {
+	Ids []string `json:"ids" form:"ids"`
+}
+
+func (a *InstancesReq) BindingValidParams(ctx *gin.Context) error {
 	return pkg.DefaultGetValidParams(ctx, a)
 }
