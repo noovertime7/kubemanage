@@ -7,7 +7,6 @@ import (
 	"github.com/noovertime7/kubemanage/middleware"
 	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
-	"github.com/noovertime7/kubemanage/pkg/utils"
 )
 
 func (c *cmdbController) CreateHost(ctx *gin.Context) {
@@ -57,11 +56,7 @@ func (c *cmdbController) PageHost(ctx *gin.Context) {
 }
 
 func (c *cmdbController) DeleteHost(ctx *gin.Context) {
-	instanceid, err := utils.ParseInt64(ctx.Param("instanceid"))
-	if err != nil {
-		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
-		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
-	}
+	instanceid := ctx.Param("instanceid")
 	if err := v1.CoreV1.CMDB().Host().DeleteHost(ctx, instanceid); err != nil {
 		v1.Log.ErrorWithCode(globalError.DeleteError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
@@ -71,7 +66,7 @@ func (c *cmdbController) DeleteHost(ctx *gin.Context) {
 }
 
 func (c *cmdbController) DeleteHosts(ctx *gin.Context) {
-	params := &dto.IdsReq{}
+	params := &dto.InstancesReq{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))

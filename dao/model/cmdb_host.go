@@ -13,9 +13,9 @@ func init() {
 type CMDBHost struct {
 	Id              uint   `gorm:"column:id;primary_key;AUTO_INCREMENT;not null" json:"id"`
 	Name            string `json:"name" gorm:"index;column:name;comment:主机名"`
-	InstanceID      int64  `json:"instanceID" gorm:"unique;not null;index;column:instanceID;comment:唯一id"`
+	InstanceID      string `json:"instanceID" gorm:"unique;not null;index;column:instanceID;comment:唯一id"`
 	Address         string `json:"address" gorm:"column:address;comment:主机地址"`
-	Port            string `json:"port" gorm:"column:port;comment:主机端口"`
+	Port            uint   `json:"port" gorm:"column:port;comment:主机端口"`
 	HostUserName    string `json:"hostUserName" gorm:"column:hostUserName;comment:主机用户名"`
 	HostPassword    string `json:"hostPassword" gorm:"column:hostPassword;comment:主机密码"`
 	PrivateKey      string `json:"privateKey" gorm:"column:privateKey;comment:主机私钥"`

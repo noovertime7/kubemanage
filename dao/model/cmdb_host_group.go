@@ -13,7 +13,7 @@ func init() {
 
 type CMDBHostGroup struct {
 	Id         uint            `gorm:"column:id;primary_key;AUTO_INCREMENT;not null" json:"id"`
-	InstanceID int64           `json:"instanceID" gorm:"unique;not null;index;column:instanceID;comment:唯一id"`
+	InstanceID string          `json:"instanceID" gorm:"unique;not null;index;column:instanceID;comment:唯一id"`
 	ParentId   string          `json:"parentId" gorm:"size:10;comment:主机组父ID"` //上层主机组
 	GroupName  string          `json:"groupName" gorm:"index;column:groupName;comment:主机组名称"`
 	Sort       int             `json:"sort" gorm:"size:4;"` //排序

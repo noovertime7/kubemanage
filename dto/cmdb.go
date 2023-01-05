@@ -8,9 +8,9 @@ import (
 )
 
 type CMDBHostCreateInput struct {
-	InstanceID      int64  `json:"instanceID" `
+	InstanceID      string `json:"instanceID" `
 	Address         string `json:"address" validate:"required" `
-	Port            string `json:"port" validate:"required"`
+	Port            uint   `json:"port" validate:"required"`
 	HostUserName    string `json:"hostUserName" `
 	HostPassword    string `json:"hostPassword" `
 	PrivateKey      string `json:"privateKey" `
