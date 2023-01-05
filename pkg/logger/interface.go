@@ -16,36 +16,38 @@ type Logger interface {
 	ErrorWithErr(msg string, err error)
 }
 
-func New() Logger {
-	return logger{}
+func New(l *zap.Logger) Logger {
+	return &logger{lg: l}
 }
 
-type logger struct{}
-
-func (logger) Info(msg interface{}) {
-	LG.Sugar().Info(msg)
+type logger struct {
+	lg *zap.Logger
 }
 
-func (logger) Infof(template string, args ...interface{}) {
-	LG.Sugar().Infof(template, args)
-}
-func (logger) Warn(msg interface{}) {
-	LG.Sugar().Warn(msg)
+func (l *logger) Info(msg interface{}) {
+	l.lg.Sugar().Info(msg)
 }
 
-func (logger) Warnf(template string, args ...interface{}) {
-	LG.Sugar().Warnf(template, args)
+func (l *logger) Infof(template string, args ...interface{}) {
+	l.lg.Sugar().Infof(template, args)
+}
+func (l *logger) Warn(msg interface{}) {
+	l.lg.Sugar().Warn(msg)
 }
 
-func (logger) ErrorWithCode(code int, err error) {
+func (l *logger) Warnf(template string, args ...interface{}) {
+	l.lg.Sugar().Warnf(template, args)
+}
+
+func (l *logger) ErrorWithCode(code int, err error) {
 	msg := globalError.GetErrorMsg(code)
-	LG.Error(msg, zap.Error(err))
+	l.lg.Error(msg, zap.Error(err))
 }
 
-func (logger) Error(msg interface{}) {
-	LG.Sugar().Error(msg)
+func (l *logger) Error(msg interface{}) {
+	l.lg.Sugar().Error(msg)
 }
 
-func (logger) ErrorWithErr(msg string, err error) {
-	LG.Error(msg, zap.Error(err))
+func (l *logger) ErrorWithErr(msg string, err error) {
+	l.lg.Error(msg, zap.Error(err))
 }

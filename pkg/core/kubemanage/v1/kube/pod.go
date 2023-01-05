@@ -37,7 +37,7 @@ func NewPods(c *kubernetes.Clientset, cloud string, factory dao.ShareDaoFactory)
 }
 
 func (c *pods) WebShellHandler(webShellOptions *kubeDto.WebShellOptions, w http.ResponseWriter, r *http.Request) error {
-	log := logger.New()
+	log := logger.New(logger.LG)
 	session, err := types.NewTerminalSession(w, r)
 	if err != nil {
 		return err

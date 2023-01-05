@@ -43,7 +43,7 @@ func (k *k8s) Init() error {
 	if err != nil {
 		return err
 	}
-	log := logger.New()
+	log := logger.New(logger.LG)
 	log.Info("获取k8s clientSet 成功")
 	k.ClientSet = clientSet
 	k.Config = config
