@@ -5,6 +5,7 @@ import "gorm.io/gorm"
 type CMDBFactory interface {
 	Host() HostI
 	HostGroup() HostGroup
+	Secret() SecretI
 }
 
 func NewCMDBFactory(db *gorm.DB) CMDBFactory {
@@ -21,4 +22,8 @@ func (c *cmdbFactory) Host() HostI {
 
 func (c *cmdbFactory) HostGroup() HostGroup {
 	return NewHostGroup(c.db)
+}
+
+func (c *cmdbFactory) Secret() SecretI {
+	return NewSecretI(c.db)
 }
