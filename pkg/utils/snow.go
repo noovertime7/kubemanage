@@ -1,6 +1,9 @@
 package utils
 
-import "time"
+import (
+	"strconv"
+	"time"
+)
 
 var (
 	machineID     int64 //机器id
@@ -18,7 +21,12 @@ func SetMachineID(mid int64) {
 	machineID = mid << 12
 }
 
-func GetSnowflakeID() int64 {
+func GetSnowflakeID() string {
+	res := getSnowflakeID()
+	return strconv.Itoa(int(res))
+}
+
+func getSnowflakeID() int64 {
 	// 单位为毫秒
 	curTimeStamp := time.Now().UnixNano() / 1e6
 	if curTimeStamp == lastTimeStamp {
