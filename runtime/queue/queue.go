@@ -2,6 +2,7 @@ package queue
 
 import (
 	"fmt"
+	"sync"
 )
 
 // Queue integrates all data events to one seqential queue
@@ -29,7 +30,9 @@ func NewQueue() Queue {
 
 // channelQueue default queue using channel
 type channelQueue struct {
+	lock   sync.RWMutex
 	localQ chan *Event
+	closed bool
 }
 
 // Push specified event to local queue
@@ -71,19 +74,18 @@ func (cq *channelQueue) GetChannel() (<-chan *Event, error) {
 
 // Close event queue
 func (cq *channelQueue) Close() {
+	cq.lock.Lock()
+	defer cq.lock.Unlock()
+	cq.closed = true
 	close(cq.localQ)
 }
 
 // IsClosed check queue is closed or not
 func (cq *channelQueue) IsClosed() bool {
-	select {
-	case data, received := <-cq.localQ:
-		// 使用读判断channel是否关闭，如果未关闭需要将消息再写回去，否则会被判断消费掉这条消息
-		if received {
-			cq.localQ <- data
-		}
-		return !received
-	default:
+	cq.lock.Lock()
+	defer cq.lock.Unlock()
+	if cq.closed {
+		return true
 	}
 	return false
 }
