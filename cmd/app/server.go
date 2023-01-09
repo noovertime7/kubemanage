@@ -93,9 +93,14 @@ func runServer(opt *options.Options) {
 	}()
 
 	// Wait for interrupt signal to gracefully shut down the server with a timeout of 5 seconds.
-	quit := utils.SetupSignalHandler()
-	<-quit
+	quit := runtime.SetupSignalHandler()
 
+	// Setup System Context
+	runtime.SetupContext(quit)
+
+	<-runtime.SystemContext.Done()
+
+	// Close
 	runtime.CloserHandler.Close()
 
 	logger.LG.Info("shutting kubemanage server down ...")
