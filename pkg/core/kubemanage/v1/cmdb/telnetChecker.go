@@ -1,7 +1,6 @@
 package cmdb
 
 import (
-	"context"
 	"fmt"
 	"net"
 	"time"
@@ -68,19 +67,11 @@ func (t *telnetHandler) Check(event *queue.Event) error {
 }
 
 func (t *telnetHandler) checkFailed(host model.CMDBHost) error {
-	host.Status = 2
-	if err := t.factory.CMDB().Host().Updates(context.TODO(), &host); err != nil {
-		return err
-	}
-	return nil
+	return checkFailedHandler(t.factory, host)
 }
 
 func (t *telnetHandler) checkSuccess(host model.CMDBHost) error {
-	host.Status = 1
-	if err := t.factory.CMDB().Host().Updates(context.TODO(), &host); err != nil {
-		return err
-	}
-	return nil
+	return checkSuccessHandler(t.factory, host)
 }
 
 func (t *telnetHandler) HandlerErr(err error) {

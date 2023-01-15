@@ -12,7 +12,7 @@ import (
 
 	"github.com/noovertime7/kubemanage/cmd/app/config"
 	"github.com/noovertime7/kubemanage/cmd/app/options"
-	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
+	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/kube"
 	"github.com/noovertime7/kubemanage/pkg/logger"
 	"github.com/noovertime7/kubemanage/pkg/utils"
@@ -91,12 +91,6 @@ func runServer(opt *options.Options) {
 			logger.LG.Fatal("failed to listen kubemanage server: ", zap.Error(err))
 		}
 	}()
-
-	// Wait for interrupt signal to gracefully shut down the server with a timeout of 5 seconds.
-	quit := runtime.SetupSignalHandler()
-
-	// Setup System Context
-	runtime.SetupContext(quit)
 
 	<-runtime.SystemContext.Done()
 

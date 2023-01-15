@@ -97,15 +97,3 @@ func (h *hostService) GetHostList(ctx context.Context, search model.CMDBHost) ([
 	}
 	return data, nil
 }
-
-// StartHostCheck 从数据库中不断查询放到queue中 提供给queue检测
-func (h *hostService) StartHostCheck() {
-	// TODO 考虑是否处理error
-	hosts, _ := h.GetHostList(context.TODO(), model.CMDBHost{})
-	for _, host := range hosts {
-		if h.queue.IsClosed() {
-			return
-		}
-		h.queue.Push(&queue.Event{Type: "AddHOST", Data: host})
-	}
-}
