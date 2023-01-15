@@ -18,7 +18,7 @@ type HostService interface {
 	PageHost(ctx context.Context, pager runtime.Pager) (dto.PageCMDBHostOut, error)
 	DeleteHost(ctx context.Context, instanceID string) error
 	DeleteHosts(ctx context.Context, instanceIDs []string) error
-	StartHostCheck()
+	StartHostCheck() error
 }
 
 func NewHostService(factory dao.ShareDaoFactory, q queue.Queue) HostService {

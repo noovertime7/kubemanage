@@ -8,13 +8,18 @@ import (
 )
 
 // StartHostCheck 从数据库中不断查询放到queue中
-func (h *hostService) StartHostCheck() {
-	// TODO 考虑是否处理error
-	hosts, _ := h.GetHostList(context.TODO(), model.CMDBHost{})
+func (h *hostService) StartHostCheck() error {
+	hosts, err := h.GetHostList(context.TODO(), model.CMDBHost{})
+
+	if len(hosts) < 0 {
+		return err
+	}
+
 	for _, host := range hosts {
 		if h.queue.IsClosed() {
-			return
+			return nil
 		}
 		h.queue.Push(&queue.Event{Type: "AddHOST", Data: host})
 	}
+	return nil
 }

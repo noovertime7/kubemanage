@@ -4,6 +4,12 @@ default:
   JWTSecret: "kubemanage"
   expireTime: 10
 
+cmdb:
+  hostCheck:
+    hostCheckEnable: false # 是否启用主机检测时间
+    hostCheckDuration: 10  # 主机检测周期 单位分钟
+    hostCheckTimeout: 3 # 检测超时时间 单位秒
+
 mysql:
   host: "127.0.0.1"
   port: "3306"

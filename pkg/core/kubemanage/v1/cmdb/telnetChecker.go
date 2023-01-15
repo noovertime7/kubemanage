@@ -5,6 +5,7 @@ import (
 	"net"
 	"time"
 
+	"github.com/noovertime7/kubemanage/cmd/app/config"
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/pkg/logger"
@@ -48,7 +49,7 @@ func (t *telnetHandler) Run() {
 
 func (t *telnetHandler) Check(event *queue.Event) error {
 	host := event.Data.(model.CMDBHost)
-	timeout := 5 * time.Second
+	timeout := time.Duration(config.SysConfig.CMDB.HostCheck.HostCheckTimeout) * time.Second
 	addr := fmt.Sprintf("%s:%d", host.Address, host.Port)
 	t.logger.Info(fmt.Sprintf("Start port connectivity detection, destination address:%s,timeout time:%v", addr, timeout.String()))
 	_, err := net.DialTimeout("tcp", addr, timeout)

@@ -26,18 +26,23 @@ func Setup(o *options.Options) {
 
 	Log = logger.New(logger.LG)
 	CoreV1 = New(config.SysConfig, o.Factory)
-	startChecker()
+	if config.SysConfig.CMDB.HostCheck.HostCheckEnable {
+		startChecker()
+	}
 }
 
 func startChecker() {
 	// 启动checker factory
 	CoreV1.CMDB().StartChecker()
 	// 启动生产者
-	handler := wait.NewDefaultBackoff(60 * time.Second)
+	handler := wait.NewDefaultBackoff(time.Duration(config.SysConfig.CMDB.HostCheck.HostCheckDuration) * time.Minute)
+	Log.Infof("start host check every %d minutes...", config.SysConfig.CMDB.HostCheck.HostCheckDuration)
 	go func() {
 		wait.BackoffUntil(func() {
-			CoreV1.CMDB().Host().StartHostCheck()
+			if err := CoreV1.CMDB().Host().StartHostCheck(); err != nil {
+				Log.ErrorWithErr("host check err", err)
+				return
+			}
 		}, handler, true, runtime.SystemContext.Done())
-		return
 	}()
 }

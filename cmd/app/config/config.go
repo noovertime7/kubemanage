@@ -5,6 +5,7 @@ var SysConfig *Config
 type Config struct {
 	Default DefaultOptions `mapstructure:"default"`
 	Mysql   MysqlOptions   `mapstructure:"mysql"`
+	CMDB    CMDBOptions    `mapstructure:"cmdb"`
 	Log     LogConfig      `mapstructure:"log"`
 }
 
@@ -15,6 +16,16 @@ type DefaultOptions struct {
 	JWTSecret            string `mapstructure:"JWTSecret"`
 	ExpireTime           int64  `mapstructure:"expireTime"`
 	KubernetesConfigFile string `mapstructure:"kubernetesConfigFile"`
+}
+
+type CMDBOptions struct {
+	HostCheck HostCheck `mapstructure:"hostCheck"`
+}
+
+type HostCheck struct {
+	HostCheckEnable   bool `mapstructure:"hostCheckEnable"`
+	HostCheckDuration int  `mapstructure:"hostCheckDuration"`
+	HostCheckTimeout  int  `mapstructure:"hostCheckTimeout"`
 }
 
 type MysqlOptions struct {
