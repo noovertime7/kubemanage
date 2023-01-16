@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+
 	"gorm.io/gorm"
 )
 
@@ -16,7 +17,6 @@ type CMDBSecret struct {
 	Protocol     uint   `json:"protocol" gorm:"column:protocol;comment:协议1为ssh2为rdp"`
 	SecretType   uint   `json:"secretType" gorm:"index;column:secretType;comment:认证类型1为密码2为秘钥"`
 	HostUserName string `json:"hostUserName" gorm:"column:hostUserName;comment:主机用户名"`
-	HostPort     uint   `json:"hostPort" gorm:"column:hostPort;comment:主机端口"`
 	HostPassword string `json:"hostPassword" gorm:"column:hostPassword;comment:主机密码"`
 	Content      string `json:"content" gorm:"column:content;comment:备注"`
 	PrivateKey   string `json:"privateKey" gorm:"column:privateKey;comment:主机私钥"`

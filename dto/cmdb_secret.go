@@ -13,7 +13,6 @@ type CMDBSecretCreateInput struct {
 	Protocol     uint   `json:"protocol" comment:"协议" validate:"required"`
 	SecretType   uint   `json:"secretType" comment:"类型" validate:"required"`
 	HostUserName string `json:"hostUserName" comment:"用户名" validate:"required"`
-	HostPort     uint   `json:"hostPort" comment:"端口" validate:"required"`
 	HostPassword string `json:"hostPassword" comment:"密码"`
 	Content      string `json:"content" comment:"备注"`
 	PrivateKey   string `json:"privateKey" comment:"秘钥" `
@@ -29,7 +28,6 @@ type CMDBSecretUpdateInput struct {
 	Protocol     uint   `json:"protocol" comment:"协议" validate:"required"`
 	SecretType   uint   `json:"secretType" comment:"类型" validate:"required"`
 	HostUserName string `json:"hostUserName" comment:"用户名" validate:"required"`
-	HostPort     uint   `json:"hostPort" comment:"端口" validate:"required"`
 	HostPassword string `json:"hostPassword" comment:"密码"`
 	Content      string `json:"content" comment:"备注"`
 	PrivateKey   string `json:"privateKey" comment:"秘钥" `
