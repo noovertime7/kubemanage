@@ -234,6 +234,7 @@ var SysApis = []SysApi{
 	// CMDB相关接口
 	{Path: "/api/cmdb/:groupID/pageHost", Description: "分页获取主机信息", ApiGroup: "资产管理", Method: "GET"},
 	{Path: "/api/cmdb/getHostGroupTree", Description: "获取主机组树", ApiGroup: "资产管理", Method: "GET"},
+	{Path: "/api/cmdb/getHostGroupList", Description: "获取主机组列表", ApiGroup: "资产管理", Method: "GET"},
 	{Path: "/api/cmdb/deleteHosts", Description: "批量删除主机", ApiGroup: "资产管理", Method: "POST"},
 	{Path: "/api/cmdb/:instanceid/deleteHost", Description: "删除主机", ApiGroup: "资产管理", Method: "DELETE"},
 	{Path: "/api/cmdb/createHost", Description: "创建主机", ApiGroup: "资产管理", Method: "POST"},

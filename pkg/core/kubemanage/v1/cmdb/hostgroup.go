@@ -11,6 +11,7 @@ import (
 
 type HostGroupService interface {
 	GetHostGroupTree(ctx context.Context) ([]model.CMDBHostGroup, error)
+	GetHostGroupList(ctx context.Context) ([]model.CMDBHostGroup, error)
 }
 
 func NewHostGroupService(factory dao.ShareDaoFactory) HostGroupService {
@@ -35,6 +36,10 @@ func (h *hostGroupService) GetHostGroupTree(ctx context.Context) ([]model.CMDBHo
 		}
 	}
 	return hostGroups, nil
+}
+
+func (h *hostGroupService) GetHostGroupList(ctx context.Context) ([]model.CMDBHostGroup, error) {
+	return h.factory.CMDB().HostGroup().FindList(ctx, model.CMDBHostGroup{})
 }
 
 func (h *hostGroupService) getDeptChildrenList(hostGroup *model.CMDBHostGroup, treeMap map[string][]model.CMDBHostGroup) (err error) {

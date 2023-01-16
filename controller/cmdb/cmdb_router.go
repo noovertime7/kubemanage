@@ -15,6 +15,7 @@ func (c *cmdbController) initRoutes(ginEngine *gin.RouterGroup) {
 	cmdbRoute := ginEngine.Group("/cmdb")
 	{
 		cmdbRoute.GET("/getHostGroupTree", c.GetHostGroupTree)
+		cmdbRoute.GET("/getHostGroupList", c.GetHostGroupList)
 	}
 	{
 		cmdbRoute.GET("/:groupID/pageHost", c.PageHost)
