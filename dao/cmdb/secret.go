@@ -15,7 +15,7 @@ type SecretI interface {
 	Save(ctx context.Context, search *model.CMDBSecret) error
 	Updates(ctx context.Context, opt common.Option, in *model.CMDBSecret) error
 	Find(ctx context.Context, search model.CMDBSecret) (model.CMDBSecret, error)
-	FindList(ctx context.Context, search model.CMDBSecret) ([]*model.CMDBSecret, error)
+	FindList(ctx context.Context, search model.CMDBSecret) ([]model.CMDBSecret, error)
 	Delete(ctx context.Context, search model.CMDBSecret, isDelete bool) error
 
 	PageList(ctx context.Context, params runtime.Pager) ([]model.CMDBSecret, int64, error)
@@ -43,8 +43,8 @@ func (s *secret) Find(ctx context.Context, search model.CMDBSecret) (model.CMDBS
 	return out, s.db.WithContext(ctx).Where(&search).First(&out).Error
 }
 
-func (s *secret) FindList(ctx context.Context, search model.CMDBSecret) ([]*model.CMDBSecret, error) {
-	var out []*model.CMDBSecret
+func (s *secret) FindList(ctx context.Context, search model.CMDBSecret) ([]model.CMDBSecret, error) {
+	var out []model.CMDBSecret
 	return out, s.db.WithContext(ctx).Where(&search).Find(&out).Error
 }
 

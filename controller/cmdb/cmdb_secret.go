@@ -5,7 +5,7 @@ import (
 
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
-	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
+	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"github.com/noovertime7/kubemanage/pkg/globalError"
 )
 
@@ -47,6 +47,16 @@ func (c *cmdbController) PageSecret(ctx *gin.Context) {
 		return
 	}
 	data, err := v1.CoreV1.CMDB().Secret().PageSecret(ctx, params)
+	if err != nil {
+		v1.Log.ErrorWithCode(globalError.GetError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
+		return
+	}
+	middleware.ResponseSuccess(ctx, data)
+}
+
+func (c *cmdbController) GetSecretList(ctx *gin.Context) {
+	data, err := v1.CoreV1.CMDB().Secret().GetSecretList(ctx)
 	if err != nil {
 		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))

@@ -28,6 +28,7 @@ func (c *cmdbController) initRoutes(ginEngine *gin.RouterGroup) {
 		cmdbRoute.POST("/createSecret", c.CreateSecret)
 		cmdbRoute.POST("/updateSecret", c.UpdateSecret)
 		cmdbRoute.GET("/pageSecret", c.PageSecret)
+		cmdbRoute.GET("/getSecretList", c.GetSecretList)
 		cmdbRoute.POST("/deleteSecrets", c.DeleteSecrets)
 		cmdbRoute.DELETE("/:instanceid/deleteSecret", c.DeleteSecret)
 	}

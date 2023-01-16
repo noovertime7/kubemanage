@@ -232,9 +232,10 @@ var SysApis = []SysApi{
 	{Path: "/api/authority/updateAuthority", Description: "修改角色", ApiGroup: "权限", Method: "PUT"},
 
 	// CMDB相关接口
-	{Path: "/api/cmdb/:groupID/pageHost", Description: "分页获取主机信息", ApiGroup: "资产管理", Method: "GET"},
 	{Path: "/api/cmdb/getHostGroupTree", Description: "获取主机组树", ApiGroup: "资产管理", Method: "GET"},
 	{Path: "/api/cmdb/getHostGroupList", Description: "获取主机组列表", ApiGroup: "资产管理", Method: "GET"},
+
+	{Path: "/api/cmdb/:groupID/pageHost", Description: "分页获取主机信息", ApiGroup: "资产管理", Method: "GET"},
 	{Path: "/api/cmdb/deleteHosts", Description: "批量删除主机", ApiGroup: "资产管理", Method: "POST"},
 	{Path: "/api/cmdb/:instanceid/deleteHost", Description: "删除主机", ApiGroup: "资产管理", Method: "DELETE"},
 	{Path: "/api/cmdb/createHost", Description: "创建主机", ApiGroup: "资产管理", Method: "POST"},
@@ -243,6 +244,7 @@ var SysApis = []SysApi{
 	{Path: "/api/cmdb/createSecret", Description: "创建认证信息", ApiGroup: "资产管理", Method: "POST"},
 	{Path: "/api/cmdb/updateSecret", Description: "更新认证信息", ApiGroup: "资产管理", Method: "POST"},
 	{Path: "/api/cmdb/pageSecret", Description: "分页获取认证信息", ApiGroup: "资产管理", Method: "GET"},
+	{Path: "/api/cmdb/getSecretList", Description: "获取认证信息列表", ApiGroup: "资产管理", Method: "GET"},
 	{Path: "/api/cmdb/deleteSecrets", Description: "批量删除认证信息", ApiGroup: "资产管理", Method: "POST"},
 	{Path: "/api/cmdb/:instanceid/deleteSecret", Description: "删除认证信息", ApiGroup: "资产管理", Method: "DELETE"},
 	// K8S相关接口

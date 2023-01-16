@@ -16,6 +16,7 @@ type SecretService interface {
 	CreateSecret(ctx context.Context, in *dto.CMDBSecretCreateInput) error
 	UpdateSecret(ctx context.Context, in *dto.CMDBSecretUpdateInput) error
 	PageSecret(ctx context.Context, pager runtime.Pager) (dto.PageCMDBSecretOut, error)
+	GetSecretList(ctx context.Context) ([]model.CMDBSecret, error)
 	DeleteSecret(ctx context.Context, instanceID string) error
 	DeleteSecrets(ctx context.Context, instanceIDs []string) error
 }
@@ -114,6 +115,10 @@ func (s *serctService) PageSecret(ctx context.Context, pager runtime.Pager) (dto
 		return dto.PageCMDBSecretOut{}, err
 	}
 	return dto.PageCMDBSecretOut{Total: total, List: list, Page: pager.GetPage(), PageSize: pager.GetPageSize()}, nil
+}
+
+func (s *serctService) GetSecretList(ctx context.Context) ([]model.CMDBSecret, error) {
+	return s.factory.CMDB().Secret().FindList(ctx, model.CMDBSecret{})
 }
 
 func (s *serctService) DeleteSecret(ctx context.Context, instanceID string) error {
