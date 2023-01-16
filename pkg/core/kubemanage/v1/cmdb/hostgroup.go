@@ -2,6 +2,7 @@ package cmdb
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/noovertime7/kubemanage/dao"
@@ -47,11 +48,13 @@ func (h *hostGroupService) getDeptChildrenList(hostGroup *model.CMDBHostGroup, t
 func (h *hostGroupService) getHostGroupTreeMap(ctx context.Context) (treeMap map[string][]model.CMDBHostGroup, err error) {
 	var in model.CMDBHostGroup
 	treeMap = make(map[string][]model.CMDBHostGroup)
-	hostGroups, err := h.factory.CMDB().HostGroup().FindList(ctx, in)
+	hostGroups, err := h.factory.CMDB().HostGroup().FindListWithHosts(ctx, in)
 	if err != nil {
 		return nil, err
 	}
 	for _, v := range hostGroups {
+		// 处理主机组名称,添加主机数，如 研发部门 (10)
+		v.GroupName = fmt.Sprintf("%s (%d)", v.GroupName, len(v.Hosts))
 		treeMap[v.ParentId] = append(treeMap[v.ParentId], v)
 	}
 	return treeMap, err

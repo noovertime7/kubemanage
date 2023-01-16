@@ -2,6 +2,7 @@ package cmdb
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/pkg/utils"
 
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/middleware"
@@ -40,13 +41,19 @@ func (c *cmdbController) UpdateHost(ctx *gin.Context) {
 }
 
 func (c *cmdbController) PageHost(ctx *gin.Context) {
+	groupID, err := utils.ParseUint(ctx.Param("groupID"))
+	if err != nil {
+		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
+		return
+	}
 	params := &dto.PageListCMDBHostInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
-	data, err := v1.CoreV1.CMDB().Host().PageHost(ctx, params)
+	data, err := v1.CoreV1.CMDB().Host().PageHost(ctx, groupID, params)
 	if err != nil {
 		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))

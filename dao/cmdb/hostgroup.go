@@ -12,6 +12,7 @@ type HostGroup interface {
 	Save(ctx context.Context, search model.CMDBHostGroup) error
 	Find(ctx context.Context, search model.CMDBHostGroup) (model.CMDBHostGroup, error)
 	FindList(ctx context.Context, search model.CMDBHostGroup) ([]model.CMDBHostGroup, error)
+	FindListWithHosts(ctx context.Context, search model.CMDBHostGroup) ([]model.CMDBHostGroup, error)
 	Delete(ctx context.Context, search model.CMDBHostGroup, isDelete bool) error
 }
 
@@ -37,6 +38,11 @@ func (h *hostGroup) Find(ctx context.Context, search model.CMDBHostGroup) (model
 func (h *hostGroup) FindList(ctx context.Context, search model.CMDBHostGroup) ([]model.CMDBHostGroup, error) {
 	var out []model.CMDBHostGroup
 	return out, h.db.WithContext(ctx).Where(&search).Find(&out).Error
+}
+
+func (h *hostGroup) FindListWithHosts(ctx context.Context, search model.CMDBHostGroup) ([]model.CMDBHostGroup, error) {
+	var out []model.CMDBHostGroup
+	return out, h.db.WithContext(ctx).Preload("Hosts").Where(&search).Find(&out).Error
 }
 
 func (h *hostGroup) Delete(ctx context.Context, search model.CMDBHostGroup, isDelete bool) error {

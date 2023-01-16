@@ -15,7 +15,7 @@ import (
 type HostService interface {
 	CreateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error
 	UpdateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error
-	PageHost(ctx context.Context, pager runtime.Pager) (dto.PageCMDBHostOut, error)
+	PageHost(ctx context.Context, groupID uint, pager runtime.Pager) (dto.PageCMDBHostOut, error)
 	DeleteHost(ctx context.Context, instanceID string) error
 	DeleteHosts(ctx context.Context, instanceIDs []string) error
 	StartHostCheck() error
@@ -69,8 +69,8 @@ func (h *hostService) UpdateHost(ctx context.Context, in *dto.CMDBHostCreateInpu
 	return h.factory.CMDB().Host().Updates(ctx, hostDB)
 }
 
-func (h *hostService) PageHost(ctx context.Context, pager runtime.Pager) (dto.PageCMDBHostOut, error) {
-	list, total, err := h.factory.CMDB().Host().PageList(ctx, pager)
+func (h *hostService) PageHost(ctx context.Context, groupID uint, pager runtime.Pager) (dto.PageCMDBHostOut, error) {
+	list, total, err := h.factory.CMDB().Host().PageList(ctx, groupID, pager)
 	if err != nil {
 		return dto.PageCMDBHostOut{}, err
 	}

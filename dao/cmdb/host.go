@@ -2,6 +2,7 @@ package cmdb
 
 import (
 	"context"
+
 	"github.com/noovertime7/kubemanage/runtime"
 
 	"gorm.io/gorm"
@@ -16,7 +17,7 @@ type HostI interface {
 	FindList(ctx context.Context, search model.CMDBHost) ([]model.CMDBHost, error)
 	Delete(ctx context.Context, search model.CMDBHost, isDelete bool) error
 
-	PageList(ctx context.Context, params runtime.Pager) ([]model.CMDBHost, int64, error)
+	PageList(ctx context.Context, groupID uint, params runtime.Pager) ([]model.CMDBHost, int64, error)
 }
 
 func NewHost(db *gorm.DB) HostI {
@@ -54,11 +55,11 @@ func (h *host) Delete(ctx context.Context, search model.CMDBHost, isDelete bool)
 	return h.db.WithContext(ctx).Delete(&search).Error
 }
 
-func (h *host) PageList(ctx context.Context, params runtime.Pager) ([]model.CMDBHost, int64, error) {
+func (h *host) PageList(ctx context.Context, groupID uint, params runtime.Pager) ([]model.CMDBHost, int64, error) {
 	var total int64 = 0
 	limit := params.GetPageSize()
 	offset := limit * (params.GetPage() - 1)
-	query := h.db.WithContext(ctx).Where("")
+	query := h.db.WithContext(ctx).Where("cmdbHostGroupID = ?", groupID)
 	var list []model.CMDBHost
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if params.IsFitter() {

@@ -17,7 +17,7 @@ func (c *cmdbController) initRoutes(ginEngine *gin.RouterGroup) {
 		cmdbRoute.GET("/getHostGroupTree", c.GetHostGroupTree)
 	}
 	{
-		cmdbRoute.GET("/pageHost", c.PageHost)
+		cmdbRoute.GET("/:groupID/pageHost", c.PageHost)
 		cmdbRoute.POST("/deleteHosts", c.DeleteHosts)
 		cmdbRoute.DELETE("/:instanceid/deleteHost", c.DeleteHost)
 		cmdbRoute.POST("/createHost", c.CreateHost)
