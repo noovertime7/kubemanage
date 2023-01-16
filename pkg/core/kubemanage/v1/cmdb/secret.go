@@ -3,11 +3,13 @@ package cmdb
 import (
 	"context"
 	"fmt"
+
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/pkg/utils"
 	"github.com/noovertime7/kubemanage/runtime"
+	"gorm.io/gorm"
 )
 
 type SecretService interface {
@@ -75,6 +77,7 @@ func (s *serctService) UpdateSecret(ctx context.Context, in *dto.CMDBSecretUpdat
 		return err
 	}
 	secret := &model.CMDBSecret{
+		InstanceID:   in.InstanceID,
 		Name:         in.Name,
 		Protocol:     in.Protocol,
 		SecretType:   in.SecretType,
@@ -100,7 +103,9 @@ func (s *serctService) UpdateSecret(ctx context.Context, in *dto.CMDBSecretUpdat
 		}
 		secret.PrivateKey = enPrivateKey
 	}
-	return s.factory.CMDB().Secret().Updates(ctx, secret)
+	return s.factory.CMDB().Secret().Updates(ctx, func(db *gorm.DB) *gorm.DB {
+		return db.Where("instanceID = ?", secret.InstanceID)
+	}, secret)
 }
 
 func (s *serctService) PageSecret(ctx context.Context, pager runtime.Pager) (dto.PageCMDBSecretOut, error) {
