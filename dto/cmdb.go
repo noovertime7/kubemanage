@@ -8,14 +8,18 @@ import (
 )
 
 type CMDBHostCreateInput struct {
+	Name            string `json:"name" validate:"required"`
 	InstanceID      string `json:"instanceID" `
 	Address         string `json:"address" validate:"required" `
 	Port            uint   `json:"port" validate:"required"`
+	UseSecret       uint   `json:"useSecret" validate:"required"`
+	Protocol        uint   `json:"protocol"`
+	SecretType      uint   `json:"secretType"`
 	HostUserName    string `json:"hostUserName" `
 	HostPassword    string `json:"hostPassword" `
 	PrivateKey      string `json:"privateKey" `
 	SecretID        uint   `json:"secretID"`
-	CMDBHostGroupID uint   `json:"cmdbHostGroupID" validate:"required" `
+	CMDBHostGroupID uint   `json:"cmdbHostGroupID" validate:"required"`
 }
 
 func (p *CMDBHostCreateInput) BindingValidParams(ctx *gin.Context) error {

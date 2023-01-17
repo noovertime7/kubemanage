@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"gorm.io/gorm"
+
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/dto"
@@ -42,12 +44,16 @@ func (h *hostService) CreateHost(ctx context.Context, in *dto.CMDBHostCreateInpu
 	}
 	hostDB := &model.CMDBHost{
 		InstanceID:      utils.GetSnowflakeID(),
+		UseSecret:       in.UseSecret,
+		Name:            in.Name,
 		Address:         in.Address,
 		Port:            in.Port,
 		HostUserName:    in.HostUserName,
 		HostPassword:    in.HostPassword,
 		PrivateKey:      in.PrivateKey,
 		SecretID:        in.SecretID,
+		Protocol:        in.Protocol,
+		SecretType:      in.SecretType,
 		Status:          1,
 		CMDBHostGroupID: in.CMDBHostGroupID,
 	}
@@ -55,26 +61,43 @@ func (h *hostService) CreateHost(ctx context.Context, in *dto.CMDBHostCreateInpu
 }
 
 func (h *hostService) UpdateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error {
+	if utils.IsStrEmpty(in.InstanceID) {
+		return fmt.Errorf("instance id is empty")
+	}
 	hostDB := &model.CMDBHost{
 		InstanceID:      in.InstanceID,
+		Name:            in.Name,
+		UseSecret:       in.UseSecret,
 		Address:         in.Address,
 		Port:            in.Port,
 		HostUserName:    in.HostUserName,
 		HostPassword:    in.HostPassword,
 		PrivateKey:      in.PrivateKey,
+		Protocol:        in.Protocol,
+		SecretType:      in.SecretType,
 		SecretID:        in.SecretID,
-		Status:          1,
 		CMDBHostGroupID: in.CMDBHostGroupID,
 	}
-	return h.factory.CMDB().Host().Updates(ctx, hostDB)
+	return h.factory.CMDB().Host().Updates(ctx, func(db *gorm.DB) *gorm.DB {
+		return db.Where("instanceID = ?", in.InstanceID)
+	}, hostDB)
 }
 
 func (h *hostService) PageHost(ctx context.Context, groupID uint, pager runtime.Pager) (dto.PageCMDBHostOut, error) {
 	list, total, err := h.factory.CMDB().Host().PageList(ctx, groupID, pager)
+	var newList []model.CMDBHost
+	for _, host := range list {
+		group, err := h.factory.CMDB().HostGroup().Find(ctx, model.CMDBHostGroup{Id: host.CMDBHostGroupID})
+		if err != nil {
+			return dto.PageCMDBHostOut{}, err
+		}
+		host.GroupName = group.GroupName
+		newList = append(newList, host)
+	}
 	if err != nil {
 		return dto.PageCMDBHostOut{}, err
 	}
-	return dto.PageCMDBHostOut{Total: total, List: list}, nil
+	return dto.PageCMDBHostOut{Total: total, List: newList}, nil
 }
 
 func (h *hostService) DeleteHost(ctx context.Context, instanceID string) error {

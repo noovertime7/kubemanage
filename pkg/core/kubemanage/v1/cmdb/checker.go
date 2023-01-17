@@ -3,6 +3,8 @@ package cmdb
 import (
 	"context"
 
+	"gorm.io/gorm"
+
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
 )
@@ -14,7 +16,9 @@ const (
 
 var checkFailedHandler = func(factory dao.ShareDaoFactory, host model.CMDBHost) error {
 	host.Status = checkFailed
-	if err := factory.CMDB().Host().Updates(context.TODO(), &host); err != nil {
+	if err := factory.CMDB().Host().Updates(context.TODO(), func(db *gorm.DB) *gorm.DB {
+		return db.Where("instanceID = ? ", host.InstanceID)
+	}, &host); err != nil {
 		return err
 	}
 	return nil
@@ -22,7 +26,9 @@ var checkFailedHandler = func(factory dao.ShareDaoFactory, host model.CMDBHost) 
 
 var checkSuccessHandler = func(factory dao.ShareDaoFactory, host model.CMDBHost) error {
 	host.Status = checkSuccess
-	if err := factory.CMDB().Host().Updates(context.TODO(), &host); err != nil {
+	if err := factory.CMDB().Host().Updates(context.TODO(), func(db *gorm.DB) *gorm.DB {
+		return db.Where("instanceID = ? ", host.InstanceID)
+	}, &host); err != nil {
 		return err
 	}
 	return nil

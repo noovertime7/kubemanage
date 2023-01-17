@@ -3,6 +3,8 @@ package cmdb
 import (
 	"context"
 
+	"github.com/noovertime7/kubemanage/dao/common"
+
 	"github.com/noovertime7/kubemanage/runtime"
 
 	"gorm.io/gorm"
@@ -12,7 +14,7 @@ import (
 
 type HostI interface {
 	Save(ctx context.Context, search *model.CMDBHost) error
-	Updates(ctx context.Context, search *model.CMDBHost) error
+	Updates(ctx context.Context, opt common.Option, search *model.CMDBHost) error
 	Find(ctx context.Context, search model.CMDBHost) (model.CMDBHost, error)
 	FindList(ctx context.Context, search model.CMDBHost) ([]model.CMDBHost, error)
 	Delete(ctx context.Context, search model.CMDBHost, isDelete bool) error
@@ -34,8 +36,9 @@ func (h *host) Save(ctx context.Context, search *model.CMDBHost) error {
 	return h.db.WithContext(ctx).Create(&search).Error
 }
 
-func (h *host) Updates(ctx context.Context, search *model.CMDBHost) error {
-	return h.db.WithContext(ctx).Updates(&search).Where("instanceID = ?", search.InstanceID).Error
+func (h *host) Updates(ctx context.Context, opt common.Option, search *model.CMDBHost) error {
+	query := opt(h.db)
+	return query.WithContext(ctx).Updates(&search).Error
 }
 
 func (h *host) Find(ctx context.Context, search model.CMDBHost) (model.CMDBHost, error) {
@@ -50,9 +53,9 @@ func (h *host) FindList(ctx context.Context, search model.CMDBHost) ([]model.CMD
 
 func (h *host) Delete(ctx context.Context, search model.CMDBHost, isDelete bool) error {
 	if isDelete {
-		return h.db.WithContext(ctx).Unscoped().Delete(&search).Error
+		return h.db.WithContext(ctx).Where("instanceID = ?", search.InstanceID).Unscoped().Delete(&search).Error
 	}
-	return h.db.WithContext(ctx).Delete(&search).Error
+	return h.db.WithContext(ctx).Where("instanceID = ?", search.InstanceID).Delete(&search).Error
 }
 
 func (h *host) PageList(ctx context.Context, groupID uint, params runtime.Pager) ([]model.CMDBHost, int64, error) {

@@ -8,3 +8,7 @@ import (
 func GormExist(err error) bool {
 	return !errors.Is(gorm.ErrRecordNotFound, err)
 }
+
+func IsStrEmpty(str string) bool {
+	return str == ""
+}
