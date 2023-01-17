@@ -8,9 +8,10 @@ const (
 )
 
 const (
-	LoginURL    = "/api/user/login"
-	LogoutURL   = "/api/user/logout"
-	WebShellURL = "/api/k8s/pod/webshell"
+	LoginURL     = "/api/user/login"
+	LogoutURL    = "/api/user/logout"
+	WebShellURL  = "/api/k8s/pod/webshell"
+	HostWebShell = "/api/cmdb/webshell"
 )
 
 var (

@@ -1,6 +1,8 @@
 package cmdb
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/pkg/utils"
 
@@ -85,4 +87,16 @@ func (c *cmdbController) DeleteHosts(ctx *gin.Context) {
 		return
 	}
 	middleware.ResponseSuccess(ctx, "")
+}
+
+func (c *cmdbController) WebShell(ctx *gin.Context) {
+	// 设置默认xterm窗口大小
+	cols, _ := strconv.Atoi(ctx.DefaultQuery("cols", "188"))
+	rows, _ := strconv.Atoi(ctx.DefaultQuery("rows", "42"))
+	err := v1.CoreV1.CMDB().Host().WebShell(ctx.Writer, ctx.Request, cols, rows)
+	if err != nil {
+		v1.Log.ErrorWithCode(globalError.ServerError, err)
+		return
+	}
+	v1.Log.Info("web shell connect success")
 }

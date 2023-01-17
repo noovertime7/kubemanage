@@ -3,6 +3,9 @@ package cmdb
 import (
 	"context"
 	"fmt"
+	"net/http"
+
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/cmdb/webshell"
 
 	"gorm.io/gorm"
 
@@ -21,6 +24,7 @@ type HostService interface {
 	DeleteHost(ctx context.Context, instanceID string) error
 	DeleteHosts(ctx context.Context, instanceIDs []string) error
 	StartHostCheck() error
+	WebShell(w http.ResponseWriter, r *http.Request, cols, rows int) error
 }
 
 func NewHostService(factory dao.ShareDaoFactory, q queue.Queue) HostService {
@@ -119,4 +123,12 @@ func (h *hostService) GetHostList(ctx context.Context, search model.CMDBHost) ([
 		return nil, err
 	}
 	return data, nil
+}
+
+func (h *hostService) WebShell(w http.ResponseWriter, r *http.Request, cols, rows int) error {
+	// TODO 需要优化
+	if err := webshell.SSHWsHandler.SetUp(w, r, cols, rows); err != nil {
+		return err
+	}
+	return nil
 }

@@ -23,6 +23,7 @@ func (c *cmdbController) initRoutes(ginEngine *gin.RouterGroup) {
 		cmdbRoute.DELETE("/:instanceid/deleteHost", c.DeleteHost)
 		cmdbRoute.POST("/createHost", c.CreateHost)
 		cmdbRoute.POST("/updateHost", c.UpdateHost)
+		cmdbRoute.GET("/webshell", c.WebShell)
 	}
 	{
 		cmdbRoute.POST("/createSecret", c.CreateSecret)

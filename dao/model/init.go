@@ -87,6 +87,7 @@ var (
 		//子菜单 ParentId对应跟菜单顺序 且不需要icon
 		// 资产中心子菜单
 		{MenuLevel: 2, Hidden: false, Disabled: false, ParentId: "2", Path: "host", Name: "主机管理", Sort: 0, Meta: Meta{Title: "主机管理"}},
+		{MenuLevel: 3, Hidden: true, Disabled: false, ParentId: "2", Path: "host/webshell", Name: "网页终端", Sort: 1, Meta: Meta{Title: "网页终端"}},
 		{MenuLevel: 2, Hidden: false, Disabled: false, ParentId: "2", Path: "secret", Name: "认证信息", Sort: 1, Meta: Meta{Title: "认证信息"}},
 		{MenuLevel: 2, Hidden: false, Disabled: false, ParentId: "2", Path: "authProxy", Name: "授权管理", Sort: 2, Meta: Meta{Title: "授权管理"}},
 		// 容器管理子菜单
