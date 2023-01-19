@@ -20,6 +20,7 @@ import (
 type HostService interface {
 	CreateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error
 	UpdateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error
+	GetHostListWithGroupName(ctx context.Context, search *model.CMDBHost) ([]*model.CMDBHost, error)
 	PageHost(ctx context.Context, groupID uint, pager runtime.Pager) (dto.PageCMDBHostOut, error)
 	DeleteHost(ctx context.Context, instanceID string) error
 	DeleteHosts(ctx context.Context, instanceIDs []string) error
@@ -89,19 +90,24 @@ func (h *hostService) UpdateHost(ctx context.Context, in *dto.CMDBHostCreateInpu
 
 func (h *hostService) PageHost(ctx context.Context, groupID uint, pager runtime.Pager) (dto.PageCMDBHostOut, error) {
 	list, total, err := h.factory.CMDB().Host().PageList(ctx, groupID, pager)
-	var newList []model.CMDBHost
-	for _, host := range list {
-		group, err := h.factory.CMDB().HostGroup().Find(ctx, model.CMDBHostGroup{Id: host.CMDBHostGroupID})
-		if err != nil {
-			return dto.PageCMDBHostOut{}, err
-		}
-		host.GroupName = group.GroupName
-		newList = append(newList, host)
-	}
+	newList, err := h.buildHostGroupName(ctx, list)
 	if err != nil {
 		return dto.PageCMDBHostOut{}, err
 	}
 	return dto.PageCMDBHostOut{Total: total, List: newList}, nil
+}
+
+func (h *hostService) buildHostGroupName(ctx context.Context, in []*model.CMDBHost) ([]*model.CMDBHost, error) {
+	var newList []*model.CMDBHost
+	for _, host := range in {
+		group, err := h.factory.CMDB().HostGroup().Find(ctx, model.CMDBHostGroup{Id: host.CMDBHostGroupID})
+		if err != nil {
+			return nil, err
+		}
+		host.GroupName = group.GroupName
+		newList = append(newList, host)
+	}
+	return newList, nil
 }
 
 func (h *hostService) DeleteHost(ctx context.Context, instanceID string) error {
@@ -117,12 +123,28 @@ func (h *hostService) DeleteHosts(ctx context.Context, instanceIDs []string) err
 	return nil
 }
 
-func (h *hostService) GetHostList(ctx context.Context, search model.CMDBHost) ([]model.CMDBHost, error) {
+func (h *hostService) getHostList(ctx context.Context, search model.CMDBHost) ([]*model.CMDBHost, error) {
 	data, err := h.factory.CMDB().Host().FindList(ctx, search)
 	if err != nil {
 		return nil, err
 	}
 	return data, nil
+}
+
+func (h *hostService) GetHostListWithGroupName(ctx context.Context, search *model.CMDBHost) ([]*model.CMDBHost, error) {
+	if search == nil {
+		search = &model.CMDBHost{}
+	}
+	list, err := h.getHostList(ctx, *search)
+	if err != nil {
+		return nil, err
+	}
+	groupNameList, err := h.buildHostGroupName(ctx, list)
+	if err != nil {
+		return nil, err
+	}
+	return groupNameList, nil
+
 }
 
 func (h *hostService) WebShell(w http.ResponseWriter, r *http.Request, cols, rows int) error {

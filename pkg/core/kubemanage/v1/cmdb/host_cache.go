@@ -9,7 +9,7 @@ import (
 
 // StartHostCheck 从数据库中不断查询放到queue中
 func (h *hostService) StartHostCheck() error {
-	hosts, err := h.GetHostList(context.TODO(), model.CMDBHost{})
+	hosts, err := h.getHostList(context.TODO(), model.CMDBHost{})
 
 	if len(hosts) < 0 {
 		return err

@@ -16,10 +16,10 @@ type HostI interface {
 	Save(ctx context.Context, search *model.CMDBHost) error
 	Updates(ctx context.Context, opt common.Option, search *model.CMDBHost) error
 	Find(ctx context.Context, search model.CMDBHost) (model.CMDBHost, error)
-	FindList(ctx context.Context, search model.CMDBHost) ([]model.CMDBHost, error)
+	FindList(ctx context.Context, search model.CMDBHost) ([]*model.CMDBHost, error)
 	Delete(ctx context.Context, search model.CMDBHost, isDelete bool) error
 
-	PageList(ctx context.Context, groupID uint, params runtime.Pager) ([]model.CMDBHost, int64, error)
+	PageList(ctx context.Context, groupID uint, params runtime.Pager) ([]*model.CMDBHost, int64, error)
 }
 
 func NewHost(db *gorm.DB) HostI {
@@ -46,8 +46,8 @@ func (h *host) Find(ctx context.Context, search model.CMDBHost) (model.CMDBHost,
 	return out, h.db.WithContext(ctx).Where(&search).Find(&out).Error
 }
 
-func (h *host) FindList(ctx context.Context, search model.CMDBHost) ([]model.CMDBHost, error) {
-	var out []model.CMDBHost
+func (h *host) FindList(ctx context.Context, search model.CMDBHost) ([]*model.CMDBHost, error) {
+	var out []*model.CMDBHost
 	return out, h.db.WithContext(ctx).Where(&search).Find(&out).Error
 }
 
@@ -58,12 +58,12 @@ func (h *host) Delete(ctx context.Context, search model.CMDBHost, isDelete bool)
 	return h.db.WithContext(ctx).Where("instanceID = ?", search.InstanceID).Delete(&search).Error
 }
 
-func (h *host) PageList(ctx context.Context, groupID uint, params runtime.Pager) ([]model.CMDBHost, int64, error) {
+func (h *host) PageList(ctx context.Context, groupID uint, params runtime.Pager) ([]*model.CMDBHost, int64, error) {
 	var total int64 = 0
 	limit := params.GetPageSize()
 	offset := limit * (params.GetPage() - 1)
 	query := h.db.WithContext(ctx).Where("cmdbHostGroupID = ?", groupID)
-	var list []model.CMDBHost
+	var list []*model.CMDBHost
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if params.IsFitter() {
 		params.Do(query)

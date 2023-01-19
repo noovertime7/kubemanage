@@ -18,7 +18,7 @@ type CMDBHostGroup struct {
 	GroupName  string          `json:"groupName" gorm:"index;column:groupName;comment:主机组名称"`
 	Sort       int             `json:"sort" gorm:"size:4;"` //排序
 	Children   []CMDBHostGroup `json:"children" gorm:"-"`
-	Hosts      []CMDBHost
+	Hosts      []CMDBHost      `json:"hosts"`
 	CommonModel
 }
 

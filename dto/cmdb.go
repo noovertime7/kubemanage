@@ -27,8 +27,8 @@ func (p *CMDBHostCreateInput) BindingValidParams(ctx *gin.Context) error {
 }
 
 type PageCMDBHostOut struct {
-	Total int64            `json:"total"`
-	List  []model.CMDBHost `json:"list"`
+	Total int64             `json:"total"`
+	List  []*model.CMDBHost `json:"list"`
 }
 
 type PageListCMDBHostInput struct {

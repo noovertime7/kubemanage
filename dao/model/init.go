@@ -207,12 +207,11 @@ var SysApis = []SysApi{
 	{Path: "/api/user/:id/change_pwd", Description: "修改密码", ApiGroup: "用户", Method: "POST"},
 	{Path: "/api/user/:id/reset_pwd", Description: "重置密码", ApiGroup: "用户", Method: "PUT"},
 	{Path: "/api/user/:id/:action/lockUser", Description: "更改用户锁定状态", ApiGroup: "用户", Method: "PUT"},
-
+	// 部门相关接口
 	{Path: "/api/user/deptTree", Description: "获取部门组织树", ApiGroup: "部门", Method: "GET"},
 	{Path: "/api/user/:id/deptUsers", Description: "获取某个部门下的用户信息", ApiGroup: "部门", Method: "GET"},
 	{Path: "/api/user/:id/getPage", Description: "获取部门用户列表", ApiGroup: "部门", Method: "POST"},
 	{Path: "/api/user/getDeptByPage", Description: "分页获取部门信息", ApiGroup: "部门", Method: "POST"},
-
 	// 操作审计接口
 	{Path: "/api/operation/get_operations", Description: "查询操作记录列表", ApiGroup: "操作审计", Method: "GET"},
 	{Path: "/api/operation/:id/delete_operation", Description: "删除单条记录", ApiGroup: "操作审计", Method: "DELETE"},
@@ -237,6 +236,7 @@ var SysApis = []SysApi{
 	{Path: "/api/cmdb/getHostGroupList", Description: "获取主机组列表", ApiGroup: "资产管理", Method: "GET"},
 
 	{Path: "/api/cmdb/:groupID/pageHost", Description: "分页获取主机信息", ApiGroup: "资产管理", Method: "GET"},
+	{Path: "/api/cmdb/getHostsList", Description: "获取主机列表", ApiGroup: "资产管理", Method: "GET"},
 	{Path: "/api/cmdb/deleteHosts", Description: "批量删除主机", ApiGroup: "资产管理", Method: "POST"},
 	{Path: "/api/cmdb/:instanceid/deleteHost", Description: "删除主机", ApiGroup: "资产管理", Method: "DELETE"},
 	{Path: "/api/cmdb/createHost", Description: "创建主机", ApiGroup: "资产管理", Method: "POST"},

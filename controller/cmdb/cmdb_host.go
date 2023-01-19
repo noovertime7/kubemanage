@@ -89,6 +89,16 @@ func (c *cmdbController) DeleteHosts(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, "")
 }
 
+func (c *cmdbController) GetHostList(ctx *gin.Context) {
+	data, err := v1.CoreV1.CMDB().Host().GetHostListWithGroupName(ctx, nil)
+	if err != nil {
+		v1.Log.ErrorWithCode(globalError.GetError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
+		return
+	}
+	middleware.ResponseSuccess(ctx, data)
+}
+
 func (c *cmdbController) WebShell(ctx *gin.Context) {
 	// 设置默认xterm窗口大小
 	cols, _ := strconv.Atoi(ctx.DefaultQuery("cols", "188"))
