@@ -3,10 +3,11 @@ package app
 import (
 	"context"
 	"fmt"
-	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 	"net/http"
 	"os"
 	"time"
+
+	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
 
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -58,6 +59,8 @@ func NewServerCommand() *cobra.Command {
 }
 
 func Run(opt *options.Options) error {
+	// 打印logo
+	utils.PrintLogo()
 	// 设置核心应用接口
 	v1.Setup(opt)
 	//初始化K8s client  TODO 未来移除

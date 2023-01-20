@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+
 	"github.com/fatih/color"
 )
 
@@ -9,8 +10,8 @@ var (
 	Blue = color.New(color.FgHiBlue, color.Bold).SprintFunc()
 )
 
-// PrintColor 服务启动打印信息
-func PrintColor() {
+// PrintLogo 服务启动打印信息
+func PrintLogo() {
 	fmt.Println(Blue(`
  /$$   /$$           /$$                 /$$      /$$                                                  
 | $$  /$$/          | $$                | $$$    /$$$                                                  
