@@ -3,15 +3,14 @@ package cmdb
 import (
 	"context"
 	"fmt"
-	"net/http"
 
-	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/cmdb/webshell"
-
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/dto"
+	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/cmdb/webshell"
 	"github.com/noovertime7/kubemanage/pkg/utils"
 	"github.com/noovertime7/kubemanage/runtime"
 	"github.com/noovertime7/kubemanage/runtime/queue"
@@ -25,7 +24,7 @@ type HostService interface {
 	DeleteHost(ctx context.Context, instanceID string) error
 	DeleteHosts(ctx context.Context, instanceIDs []string) error
 	StartHostCheck() error
-	WebShell(w http.ResponseWriter, r *http.Request, cols, rows int) error
+	WebShell(ctx *gin.Context, instanceID string, cols, rows int) error
 }
 
 func NewHostService(factory dao.ShareDaoFactory, q queue.Queue) HostService {
@@ -38,15 +37,34 @@ type hostService struct {
 }
 
 func (h *hostService) CreateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error {
+	var (
+		enHostPassword string
+		enPrivateKey   string
+		err            error
+	)
 	//  查询是否ip重复添加
 	tempDB := model.CMDBHost{Address: in.Address}
-	temp, err := h.factory.CMDB().Host().Find(ctx, tempDB)
+	_, err = h.factory.CMDB().Host().Find(ctx, tempDB)
 	if err != nil {
-		return err
+		if utils.GormExist(err) {
+			return fmt.Errorf("存在相同IP地址主机，请重新填写")
+		}
 	}
-	if temp.Id != 0 {
-		return fmt.Errorf("主机已添加")
+
+	if in.HostPassword != "" {
+		enHostPassword, err = utils.Encrypt([]byte(in.HostPassword))
+		if err != nil {
+			return err
+		}
 	}
+
+	if in.PrivateKey != "" {
+		enPrivateKey, err = utils.Encrypt([]byte(in.PrivateKey))
+		if err != nil {
+			return err
+		}
+	}
+
 	hostDB := &model.CMDBHost{
 		InstanceID:      utils.GetSnowflakeID(),
 		UseSecret:       in.UseSecret,
@@ -54,8 +72,8 @@ func (h *hostService) CreateHost(ctx context.Context, in *dto.CMDBHostCreateInpu
 		Address:         in.Address,
 		Port:            in.Port,
 		HostUserName:    in.HostUserName,
-		HostPassword:    in.HostPassword,
-		PrivateKey:      in.PrivateKey,
+		HostPassword:    enHostPassword,
+		PrivateKey:      enPrivateKey,
 		SecretID:        in.SecretID,
 		Protocol:        in.Protocol,
 		SecretType:      in.SecretType,
@@ -69,6 +87,12 @@ func (h *hostService) UpdateHost(ctx context.Context, in *dto.CMDBHostCreateInpu
 	if utils.IsStrEmpty(in.InstanceID) {
 		return fmt.Errorf("instance id is empty")
 	}
+
+	host, err := h.factory.CMDB().Host().Find(ctx, model.CMDBHost{InstanceID: in.InstanceID})
+	if err != nil {
+		return err
+	}
+
 	hostDB := &model.CMDBHost{
 		InstanceID:      in.InstanceID,
 		Name:            in.Name,
@@ -83,6 +107,25 @@ func (h *hostService) UpdateHost(ctx context.Context, in *dto.CMDBHostCreateInpu
 		SecretID:        in.SecretID,
 		CMDBHostGroupID: in.CMDBHostGroupID,
 	}
+
+	// 表示密码发生变化
+	if in.HostPassword != host.HostPassword && in.HostPassword != "" {
+		enHostPassword, err := utils.Encrypt([]byte(in.HostPassword))
+		if err != nil {
+			return err
+		}
+		hostDB.HostPassword = enHostPassword
+	}
+
+	// 秘钥发生变化
+	if in.PrivateKey != host.PrivateKey && in.PrivateKey != "" {
+		enPrivateKey, err := utils.Encrypt([]byte(in.PrivateKey))
+		if err != nil {
+			return err
+		}
+		hostDB.PrivateKey = enPrivateKey
+	}
+
 	return h.factory.CMDB().Host().Updates(ctx, func(db *gorm.DB) *gorm.DB {
 		return db.Where("instanceID = ?", in.InstanceID)
 	}, hostDB)
@@ -147,10 +190,83 @@ func (h *hostService) GetHostListWithGroupName(ctx context.Context, search *mode
 
 }
 
-func (h *hostService) WebShell(w http.ResponseWriter, r *http.Request, cols, rows int) error {
+func (h *hostService) WebShell(ctx *gin.Context, instanceID string, cols, rows int) error {
 	// TODO 需要优化
-	if err := webshell.SSHWsHandler.SetUp(w, r, cols, rows); err != nil {
+	//获取主机信息
+	host, err := h.factory.CMDB().Host().Find(ctx, model.CMDBHost{InstanceID: instanceID})
+	if err != nil {
+		return err
+	}
+	info, err := h.buildHostConnectionInfo(ctx, host)
+	if err != nil {
+		return err
+	}
+	if err := webshell.SSHWsHandler.SetUp(ctx.Writer, ctx.Request, info, cols, rows); err != nil {
 		return err
 	}
 	return nil
+}
+
+// 构建主机连接信息
+func (h *hostService) buildHostConnectionInfo(ctx context.Context, host model.CMDBHost) (*webshell.HostConnectionInfo, error) {
+	var (
+		info          *webshell.HostConnectionInfo
+		dePassword    []byte
+		dePrivateKey  []byte
+		usePrivateKey bool
+		err           error
+	)
+	if host.UseSecret == 1 {
+		secret, err := h.factory.CMDB().Secret().Find(ctx, model.CMDBSecret{Id: host.SecretID})
+		if err != nil {
+			return nil, err
+		}
+		// 密码解密
+		if secret.SecretType == 1 {
+			dePassword, err = utils.Decrypt(secret.HostPassword)
+			if err != nil {
+				return nil, err
+			}
+			// 秘钥认证方式
+		} else if secret.SecretType == 2 {
+			usePrivateKey = true
+			dePrivateKey, err = utils.Decrypt(secret.PrivateKey)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		info = &webshell.HostConnectionInfo{
+			Address:       host.Address,
+			Port:          host.Port,
+			UserName:      secret.HostUserName,
+			Password:      string(dePassword),
+			UsePrivateKey: usePrivateKey,
+			PrivateKey:    string(dePrivateKey),
+		}
+	} else {
+		// 代表用户名密码登录
+		if host.SecretType == 1 {
+			dePassword, err = utils.Decrypt(host.HostPassword)
+			if err != nil {
+				return nil, err
+			}
+			// 秘钥认证方式
+		} else if host.SecretType == 2 {
+			usePrivateKey = true
+			dePrivateKey, err = utils.Decrypt(host.PrivateKey)
+			if err != nil {
+				return nil, err
+			}
+		}
+		info = &webshell.HostConnectionInfo{
+			Address:       host.Address,
+			Port:          host.Port,
+			UserName:      host.HostUserName,
+			Password:      string(dePassword),
+			UsePrivateKey: usePrivateKey,
+			PrivateKey:    string(dePrivateKey),
+		}
+	}
+	return info, nil
 }

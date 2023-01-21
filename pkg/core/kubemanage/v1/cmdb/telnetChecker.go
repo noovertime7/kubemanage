@@ -48,20 +48,20 @@ func (t *telnetHandler) Run() {
 }
 
 func (t *telnetHandler) Check(event *queue.Event) error {
-	host := event.Data.(model.CMDBHost)
+	host := event.Data.(*model.CMDBHost)
 	timeout := time.Duration(config.SysConfig.CMDB.HostCheck.HostCheckTimeout) * time.Second
 	addr := fmt.Sprintf("%s:%d", host.Address, host.Port)
 	t.logger.Info(fmt.Sprintf("Start port connectivity detection, destination address:%s,timeout time:%v", addr, timeout.String()))
 	_, err := net.DialTimeout("tcp", addr, timeout)
 	if err != nil {
 		t.logger.ErrorWithErr("telnet failed will change host status to offline", err)
-		if err = t.checkFailed(host); err != nil {
+		if err = t.checkFailed(*host); err != nil {
 			return err
 		}
 		return nil
 	}
 	t.logger.Infof("%v Server connection successful\n", addr)
-	if err = t.checkSuccess(host); err != nil {
+	if err = t.checkSuccess(*host); err != nil {
 		return err
 	}
 	return nil

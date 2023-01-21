@@ -43,7 +43,7 @@ func (h *host) Updates(ctx context.Context, opt common.Option, search *model.CMD
 
 func (h *host) Find(ctx context.Context, search model.CMDBHost) (model.CMDBHost, error) {
 	var out model.CMDBHost
-	return out, h.db.WithContext(ctx).Where(&search).Find(&out).Error
+	return out, h.db.WithContext(ctx).Where(&search).First(&out).Error
 }
 
 func (h *host) FindList(ctx context.Context, search model.CMDBHost) ([]*model.CMDBHost, error) {

@@ -3,10 +3,11 @@ package webshell
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/gorilla/websocket"
+
+	"github.com/noovertime7/kubemanage/pkg/logger"
 )
 
 // TerminalMessage 定义了终端和容器 shell 交互内容的格式 Operation 是操作类型
@@ -49,13 +50,14 @@ func (t *TerminalSession) Read(p []byte) (int, error) {
 	if err = json.Unmarshal(message, &msg); err != nil {
 		return copy(p, "\u0004"), err
 	}
-	log.Println("msg json success", msg)
+	t.UpdateAt = time.Now()
 	// 逻辑判断
 	switch msg.Operation {
 	case "closePty":
 		if err := t.WsConn.Close(); err != nil {
 			return 0, err
 		}
+		logger.LG.Info("websocket close successful")
 		return 0, nil
 	// 如果是标准输入
 	case "stdin":
@@ -63,7 +65,7 @@ func (t *TerminalSession) Read(p []byte) (int, error) {
 	// 窗口调整大小
 	case "resize":
 		if msg.Cols > 0 && msg.Rows > 0 {
-			fmt.Println("向channel中发送消息")
+			logger.LG.Info("terminal start resize")
 			t.messageChan <- msg
 		}
 		return copy(p, "resize success"), nil
@@ -90,6 +92,8 @@ func (t *TerminalSession) Write(p []byte) (int, error) {
 	}
 	return len(p), nil
 }
+
+const closedMsg = "websocket timeout shutdown"
 
 // Close 用于关闭websocket连接
 func (t *TerminalSession) Close() error {

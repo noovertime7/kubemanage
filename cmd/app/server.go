@@ -7,8 +7,6 @@ import (
 	"os"
 	"time"
 
-	v1 "github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1"
-
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 

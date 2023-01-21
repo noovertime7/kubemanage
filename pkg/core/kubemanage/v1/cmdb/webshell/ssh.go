@@ -1,16 +1,28 @@
 package webshell
 
 import (
+	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
-	"github.com/noovertime7/kubemanage/pkg/utils"
+	"go.uber.org/zap"
 
 	"github.com/gorilla/websocket"
+	"github.com/noovertime7/kubemanage/pkg/logger"
+	"github.com/noovertime7/kubemanage/runtime"
+	"github.com/noovertime7/kubemanage/runtime/wait"
 )
+
+type HostConnectionInfo struct {
+	Address            string
+	Port               uint
+	UserName, Password string
+	UsePrivateKey      bool
+	PrivateKey         string
+}
 
 var (
 	UpGrader = websocket.Upgrader{
@@ -57,27 +69,31 @@ type sshWsHandler struct {
 	written     bool            // 是否已写入记录, 一个流只允许写入一次
 }
 
-func (s *sshWsHandler) SetUp(w http.ResponseWriter, r *http.Request, cols, rows int) error {
+func (s *sshWsHandler) SetUp(w http.ResponseWriter, r *http.Request, info *HostConnectionInfo, cols, rows int) error {
+	// 获取主机信息
 	// 设置默认xterm窗口大小
 	terminalConfig := Config{
-		IpAddress:     "yunxue521.top",
-		Port:          "22",
-		UserName:      "root",
-		Password:      "1qaz@WSXchenteng@",
-		PrivateKey:    "",
+		IpAddress:     info.Address,
+		Port:          strconv.Itoa(int(info.Port)),
+		UserName:      info.UserName,
+		Password:      info.Password,
+		PrivateKey:    info.PrivateKey,
 		KeyPassphrase: "",
 		Width:         cols,
 		Height:        rows,
 	}
+
 	ws, err := UpGrader.Upgrade(w, r, nil)
 	if err != nil {
 		return err
 	}
+
 	terminal, err := NewTerminal(terminalConfig)
 	if err != nil {
-		_ = ws.WriteMessage(websocket.BinaryMessage, []byte(err.Error()))
-		_ = ws.Close()
-		return err
+		if err = sendMsg(ws, err.Error()); err != nil {
+			return err
+		}
+		return ws.Close()
 	}
 	resizeCh := make(chan interface{}, 10)
 	stream, err := NewTerminalSession(resizeCh, ws)
@@ -89,16 +105,15 @@ func (s *sshWsHandler) SetUp(w http.ResponseWriter, r *http.Request, cols, rows 
 			select {
 			case data := <-resizeCh:
 				msg := data.(TerminalMessage)
-				fmt.Printf("监听到resize信号%v\n", msg)
 				terminal.SetWinSize(msg.Cols, msg.Rows)
 			}
 		}
 	}()
 	if err != nil {
-		log.Printf("NewTerminalSession error %v\n", err)
 		return err
 	}
 
+	logger.LG.Info(fmt.Sprintf("start ssh connection to %s", info.Address))
 	err = terminal.Connect(stream, stream, stream)
 
 	if err != nil {
@@ -112,33 +127,51 @@ func (s *sshWsHandler) SetUp(w http.ResponseWriter, r *http.Request, cols, rows 
 		if err := stream.Close(); err != nil {
 			return err
 		}
-		if err := terminal.Close(); err != nil {
+		if err = terminal.Close(); err != nil {
 			return err
 		}
-		log.Printf("ws断开成功")
 		return nil
 	})
 
 	go func() {
-		for {
-			// 每5秒
-			timer := time.NewTimer(5 * time.Second)
-			<-timer.C
-
+		// 每5秒检测一次UpdateAt 超时退出
+		err = wait.PollImmediateUntil(5*time.Second, func() (done bool, err error) {
 			if stream.IsClosed() || terminal.IsClosed() {
-				_ = timer.Stop()
-				break
+				return true, err
 			}
-			// 如果有 10 分钟没有数据流动，则断开连接
-			if time.Now().Unix()-stream.UpdateAt.Unix() > 60*10 {
-				stream.WsConn.WriteMessage(websocket.TextMessage, utils.Str2Bytes("检测到终端闲置，已断开连接...\r\n"))
-				stream.WsConn.WriteMessage(websocket.BinaryMessage, utils.Str2Bytes("检测到终端闲置，已断开连接..."))
-				stream.Close()
-				_ = timer.Stop()
-				break
+			// 5分钟超时时间
+			if time.Now().Unix()-stream.UpdateAt.Unix() > 60*5 {
+				//超时退出发送消息
+				if err = sendMsg(stream.WsConn, "\r\n检测到终端闲置，已断开连接..."); err != nil {
+					return false, err
+				}
+
+				err = stream.Close()
+				if err != nil {
+					return false, err
+				}
+
+				return true, err
 			}
+			return false, nil
+		}, runtime.SystemContext.Done())
+
+		if err != nil {
+			logger.LG.Warn("websocket timeout timer error", zap.Error(err))
+			return
 		}
 	}()
 
 	return nil
+}
+
+func sendMsg(socket *websocket.Conn, data string) error {
+	msg, err := json.Marshal(TerminalMessage{
+		Operation: "stdout",
+		Data:      data,
+	})
+	if err != nil {
+		return err
+	}
+	return socket.WriteMessage(websocket.TextMessage, msg)
 }

@@ -10,6 +10,9 @@ import (
 	"path/filepath"
 	"time"
 
+	"go.uber.org/zap"
+
+	"github.com/noovertime7/kubemanage/pkg/logger"
 	"github.com/noovertime7/kubemanage/pkg/utils"
 	"golang.org/x/crypto/ssh"
 )
@@ -38,7 +41,8 @@ type Terminal struct {
 
 func (t *Terminal) SetWinSize(h int, w int) {
 	if err := t.session.WindowChange(h, w); err != nil {
-		log.Printf("ssh pty change windows size failed:\t %v", err)
+		logger.LG.Error(fmt.Sprintf("ssh pty change windows size failed:\t %v", err.Error()))
+		return
 	}
 }
 
@@ -113,7 +117,6 @@ func NewTerminal(config Config) (*Terminal, error) {
 			authMethods = append(authMethods, pk)
 		}
 	} else {
-		log.Println("else", config.PrivateKey, config.Password)
 		authMethods = append(authMethods, ssh.Password(config.Password))
 	}
 
@@ -124,7 +127,7 @@ func NewTerminal(config Config) (*Terminal, error) {
 	client, err := ssh.Dial("tcp", addr, sshConfig)
 
 	if err != nil {
-		log.Printf("Failed to connect to remote terminal, err: %v", err)
+		logger.LG.Error("Failed to connect to remote terminal", zap.Error(err))
 		return nil, err
 	}
 

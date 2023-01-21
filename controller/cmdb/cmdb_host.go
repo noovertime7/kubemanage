@@ -100,10 +100,15 @@ func (c *cmdbController) GetHostList(ctx *gin.Context) {
 }
 
 func (c *cmdbController) WebShell(ctx *gin.Context) {
+	instanceID := ctx.Query("instanceID")
+	if utils.IsStrEmpty(instanceID) {
+		v1.Log.Error("instanceID is empty")
+		return
+	}
 	// 设置默认xterm窗口大小
 	cols, _ := strconv.Atoi(ctx.DefaultQuery("cols", "188"))
 	rows, _ := strconv.Atoi(ctx.DefaultQuery("rows", "42"))
-	err := v1.CoreV1.CMDB().Host().WebShell(ctx.Writer, ctx.Request, cols, rows)
+	err := v1.CoreV1.CMDB().Host().WebShell(ctx, instanceID, cols, rows)
 	if err != nil {
 		v1.Log.ErrorWithCode(globalError.ServerError, err)
 		return
