@@ -14,7 +14,7 @@ import (
 
 type HostI interface {
 	Save(ctx context.Context, search *model.CMDBHost) error
-	Updates(ctx context.Context, opt common.Option, search *model.CMDBHost) error
+	Updates(ctx context.Context, opt common.UpdateOption, search *model.CMDBHost) error
 	Find(ctx context.Context, search model.CMDBHost) (model.CMDBHost, error)
 	FindList(ctx context.Context, search model.CMDBHost) ([]*model.CMDBHost, error)
 	Delete(ctx context.Context, search model.CMDBHost, isDelete bool) error
@@ -36,7 +36,7 @@ func (h *host) Save(ctx context.Context, search *model.CMDBHost) error {
 	return h.db.WithContext(ctx).Create(&search).Error
 }
 
-func (h *host) Updates(ctx context.Context, opt common.Option, search *model.CMDBHost) error {
+func (h *host) Updates(ctx context.Context, opt common.UpdateOption, search *model.CMDBHost) error {
 	query := opt(h.db)
 	return query.WithContext(ctx).Updates(&search).Error
 }

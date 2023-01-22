@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/noovertime7/kubemanage/pkg"
 	"github.com/pkg/errors"
+	uuid "github.com/satori/go.uuid"
 )
 
 func GetClaims(c *gin.Context) (*pkg.CustomClaims, error) {
@@ -17,6 +18,15 @@ func GetClaims(c *gin.Context) (*pkg.CustomClaims, error) {
 		return nil, err
 	}
 	return claims, err
+}
+
+func GetUserUUID(ctx *gin.Context) (uuid.UUID, error) {
+	// 从context中解构出用户信息
+	claims, err := GetClaims(ctx)
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+	return claims.UUID, nil
 }
 
 // GetUserAuthorityId 从Gin的Context中获取从jwt解析出来的用户角色id

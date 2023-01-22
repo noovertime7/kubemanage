@@ -90,7 +90,13 @@ func (c *cmdbController) DeleteHosts(ctx *gin.Context) {
 }
 
 func (c *cmdbController) GetHostList(ctx *gin.Context) {
-	data, err := v1.CoreV1.CMDB().Host().GetHostListWithGroupName(ctx, nil)
+	userUUID, err := utils.GetUserUUID(ctx)
+	if err != nil {
+		v1.Log.ErrorWithCode(globalError.GetError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
+		return
+	}
+	data, err := v1.CoreV1.CMDB().Host().GetHostListWithGroupName(ctx, userUUID, nil)
 	if err != nil {
 		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))

@@ -4,9 +4,10 @@ import (
 	"fmt"
 
 	"database/sql"
+
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"

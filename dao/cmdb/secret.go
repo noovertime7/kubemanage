@@ -13,7 +13,7 @@ import (
 
 type SecretI interface {
 	Save(ctx context.Context, search *model.CMDBSecret) error
-	Updates(ctx context.Context, opt common.Option, in *model.CMDBSecret) error
+	Updates(ctx context.Context, opt common.UpdateOption, in *model.CMDBSecret) error
 	Find(ctx context.Context, search model.CMDBSecret) (model.CMDBSecret, error)
 	FindList(ctx context.Context, search model.CMDBSecret) ([]model.CMDBSecret, error)
 	Delete(ctx context.Context, search model.CMDBSecret, isDelete bool) error
@@ -33,7 +33,7 @@ func (s *secret) Save(ctx context.Context, search *model.CMDBSecret) error {
 	return s.db.WithContext(ctx).Where(&search).Create(&search).Error
 }
 
-func (s *secret) Updates(ctx context.Context, opt common.Option, in *model.CMDBSecret) error {
+func (s *secret) Updates(ctx context.Context, opt common.UpdateOption, in *model.CMDBSecret) error {
 	query := opt(s.db)
 	return query.WithContext(ctx).Updates(&in).Error
 }

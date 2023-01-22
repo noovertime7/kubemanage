@@ -14,6 +14,8 @@ const (
 	HostWebShell = "/api/cmdb/webshell"
 )
 
+const TimeFormat = "2006-01-02 15:04:05"
+
 var (
 	AdminDefaultAuth      uint = 111
 	AdminDefaultAuthStr        = strconv.Itoa(int(AdminDefaultAuth))

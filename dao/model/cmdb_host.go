@@ -25,7 +25,7 @@ type CMDBHost struct {
 	SecretType      uint   `json:"secretType" gorm:"index;column:secretType;comment:认证类型1为密码2为秘钥"`
 	SecretID        uint   `json:"secretID" gorm:"column:secretID;comment:主机认证id"`
 	Status          uint   `json:"status" gorm:"column:status;comment:主机状态"`
-	CMDBAuthProxyID uint   `json:"cmdbAuthProxyID" gorm:"column:cmdbAuthProxyID;comment:主机策略id"`
+	PermissionID    uint   `json:"permissionID" gorm:"column:permissionID;comment:主机策略id"`
 	CMDBHostGroupID uint   `json:"cmdbHostGroupID" gorm:"column:cmdbHostGroupID;comment:主机组id"`
 	GroupName       string `json:"groupName" gorm:"-"`
 	CommonModel

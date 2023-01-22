@@ -1,14 +1,15 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/noovertime7/kubemanage/pkg/logger"
 	"net"
 	"net/http"
 	"net/http/httputil"
 	"os"
 	"runtime/debug"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/noovertime7/kubemanage/pkg/logger"
 
 	"go.uber.org/zap"
 )
@@ -44,13 +45,11 @@ func Recovery(stack bool) gin.HandlerFunc {
 				if stack {
 					logger.LG.Error("[Recovery from panic]",
 						zap.Any("error", err),
-						zap.String("request", string(httpRequest)),
 						zap.String("stack", string(debug.Stack())),
 					)
 				} else {
 					logger.LG.Error("[Recovery from panic]",
 						zap.Any("error", err),
-						zap.String("request", string(httpRequest)),
 					)
 				}
 				c.AbortWithStatus(http.StatusInternalServerError)

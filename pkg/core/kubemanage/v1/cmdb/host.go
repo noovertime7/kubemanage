@@ -3,6 +3,13 @@ package cmdb
 import (
 	"context"
 	"fmt"
+	"time"
+
+	"github.com/noovertime7/kubemanage/pkg/logger"
+
+	"k8s.io/apimachinery/pkg/util/sets"
+
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -19,7 +26,7 @@ import (
 type HostService interface {
 	CreateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error
 	UpdateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error
-	GetHostListWithGroupName(ctx context.Context, search *model.CMDBHost) ([]*model.CMDBHost, error)
+	GetHostListWithGroupName(ctx context.Context, uuid uuid.UUID, search *model.CMDBHost) ([]*model.CMDBHost, error)
 	PageHost(ctx context.Context, groupID uint, pager runtime.Pager) (dto.PageCMDBHostOut, error)
 	DeleteHost(ctx context.Context, instanceID string) error
 	DeleteHosts(ctx context.Context, instanceIDs []string) error
@@ -28,12 +35,13 @@ type HostService interface {
 }
 
 func NewHostService(factory dao.ShareDaoFactory, q queue.Queue) HostService {
-	return &hostService{factory: factory, queue: q}
+	return &hostService{factory: factory, queue: q, permission: NewPermissionService(factory)}
 }
 
 type hostService struct {
-	queue   queue.Queue
-	factory dao.ShareDaoFactory
+	queue      queue.Queue
+	permission PermissionService
+	factory    dao.ShareDaoFactory
 }
 
 func (h *hostService) CreateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error {
@@ -140,8 +148,43 @@ func (h *hostService) PageHost(ctx context.Context, groupID uint, pager runtime.
 	return dto.PageCMDBHostOut{Total: total, List: newList}, nil
 }
 
+func (h *hostService) buildPermissionFitter(ctx context.Context, uuid uuid.UUID, in []*model.CMDBHost) ([]*model.CMDBHost, error) {
+	var newList = make([]*model.CMDBHost, 0)
+	permission, err := h.permission.GetPermissionWithHosts(ctx, model.Permission{UserUUID: uuid})
+	if err != nil {
+		return nil, err
+	}
+	if permission.Id == 0 {
+		logger.LG.Warn("buildPermissionFitter: permission not found")
+		return newList, nil
+	}
+	if len(permission.Hosts) == 0 {
+		logger.LG.Warn("buildPermissionFitter: current user owned host is empty")
+		return newList, nil
+	}
+	// 构建该用户拥有的所有主机
+	ownHosts := sets.NewString()
+	now := time.Now()
+	for _, host := range permission.Hosts {
+		// 判断 当前时间在 在开始时间之后，在结束时间之前
+		if now.After(permission.StartTime) && now.Before(permission.EndTime) {
+			ownHosts.Insert(host.InstanceID)
+		}
+	}
+
+	for _, realHost := range in {
+		if ownHosts.Has(realHost.InstanceID) {
+			newList = append(newList, realHost)
+		}
+	}
+	return newList, err
+}
+
 func (h *hostService) buildHostGroupName(ctx context.Context, in []*model.CMDBHost) ([]*model.CMDBHost, error) {
-	var newList []*model.CMDBHost
+	var newList = make([]*model.CMDBHost, 0)
+	if len(in) == 0 {
+		return newList, nil
+	}
 	for _, host := range in {
 		group, err := h.factory.CMDB().HostGroup().Find(ctx, model.CMDBHostGroup{Id: host.CMDBHostGroupID})
 		if err != nil {
@@ -174,7 +217,7 @@ func (h *hostService) getHostList(ctx context.Context, search model.CMDBHost) ([
 	return data, nil
 }
 
-func (h *hostService) GetHostListWithGroupName(ctx context.Context, search *model.CMDBHost) ([]*model.CMDBHost, error) {
+func (h *hostService) GetHostListWithGroupName(ctx context.Context, uuid uuid.UUID, search *model.CMDBHost) ([]*model.CMDBHost, error) {
 	if search == nil {
 		search = &model.CMDBHost{}
 	}
@@ -182,7 +225,13 @@ func (h *hostService) GetHostListWithGroupName(ctx context.Context, search *mode
 	if err != nil {
 		return nil, err
 	}
-	groupNameList, err := h.buildHostGroupName(ctx, list)
+
+	fitterList, err := h.buildPermissionFitter(ctx, uuid, list)
+	if err != nil {
+		return nil, err
+	}
+
+	groupNameList, err := h.buildHostGroupName(ctx, fitterList)
 	if err != nil {
 		return nil, err
 	}

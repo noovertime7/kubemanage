@@ -15,6 +15,7 @@ type CMDBGetter interface {
 }
 
 type CMDBService interface {
+	Permission() cmdb.PermissionService
 	HostGroup() cmdb.HostGroupService
 	Host() cmdb.HostService
 	Secret() cmdb.SecretService
@@ -35,6 +36,10 @@ func (c *cmdbService) Host() cmdb.HostService {
 
 func (c *cmdbService) Secret() cmdb.SecretService {
 	return cmdb.NewSecretService(c.factory)
+}
+
+func (c *cmdbService) Permission() cmdb.PermissionService {
+	return cmdb.NewPermissionService(c.factory)
 }
 
 func (c *cmdbService) StartChecker() {
