@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 )
@@ -39,7 +40,7 @@ func (m *SysBaseMenu) MigrateTable(ctx context.Context, db *gorm.DB) error {
 
 func (m *SysBaseMenu) IsInitData(ctx context.Context, db *gorm.DB) (bool, error) {
 	var out *SysBaseMenu
-	if err := db.WithContext(ctx).Where("path = 'dashboard' ").Find(&out).Error; err != nil {
+	if err := db.WithContext(ctx).Where("path = '/dashboard' ").Find(&out).Error; err != nil {
 		return false, nil
 	}
 	return out.ID != 0, nil

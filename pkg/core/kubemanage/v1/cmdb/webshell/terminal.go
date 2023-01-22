@@ -4,17 +4,16 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net"
 	"os"
 	"path/filepath"
 	"time"
 
 	"go.uber.org/zap"
+	"golang.org/x/crypto/ssh"
 
 	"github.com/noovertime7/kubemanage/pkg/logger"
 	"github.com/noovertime7/kubemanage/pkg/utils"
-	"golang.org/x/crypto/ssh"
 )
 
 type Config struct {
@@ -134,7 +133,6 @@ func NewTerminal(config Config) (*Terminal, error) {
 	session, err := client.NewSession()
 
 	if err != nil {
-		log.Print("获取session失败", err)
 		return nil, err
 	}
 
