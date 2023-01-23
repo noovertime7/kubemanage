@@ -2,7 +2,6 @@ package cmdb
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 
 	"github.com/noovertime7/kubemanage/dao"
@@ -59,7 +58,7 @@ func (h *hostGroupService) getHostGroupTreeMap(ctx context.Context) (treeMap map
 	}
 	for _, v := range hostGroups {
 		// 处理主机组名称,添加主机数，如 研发部门 (10)
-		v.GroupName = fmt.Sprintf("%s (%d)", v.GroupName, len(v.Hosts))
+		v.HostNum = int64(len(v.Hosts))
 		treeMap[v.ParentId] = append(treeMap[v.ParentId], v)
 	}
 	return treeMap, err

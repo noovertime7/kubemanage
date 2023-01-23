@@ -19,6 +19,7 @@ type CMDBHostGroup struct {
 	Sort       int             `json:"sort" gorm:"size:4;"` //排序
 	Children   []CMDBHostGroup `json:"children" gorm:"-"`
 	Hosts      []CMDBHost      `json:"hosts"`
+	HostNum    int64           `json:"hostNum" gorm:"-"`
 	CommonModel
 }
 
