@@ -112,6 +112,12 @@ swag init --pd -d ./cmd,docs
 服务状态(v3版本)
 ![](./img/system_state.png)
 
+CMDB主机管理(v3版本)
+![](./img/cmdb/host.png)
+
+CMDB网页终端(v3版本)
+![](./img/cmdb/webshell.png)
+
 工作流
 ![工作流](./img/wordflow.jpg?raw=true)
 
