@@ -65,7 +65,7 @@ func (c *cmdbController) PageHost(ctx *gin.Context) {
 }
 
 func (c *cmdbController) DeleteHost(ctx *gin.Context) {
-	instanceid := ctx.Param("instanceid")
+	instanceid := ctx.Param("instanceID")
 	if err := v1.CoreV1.CMDB().Host().DeleteHost(ctx, instanceid); err != nil {
 		v1.Log.ErrorWithCode(globalError.DeleteError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))

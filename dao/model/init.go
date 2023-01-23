@@ -234,11 +234,15 @@ var SysApis = []SysApi{
 	// CMDB相关接口
 	{Path: "/api/cmdb/getHostGroupTree", Description: "获取主机组树", ApiGroup: "资产管理", Method: "GET"},
 	{Path: "/api/cmdb/getHostGroupList", Description: "获取主机组列表", ApiGroup: "资产管理", Method: "GET"},
+	{Path: "/api/cmdb/:instanceID/deleteHostGroup", Description: "删除主机组", ApiGroup: "资产管理", Method: "DELETE"},
+	{Path: "/api/cmdb/createSonHostGroup", Description: "创建子级主机组", ApiGroup: "资产管理", Method: "POST"},
+	{Path: "/api/cmdb/updateHostGroup", Description: "更新主机组", ApiGroup: "资产管理", Method: "PUT"},
+	{Path: "/api/cmdb/createHostGroup", Description: "创建同级主机组", ApiGroup: "资产管理", Method: "POST"},
 
 	{Path: "/api/cmdb/:groupID/pageHost", Description: "分页获取主机信息", ApiGroup: "资产管理", Method: "GET"},
 	{Path: "/api/cmdb/getHostsList", Description: "获取主机列表", ApiGroup: "资产管理", Method: "GET"},
 	{Path: "/api/cmdb/deleteHosts", Description: "批量删除主机", ApiGroup: "资产管理", Method: "POST"},
-	{Path: "/api/cmdb/:instanceid/deleteHost", Description: "删除主机", ApiGroup: "资产管理", Method: "DELETE"},
+	{Path: "/api/cmdb/:instanceID/deleteHost", Description: "删除主机", ApiGroup: "资产管理", Method: "DELETE"},
 	{Path: "/api/cmdb/createHost", Description: "创建主机", ApiGroup: "资产管理", Method: "POST"},
 	{Path: "/api/cmdb/updateHost", Description: "修改主机", ApiGroup: "资产管理", Method: "POST"},
 
@@ -247,7 +251,7 @@ var SysApis = []SysApi{
 	{Path: "/api/cmdb/pageSecret", Description: "分页获取认证信息", ApiGroup: "资产管理", Method: "GET"},
 	{Path: "/api/cmdb/getSecretList", Description: "获取认证信息列表", ApiGroup: "资产管理", Method: "GET"},
 	{Path: "/api/cmdb/deleteSecrets", Description: "批量删除认证信息", ApiGroup: "资产管理", Method: "POST"},
-	{Path: "/api/cmdb/:instanceid/deleteSecret", Description: "删除认证信息", ApiGroup: "资产管理", Method: "DELETE"},
+	{Path: "/api/cmdb/:instanceID/deleteSecret", Description: "删除认证信息", ApiGroup: "资产管理", Method: "DELETE"},
 	// K8S相关接口
 	{Path: "/api/k8s/deployment/create", Description: "创建deployment", ApiGroup: "Kubernetes", Method: "POST"},
 	{Path: "/api/k8s/deployment/del", Description: "删除deployment", ApiGroup: "Kubernetes", Method: "DELETE"},

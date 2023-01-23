@@ -2,9 +2,10 @@ package dto
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/pkg"
-	"gorm.io/gorm"
 )
 
 type CMDBHostCreateInput struct {
@@ -23,6 +24,16 @@ type CMDBHostCreateInput struct {
 }
 
 func (p *CMDBHostCreateInput) BindingValidParams(ctx *gin.Context) error {
+	return pkg.DefaultGetValidParams(ctx, p)
+}
+
+type HostGroupCreateOrUpdate struct {
+	InstanceID string `json:"instanceID" form:"instanceID"  validate:"required"`
+	GroupName  string `json:"groupName" form:"groupName" validate:"required"`
+	Sort       uint   `json:"sort" form:"sort" validate:"required,min=1"`
+}
+
+func (p *HostGroupCreateOrUpdate) BindingValidParams(ctx *gin.Context) error {
 	return pkg.DefaultGetValidParams(ctx, p)
 }
 

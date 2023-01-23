@@ -14,6 +14,10 @@ func NewCMDBRouter(ginEngine *gin.RouterGroup) {
 func (c *cmdbController) initRoutes(ginEngine *gin.RouterGroup) {
 	cmdbRoute := ginEngine.Group("/cmdb")
 	{
+		cmdbRoute.POST("/createHostGroup", c.CreateHostGroup)
+		cmdbRoute.POST("/createSonHostGroup", c.CreateSonHostGroup)
+		cmdbRoute.PUT("/updateHostGroup", c.UpdateHostGroup)
+		cmdbRoute.DELETE("/:instanceID/deleteHostGroup", c.DeleteHostGroup)
 		cmdbRoute.GET("/getHostGroupTree", c.GetHostGroupTree)
 		cmdbRoute.GET("/getHostGroupList", c.GetHostGroupList)
 	}
@@ -21,7 +25,7 @@ func (c *cmdbController) initRoutes(ginEngine *gin.RouterGroup) {
 		cmdbRoute.GET("/:groupID/pageHost", c.PageHost)
 		cmdbRoute.GET("/getHostsList", c.GetHostList)
 		cmdbRoute.POST("/deleteHosts", c.DeleteHosts)
-		cmdbRoute.DELETE("/:instanceid/deleteHost", c.DeleteHost)
+		cmdbRoute.DELETE("/:instanceID/deleteHost", c.DeleteHost)
 		cmdbRoute.POST("/createHost", c.CreateHost)
 		cmdbRoute.POST("/updateHost", c.UpdateHost)
 		cmdbRoute.GET("/webshell", c.WebShell)
@@ -32,6 +36,6 @@ func (c *cmdbController) initRoutes(ginEngine *gin.RouterGroup) {
 		cmdbRoute.GET("/pageSecret", c.PageSecret)
 		cmdbRoute.GET("/getSecretList", c.GetSecretList)
 		cmdbRoute.POST("/deleteSecrets", c.DeleteSecrets)
-		cmdbRoute.DELETE("/:instanceid/deleteSecret", c.DeleteSecret)
+		cmdbRoute.DELETE("/:instanceID/deleteSecret", c.DeleteSecret)
 	}
 }
