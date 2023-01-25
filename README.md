@@ -57,12 +57,18 @@ go run cmd/main.go
 ```
 默认用户名密码 admin/kubemanage
 
+## 现有特性
+
+- 支持RBAC的权限管理，根据角色配置菜单权限与接口权限
+- 支持资产管理，多主机同步连接，互不影响
+- 本地Kubernetes集群的管理
+- 接口调用操作审计功能
+
 ## Roadmap
 
-- 支持RBAC的权限管理
 - 支持多集群管理
 - 支持应用一键发布
-- 支持资产管理
+- 在线工单审批系统
 
 ## Issue 规范
 - issue 仅用于提交 Bug 或 Feature 以及设计相关的内容，其它内容可能会被直接关闭。
@@ -106,6 +112,12 @@ swag init --pd -d ./cmd,docs
 
 服务状态(v3版本)
 ![](./img/system_state.png)
+
+CMDB主机管理(v3版本)
+![](./img/cmdb/host.png)
+
+CMDB网页终端(v3版本)
+![](./img/cmdb/webshell.png)
 
 工作流
 ![工作流](./img/wordflow.jpg?raw=true)
