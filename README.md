@@ -68,6 +68,7 @@ go run cmd/main.go
 
 - 支持多集群管理
 - 支持应用一键发布
+- 在线工单审批系统
 
 ## Issue 规范
 - issue 仅用于提交 Bug 或 Feature 以及设计相关的内容，其它内容可能会被直接关闭。
