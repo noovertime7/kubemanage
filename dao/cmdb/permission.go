@@ -55,7 +55,7 @@ func (p *permission) FindWithHosts(ctx context.Context, search model.Permission)
 
 func (p *permission) FindList(ctx context.Context, search model.Permission) ([]*model.Permission, error) {
 	var out []*model.Permission
-	return out, p.db.WithContext(ctx).Where(&search).Find(&out).Error
+	return out, p.db.WithContext(ctx).Preload("Hosts").Where(&search).Find(&out).Error
 }
 
 func (p *permission) Delete(ctx context.Context, search model.Permission, isDelete bool) error {

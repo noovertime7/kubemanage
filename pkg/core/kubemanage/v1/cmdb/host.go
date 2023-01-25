@@ -5,19 +5,16 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/noovertime7/kubemanage/pkg/logger"
-
-	"k8s.io/apimachinery/pkg/util/sets"
-
-	uuid "github.com/satori/go.uuid"
-
 	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
+	"k8s.io/apimachinery/pkg/util/sets"
 
 	"github.com/noovertime7/kubemanage/dao"
 	"github.com/noovertime7/kubemanage/dao/model"
 	"github.com/noovertime7/kubemanage/dto"
 	"github.com/noovertime7/kubemanage/pkg/core/kubemanage/v1/cmdb/webshell"
+	"github.com/noovertime7/kubemanage/pkg/logger"
 	"github.com/noovertime7/kubemanage/pkg/utils"
 	"github.com/noovertime7/kubemanage/runtime"
 	"github.com/noovertime7/kubemanage/runtime/queue"
@@ -25,11 +22,11 @@ import (
 
 type HostService interface {
 	CreateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error
-	UpdateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error
+	UpdateHost(ctx context.Context, uuid uuid.UUID, in *dto.CMDBHostCreateInput) error
 	GetHostListWithGroupName(ctx context.Context, uuid uuid.UUID, search *model.CMDBHost) ([]*model.CMDBHost, error)
 	PageHost(ctx context.Context, uuid uuid.UUID, groupID uint, pager runtime.Pager) (dto.PageCMDBHostOut, error)
-	DeleteHost(ctx context.Context, instanceID string) error
-	DeleteHosts(ctx context.Context, instanceIDs []string) error
+	DeleteHost(ctx context.Context, uuid uuid.UUID, instanceID string) error
+	DeleteHosts(ctx context.Context, uuid uuid.UUID, instanceIDs []string) error
 	StartHostCheck() error
 	WebShell(ctx *gin.Context, instanceID string, cols, rows int) error
 }
@@ -91,9 +88,20 @@ func (h *hostService) CreateHost(ctx context.Context, in *dto.CMDBHostCreateInpu
 	return h.factory.CMDB().Host().Save(ctx, hostDB)
 }
 
-func (h *hostService) UpdateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error {
+// UpdateHost TODO 应该判断是否有权限更新
+func (h *hostService) UpdateHost(ctx context.Context, uuid uuid.UUID, in *dto.CMDBHostCreateInput) error {
 	if utils.IsStrEmpty(in.InstanceID) {
 		return fmt.Errorf("instance id is empty")
+	}
+
+	// 检查当前用户是否拥有这个主机的权限
+	ok, err := h.permission.CheckPermissionWithCache(ctx, uuid, in.InstanceID)
+	if err != nil {
+		return err
+	}
+	// This will never happen
+	if !ok {
+		return fmt.Errorf("403 当前用户没有更新这台主机的权限")
 	}
 
 	host, err := h.factory.CMDB().Host().Find(ctx, model.CMDBHost{InstanceID: in.InstanceID})
@@ -203,13 +211,22 @@ func (h *hostService) buildHostGroupName(ctx context.Context, in []*model.CMDBHo
 	return newList, nil
 }
 
-func (h *hostService) DeleteHost(ctx context.Context, instanceID string) error {
+func (h *hostService) DeleteHost(ctx context.Context, uuid uuid.UUID, instanceID string) error {
+	// 检查当前用户是否拥有这个主机的权限
+	ok, err := h.permission.CheckPermissionWithCache(ctx, uuid, instanceID)
+	if err != nil {
+		return err
+	}
+	// This will never happen
+	if !ok {
+		return fmt.Errorf("403 当前用户没有更新这台主机的权限")
+	}
 	return h.factory.CMDB().Host().Delete(ctx, model.CMDBHost{InstanceID: instanceID}, false)
 }
 
-func (h *hostService) DeleteHosts(ctx context.Context, instanceIDs []string) error {
+func (h *hostService) DeleteHosts(ctx context.Context, uuid uuid.UUID, instanceIDs []string) error {
 	for _, ins := range instanceIDs {
-		if err := h.DeleteHost(ctx, ins); err != nil {
+		if err := h.DeleteHost(ctx, uuid, ins); err != nil {
 			return err
 		}
 	}

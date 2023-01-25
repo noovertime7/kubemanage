@@ -28,13 +28,19 @@ func (c *cmdbController) CreateHost(ctx *gin.Context) {
 }
 
 func (c *cmdbController) UpdateHost(ctx *gin.Context) {
+	userUUID, err := utils.GetUserUUID(ctx)
+	if err != nil {
+		v1.Log.ErrorWithCode(globalError.GetError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
+		return
+	}
 	params := &dto.CMDBHostCreateInput{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
-	if err := v1.CoreV1.CMDB().Host().UpdateHost(ctx, params); err != nil {
+	if err := v1.CoreV1.CMDB().Host().UpdateHost(ctx, userUUID, params); err != nil {
 		v1.Log.ErrorWithCode(globalError.UpdateError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.UpdateError, err))
 		return
@@ -71,8 +77,14 @@ func (c *cmdbController) PageHost(ctx *gin.Context) {
 }
 
 func (c *cmdbController) DeleteHost(ctx *gin.Context) {
+	userUUID, err := utils.GetUserUUID(ctx)
+	if err != nil {
+		v1.Log.ErrorWithCode(globalError.GetError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
+		return
+	}
 	instanceid := ctx.Param("instanceID")
-	if err := v1.CoreV1.CMDB().Host().DeleteHost(ctx, instanceid); err != nil {
+	if err := v1.CoreV1.CMDB().Host().DeleteHost(ctx, userUUID, instanceid); err != nil {
 		v1.Log.ErrorWithCode(globalError.DeleteError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
 		return
@@ -81,13 +93,19 @@ func (c *cmdbController) DeleteHost(ctx *gin.Context) {
 }
 
 func (c *cmdbController) DeleteHosts(ctx *gin.Context) {
+	userUUID, err := utils.GetUserUUID(ctx)
+	if err != nil {
+		v1.Log.ErrorWithCode(globalError.GetError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
+		return
+	}
 	params := &dto.InstancesReq{}
 	if err := params.BindingValidParams(ctx); err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
-	if err := v1.CoreV1.CMDB().Host().DeleteHosts(ctx, params.Ids); err != nil {
+	if err := v1.CoreV1.CMDB().Host().DeleteHosts(ctx, userUUID, params.Ids); err != nil {
 		v1.Log.ErrorWithCode(globalError.DeleteError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.DeleteError, err))
 		return
