@@ -2,7 +2,6 @@ package cmdb
 
 import (
 	"context"
-	"sync"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -19,39 +18,19 @@ type PermissionService interface {
 	PagePermission(ctx context.Context, pager runtime.Pager) (dto.PageCMDBPermissionOut, error)
 	GetPermission(ctx context.Context, in model.Permission) (*model.Permission, error)
 	GetPermissionWithHosts(ctx context.Context, in model.Permission) (*model.Permission, error)
-	DeletePermission(ctx context.Context, instanceID string) error
-	DeletePermissions(ctx context.Context, instanceIDs []string) error
+	DeletePermission(ctx context.Context, uuid uuid.UUID, instanceID string) error
+	DeletePermissions(ctx context.Context, uuid uuid.UUID, instanceIDs []string) error
 	CheckPermissionWithDB(ctx context.Context, uuid uuid.UUID, instanceID string) (bool, error)
 	CheckPermissionWithCache(ctx context.Context, uuid uuid.UUID, instanceID string) (bool, error)
 }
 
 func NewPermissionService(factory dao.ShareDaoFactory) PermissionService {
-	p := &permissionService{factory: factory, permissionsMap: make(map[uuid.UUID]sets.String, 0)}
-	p.buildPermissionsMap(context.TODO())
-	return p
+	return &permissionService{factory: factory, PermissionCache: NewPermissionCache(factory)}
 }
 
 type permissionService struct {
-	lock           sync.RWMutex
-	permissionsMap map[uuid.UUID]sets.String
-	factory        dao.ShareDaoFactory
-}
-
-func (p *permissionService) buildPermissionsMap(ctx context.Context) {
-	p.lock.RLock()
-	defer p.lock.RUnlock()
-	list, err := p.factory.CMDB().Permission().FindList(ctx, model.Permission{})
-	if err != nil {
-		logger.LG.Warn(err.Error())
-		return
-	}
-	for _, permission := range list {
-		temp := sets.NewString()
-		for _, item := range permission.Hosts {
-			temp.Insert(item.InstanceID)
-		}
-		p.permissionsMap[permission.UserUUID] = temp
-	}
+	PermissionCache
+	factory dao.ShareDaoFactory
 }
 
 func (p *permissionService) CheckPermissionWithDB(ctx context.Context, uuid uuid.UUID, instanceID string) (bool, error) {
@@ -82,13 +61,7 @@ func (p *permissionService) CheckPermissionWithDB(ctx context.Context, uuid uuid
 
 // CheckPermissionWithCache 检查主机是否有权限 返回false没有权限
 func (p *permissionService) CheckPermissionWithCache(ctx context.Context, uuid uuid.UUID, instanceID string) (bool, error) {
-	p.lock.RLock()
-	defer p.lock.RUnlock()
-	list, ok := p.permissionsMap[uuid]
-	if !ok {
-		return p.CheckPermissionWithDB(ctx, uuid, instanceID)
-	}
-	return list.Has(instanceID), nil
+	return p.CheckPermission(ctx, uuid, instanceID)
 }
 
 func (p *permissionService) PagePermission(ctx context.Context, pager runtime.Pager) (dto.PageCMDBPermissionOut, error) {
@@ -107,13 +80,14 @@ func (p *permissionService) GetPermissionWithHosts(ctx context.Context, in model
 	return p.factory.CMDB().Permission().FindWithHosts(ctx, in)
 }
 
-func (p *permissionService) DeletePermission(ctx context.Context, instanceID string) error {
+func (p *permissionService) DeletePermission(ctx context.Context, uuid uuid.UUID, instanceID string) error {
+	p.Remove(ctx, uuid)
 	return p.factory.CMDB().Permission().Delete(ctx, model.Permission{InstanceID: instanceID}, false)
 }
 
-func (p *permissionService) DeletePermissions(ctx context.Context, instanceIDs []string) error {
+func (p *permissionService) DeletePermissions(ctx context.Context, uuid uuid.UUID, instanceIDs []string) error {
 	for _, ins := range instanceIDs {
-		if err := p.DeletePermission(ctx, ins); err != nil {
+		if err := p.DeletePermission(ctx, uuid, ins); err != nil {
 			return err
 		}
 	}
