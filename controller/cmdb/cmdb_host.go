@@ -43,6 +43,12 @@ func (c *cmdbController) UpdateHost(ctx *gin.Context) {
 }
 
 func (c *cmdbController) PageHost(ctx *gin.Context) {
+	userUUID, err := utils.GetUserUUID(ctx)
+	if err != nil {
+		v1.Log.ErrorWithCode(globalError.GetError, err)
+		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))
+		return
+	}
 	groupID, err := utils.ParseUint(ctx.Param("groupID"))
 	if err != nil {
 		v1.Log.ErrorWithCode(globalError.ParamBindError, err)
@@ -55,7 +61,7 @@ func (c *cmdbController) PageHost(ctx *gin.Context) {
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.ParamBindError, err))
 		return
 	}
-	data, err := v1.CoreV1.CMDB().Host().PageHost(ctx, groupID, params)
+	data, err := v1.CoreV1.CMDB().Host().PageHost(ctx, userUUID, groupID, params)
 	if err != nil {
 		v1.Log.ErrorWithCode(globalError.GetError, err)
 		middleware.ResponseError(ctx, globalError.NewGlobalError(globalError.GetError, err))

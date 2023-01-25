@@ -27,7 +27,7 @@ type HostService interface {
 	CreateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error
 	UpdateHost(ctx context.Context, in *dto.CMDBHostCreateInput) error
 	GetHostListWithGroupName(ctx context.Context, uuid uuid.UUID, search *model.CMDBHost) ([]*model.CMDBHost, error)
-	PageHost(ctx context.Context, groupID uint, pager runtime.Pager) (dto.PageCMDBHostOut, error)
+	PageHost(ctx context.Context, uuid uuid.UUID, groupID uint, pager runtime.Pager) (dto.PageCMDBHostOut, error)
 	DeleteHost(ctx context.Context, instanceID string) error
 	DeleteHosts(ctx context.Context, instanceIDs []string) error
 	StartHostCheck() error
@@ -139,12 +139,19 @@ func (h *hostService) UpdateHost(ctx context.Context, in *dto.CMDBHostCreateInpu
 	}, hostDB)
 }
 
-func (h *hostService) PageHost(ctx context.Context, groupID uint, pager runtime.Pager) (dto.PageCMDBHostOut, error) {
+func (h *hostService) PageHost(ctx context.Context, uuid uuid.UUID, groupID uint, pager runtime.Pager) (dto.PageCMDBHostOut, error) {
 	list, total, err := h.factory.CMDB().Host().PageList(ctx, groupID, pager)
+	// 进行权限过滤
+	list, err = h.buildPermissionFitter(ctx, uuid, list)
+	if err != nil {
+		return dto.PageCMDBHostOut{}, err
+	}
+	// 补充主机组名
 	newList, err := h.buildHostGroupName(ctx, list)
 	if err != nil {
 		return dto.PageCMDBHostOut{}, err
 	}
+	total = int64(len(newList))
 	return dto.PageCMDBHostOut{Total: total, List: newList}, nil
 }
 
