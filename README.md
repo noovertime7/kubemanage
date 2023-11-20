@@ -97,6 +97,11 @@ swag init --pd -d ./cmd,docs
 成功生成后访问 `http://127.0.0.1:6180/swagger/index.html`
 
 ## 效果演示
+
+集群详情(v3版本)
+![image](https://github.com/noovertime7/kubemanage/assets/100392073/c1a02d86-4523-418c-8d4f-e93393bd2569)
+
+
 首页
 ![首页](./img/dashboard.jpg?raw=true)
 
