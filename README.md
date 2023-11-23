@@ -101,7 +101,6 @@ swag init --pd -d ./cmd,docs
 集群详情(v3版本)
 ![image](https://github.com/noovertime7/kubemanage/assets/100392073/c1a02d86-4523-418c-8d4f-e93393bd2569)
 
-
 首页
 ![首页](./img/dashboard.jpg?raw=true)
 
@@ -128,6 +127,11 @@ CMDB网页终端(v3版本)
 ![工作流](./img/wordflow.jpg?raw=true)
 
 deployment
+![image](https://github.com/noovertime7/kubemanage/assets/100392073/d9d1cc92-1f35-445f-af16-3e3804e9ede0)
+
+![image](https://github.com/noovertime7/kubemanage/assets/100392073/c6b6344e-afe2-41e0-b68b-fdc5da6c8a8a)
+
+
 ![deployment](./img/deployment.jpg?raw=true)
 
 pod
